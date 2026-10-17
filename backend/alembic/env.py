@@ -5,6 +5,7 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 from app.config import get_settings
 from app.db.models import Base
+from app.db.session import POSTGRES_CONNECT_ARGS
 
 config = context.config
 config.set_main_option("sqlalchemy.url", get_settings().server_database_url.replace("%", "%%"))
@@ -22,10 +23,13 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
+    url = config.get_main_option("sqlalchemy.url")
     connectable = engine_from_config(
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
+        # ISSUE-012: migrations also run through Supabase's transaction pooler
+        connect_args=POSTGRES_CONNECT_ARGS if url.startswith("postgresql") else {},
     )
     with connectable.connect() as connection:
         context.configure(

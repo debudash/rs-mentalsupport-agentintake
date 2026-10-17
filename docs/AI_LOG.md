@@ -140,3 +140,17 @@ and what a human decided. Tools and models used inside the product are in
   the exact OCR lines. Agent's first ISSUE-010 test passed when it shouldn't have (a
   case-sensitive assertion); caught by checking the test went red, then tightened. Result:
   golden wrong pre-fills 1 → 0, stress 3 → 1, accuracy unchanged on every set.
+
+## 2026-10-17 — Deployed to Railway (rs-assist) with hosted Supabase
+
+- Human filled `.env.production` from an agent-made template (git-ignored); agent set all
+  Railway variables through stdin (no secret on a command line or in output), generated a
+  new encryption key straight into Railway, verified the new `sb_secret_` key format works
+  with a read-only admin call before relying on it, moved the region to US East with the
+  CLI (a first attempt left a stray US-West replica; caught from the CLI's output and fixed).
+- First deployed k6 run: 11% failed. Diagnosed from Railway logs and `pg_stat_activity`:
+  ISSUE-012 (pool vs the pooler's 15 slots; then session-mode slots pinned by idle and
+  orphaned connections → transaction pooler) and ISSUE-013 (request/telemetry pool deadlock
+  the smaller pool exposed). Each test-first. Final: k6 0% failed, chat p95 2.03 s; smoke
+  21/21; OCR p95 698 ms; booking p95 239 ms.
+- One agent slip: a k6 run's summary was lost to an output filter and had to be re-run.
