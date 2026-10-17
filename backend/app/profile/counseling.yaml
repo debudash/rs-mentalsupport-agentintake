@@ -227,7 +227,13 @@ crisis:
     - suicidal
     - overdose
     - kill someone
+    - killing someone
     - hurt someone
+    - hurting someone
+    - harm someone
+    - harming someone
+    - hurt other people
+    - hurting other people
   # Tier 2: ambiguous idioms -> Safety check-in, never ignored.
   ambiguous:
     - killing me

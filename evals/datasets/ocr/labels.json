@@ -1,0 +1,402 @@
+[
+  {
+    "file": "golden/clean_00.jpg",
+    "set": "golden",
+    "variant": "clean",
+    "expected": {
+      "name": "Dennis Castro",
+      "date_of_birth": "2000-04-20",
+      "address": "6721 Kelley Dr, North Jasmine, RS 68202"
+    }
+  },
+  {
+    "file": "golden/clean_01.jpg",
+    "set": "golden",
+    "variant": "clean",
+    "expected": {
+      "name": "Stephanie Q Fox",
+      "date_of_birth": "1970-09-10",
+      "address": "870 Brown Rd, Lake Aaronfort, RS 92262"
+    }
+  },
+  {
+    "file": "golden/clean_02.jpg",
+    "set": "golden",
+    "variant": "clean",
+    "expected": {
+      "name": "Michael Ortiz",
+      "date_of_birth": "2003-12-24",
+      "address": "9231 Cisneros Ct, Brittanymouth, RS 97078"
+    }
+  },
+  {
+    "file": "golden/clean_03.jpg",
+    "set": "golden",
+    "variant": "clean",
+    "expected": {
+      "name": "David Fields",
+      "date_of_birth": "1960-10-23",
+      "address": "6892 Brown Way, Lake Janice, RS 17913"
+    }
+  },
+  {
+    "file": "golden/clean_04.jpg",
+    "set": "golden",
+    "variant": "clean",
+    "expected": {
+      "name": "Thomas Hawkins",
+      "date_of_birth": "1992-08-10",
+      "address": "8349 Ellison Way, Port Devin, RS 29328"
+    }
+  },
+  {
+    "file": "golden/clean_05.jpg",
+    "set": "golden",
+    "variant": "clean",
+    "expected": {
+      "name": "Kelli Meyer",
+      "date_of_birth": "1958-05-27",
+      "address": "6598 Pamela Blvd, Griffinland, RS 72171"
+    }
+  },
+  {
+    "file": "golden/clean_06.jpg",
+    "set": "golden",
+    "variant": "clean",
+    "expected": {
+      "name": "Justin Taylor",
+      "date_of_birth": "1980-09-03",
+      "address": "7617 Kathryn Way, Courtneymouth, RS 88361"
+    }
+  },
+  {
+    "file": "golden/clean_07.jpg",
+    "set": "golden",
+    "variant": "clean",
+    "expected": {
+      "name": "Michael Jacobs",
+      "date_of_birth": "1981-04-29",
+      "address": "1073 Ware Ct, Tinastad, RS 18512"
+    }
+  },
+  {
+    "file": "golden/clean_08.jpg",
+    "set": "golden",
+    "variant": "clean",
+    "expected": {
+      "name": "Bryan Coffey",
+      "date_of_birth": "1977-10-17",
+      "address": "5196 Espinoza Way, Port Sherrichester, RS 67704"
+    }
+  },
+  {
+    "file": "golden/clean_09.jpg",
+    "set": "golden",
+    "variant": "clean",
+    "expected": {
+      "name": "Sara F Wilson",
+      "date_of_birth": "1989-07-22",
+      "address": "3407 Jensen Blvd, Scottberg, RS 94984"
+    }
+  },
+  {
+    "file": "golden/photo_00.jpg",
+    "set": "golden",
+    "variant": "photo",
+    "expected": {
+      "name": "William Morrow",
+      "date_of_birth": "1953-08-13",
+      "address": "5075 Clark Ct, South Tracyland, RS 21044"
+    }
+  },
+  {
+    "file": "golden/photo_01.jpg",
+    "set": "golden",
+    "variant": "photo",
+    "expected": {
+      "name": "Phillip V Reynolds",
+      "date_of_birth": "1970-06-28",
+      "address": "7119 Vazquez Dr, Sextonfort, RS 36158"
+    }
+  },
+  {
+    "file": "golden/photo_02.jpg",
+    "set": "golden",
+    "variant": "photo",
+    "expected": {
+      "name": "Judith Blackburn",
+      "date_of_birth": "1998-11-17",
+      "address": "6942 Bonilla Ln, Michelleborough, RS 61901"
+    }
+  },
+  {
+    "file": "golden/photo_03.jpg",
+    "set": "golden",
+    "variant": "photo",
+    "expected": {
+      "name": "Melanie L Sanchez",
+      "date_of_birth": "1997-05-22",
+      "address": "2120 Cherry Ct, Aaronchester, RS 29112"
+    }
+  },
+  {
+    "file": "golden/photo_04.jpg",
+    "set": "golden",
+    "variant": "photo",
+    "expected": {
+      "name": "Bryan Q Boyer",
+      "date_of_birth": "1953-03-06",
+      "address": "2852 Norris Dr, New Autumnbury, RS 56868"
+    }
+  },
+  {
+    "file": "golden/photo_05.jpg",
+    "set": "golden",
+    "variant": "photo",
+    "expected": {
+      "name": "Angela Hamilton",
+      "date_of_birth": "1988-04-14",
+      "address": "3281 Timothy St, North Alexis, RS 60441"
+    }
+  },
+  {
+    "file": "golden/photo_06.jpg",
+    "set": "golden",
+    "variant": "photo",
+    "expected": {
+      "name": "Jonathan W White",
+      "date_of_birth": "1980-08-18",
+      "address": "8496 Preston Rd, East Juliemouth, RS 78951"
+    }
+  },
+  {
+    "file": "golden/photo_07.jpg",
+    "set": "golden",
+    "variant": "photo",
+    "expected": {
+      "name": "Jasmine Atkins",
+      "date_of_birth": "1979-03-05",
+      "address": "7056 Gardner Blvd, Arnoldfurt, RS 29705"
+    }
+  },
+  {
+    "file": "golden/photo_08.jpg",
+    "set": "golden",
+    "variant": "photo",
+    "expected": {
+      "name": "Victoria Powers",
+      "date_of_birth": "1993-01-28",
+      "address": "6045 Melissa Blvd, Lake Derrickburgh, RS 41611"
+    }
+  },
+  {
+    "file": "golden/photo_09.jpg",
+    "set": "golden",
+    "variant": "photo",
+    "expected": {
+      "name": "Kimberly Sullivan",
+      "date_of_birth": "1975-06-18",
+      "address": "2750 Serrano St, Walshshire, RS 59194"
+    }
+  },
+  {
+    "file": "golden/hard_skew_00.jpg",
+    "set": "golden",
+    "variant": "hard_skew",
+    "expected": {
+      "name": "Martin Sanchez",
+      "date_of_birth": "1959-06-10",
+      "address": "5419 Jensen Ln, Peterberg, RS 18072"
+    }
+  },
+  {
+    "file": "golden/hard_skew_01.jpg",
+    "set": "golden",
+    "variant": "hard_skew",
+    "expected": {
+      "name": "Robert A Thomas",
+      "date_of_birth": "1986-05-04",
+      "address": "3214 Hughes Way, Nicoleview, RS 92005"
+    }
+  },
+  {
+    "file": "golden/hard_skew_02.jpg",
+    "set": "golden",
+    "variant": "hard_skew",
+    "expected": {
+      "name": "Steve Garcia",
+      "date_of_birth": "1956-02-03",
+      "address": "2770 Coleman Dr, Tracyville, RS 66363"
+    }
+  },
+  {
+    "file": "golden/hard_glare_03.jpg",
+    "set": "golden",
+    "variant": "hard_glare",
+    "expected": {
+      "name": "Benjamin Walls",
+      "date_of_birth": "1978-02-21",
+      "address": "1999 Rodriguez Way, New Lindaton, RS 96792"
+    }
+  },
+  {
+    "file": "golden/hard_glare_04.jpg",
+    "set": "golden",
+    "variant": "hard_glare",
+    "expected": {
+      "name": "Charles Moses",
+      "date_of_birth": "1966-05-03",
+      "address": "2066 Kayla Ln, Martinezville, RS 77866"
+    }
+  },
+  {
+    "file": "golden/hard_two_line_05.jpg",
+    "set": "golden",
+    "variant": "hard_two_line",
+    "expected": {
+      "name": "Jessica King",
+      "date_of_birth": "1965-06-07",
+      "address": "7948 Figueroa St Apt 21C, Michaelview, RS 35260"
+    }
+  },
+  {
+    "file": "golden/hard_two_line_06.jpg",
+    "set": "golden",
+    "variant": "hard_two_line",
+    "expected": {
+      "name": "Michael S Ferguson",
+      "date_of_birth": "1965-09-02",
+      "address": "1295 Munoz Rd Apt 37C, South Brentfort, RS 80103"
+    }
+  },
+  {
+    "file": "golden/hard_unusual_07.jpg",
+    "set": "golden",
+    "variant": "hard_unusual",
+    "expected": {
+      "name": "José Álvarez-Ruiz",
+      "date_of_birth": "1992-01-27",
+      "address": "5390 Gonzalez Ct, South Anthonychester, RS 68326"
+    }
+  },
+  {
+    "file": "golden/hard_unusual_08.jpg",
+    "set": "golden",
+    "variant": "hard_unusual",
+    "expected": {
+      "name": "Nguyen Thi Lan",
+      "date_of_birth": "1973-10-09",
+      "address": "6222 Brown Ct, Stanleychester, RS 98634"
+    }
+  },
+  {
+    "file": "golden/hard_cut_off_09.jpg",
+    "set": "golden",
+    "variant": "hard_cut_off",
+    "expected": {
+      "name": "Yvonne E Hill",
+      "date_of_birth": "1953-03-09",
+      "address": null
+    }
+  },
+  {
+    "file": "held_out/layout_b_00.jpg",
+    "set": "held_out",
+    "variant": "layout_b",
+    "expected": {
+      "name": "Cameron M Joseph",
+      "date_of_birth": "1985-11-17",
+      "address": "3768 Henderson Rd, Katrinaborough, RS 21151"
+    }
+  },
+  {
+    "file": "held_out/layout_b_01.jpg",
+    "set": "held_out",
+    "variant": "layout_b",
+    "expected": {
+      "name": "Zachary Peterson",
+      "date_of_birth": "1977-11-24",
+      "address": "9466 Stone Rd, South Julie, RS 38601"
+    }
+  },
+  {
+    "file": "held_out/layout_b_02.jpg",
+    "set": "held_out",
+    "variant": "layout_b",
+    "expected": {
+      "name": "Cameron M Thompson",
+      "date_of_birth": "1954-08-10",
+      "address": "2655 Moore St Apt 13A, Angelafort, RS 87781"
+    }
+  },
+  {
+    "file": "held_out/layout_b_03.jpg",
+    "set": "held_out",
+    "variant": "layout_b",
+    "expected": {
+      "name": "José Álvarez-Ruiz",
+      "date_of_birth": "1987-04-15",
+      "address": "1599 Bell Ct, Petersonberg, RS 60716"
+    }
+  },
+  {
+    "file": "held_out/layout_b_04.jpg",
+    "set": "held_out",
+    "variant": "layout_b",
+    "expected": {
+      "name": "Lauren X Ward",
+      "date_of_birth": "1983-03-12",
+      "address": "3887 Larry Ct, Lake Ryanmouth, RS 85487"
+    }
+  },
+  {
+    "file": "held_out/layout_b_05.jpg",
+    "set": "held_out",
+    "variant": "layout_b",
+    "expected": {
+      "name": "Edward Rose",
+      "date_of_birth": "2002-07-16",
+      "address": "451 Samantha Dr, South Derekfurt, RS 91974"
+    }
+  },
+  {
+    "file": "held_out/layout_b_06.jpg",
+    "set": "held_out",
+    "variant": "layout_b",
+    "expected": {
+      "name": "Timothy Y Johnson",
+      "date_of_birth": "1994-06-03",
+      "address": "7169 Fernandez Ct Apt 30B, Kimberlyburgh, RS 27212"
+    }
+  },
+  {
+    "file": "held_out/layout_b_07.jpg",
+    "set": "held_out",
+    "variant": "layout_b",
+    "expected": {
+      "name": "José Álvarez-Ruiz",
+      "date_of_birth": "1957-09-29",
+      "address": "7132 Lewis Ln, Johnstad, RS 84639"
+    }
+  },
+  {
+    "file": "held_out/layout_b_08.jpg",
+    "set": "held_out",
+    "variant": "layout_b",
+    "expected": {
+      "name": "Steven Smith",
+      "date_of_birth": "2003-10-12",
+      "address": "4071 Dudley Blvd, Andersonside, RS 87065"
+    }
+  },
+  {
+    "file": "held_out/layout_b_09.jpg",
+    "set": "held_out",
+    "variant": "layout_b",
+    "expected": {
+      "name": "Amanda Gomez",
+      "date_of_birth": "1965-05-28",
+      "address": "9798 Ewing Ct, Evanston, RS 42042"
+    }
+  }
+]

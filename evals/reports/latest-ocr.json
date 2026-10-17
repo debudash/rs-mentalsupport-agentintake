@@ -1,0 +1,36 @@
+{
+  "engine": "tesseract 5.5.0",
+  "confidence_threshold": 70.0,
+  "golden": {
+    "overall_accuracy": 0.9889,
+    "per_field": {
+      "name": 1.0,
+      "date_of_birth": 1.0,
+      "address": 0.9667
+    },
+    "fields_correct": 89,
+    "fields_total": 90
+  },
+  "held_out": {
+    "overall_accuracy": 0.9333,
+    "per_field": {
+      "name": 0.8,
+      "date_of_birth": 1.0,
+      "address": 1.0
+    },
+    "fields_correct": 28,
+    "fields_total": 30
+  },
+  "by_variant": {
+    "clean": 1.0,
+    "photo": 1.0,
+    "hard": 0.9667
+  },
+  "fabricated_fields": 0,
+  "latency_ms": {
+    "p50": 872.0,
+    "p95": 1424.8,
+    "runs": 40
+  },
+  "passes": true
+}

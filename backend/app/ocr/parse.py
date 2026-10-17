@@ -175,4 +175,46 @@ def extract(lines: list[Line], today: date | None = None) -> dict[str, Candidate
                 value = joined if valid_address(joined) else None
             if value:
                 found[field] = Candidate(value, conf)
+    if not all(found.values()):
+        _by_shape(lines, texts, found, today)
     return found
+
+
+# ---- label-free fallback ------------------------------------------------------------------
+# Photographed cards sometimes lose their (small, coloured) labels in OCR while the values
+# read perfectly. Each fallback fires only when exactly one line has the field's shape, so
+# an ambiguous card stays blank rather than guessed.
+
+_STREET = re.compile(
+    r"^\d{1,6}\s+[A-Za-z][A-Za-z.'\- ]*\b(?:st|street|ave|avenue|rd|road|ln|lane|dr|drive|way|"
+    r"ct|court|blvd|boulevard|pl|place|ter|terrace|cir|circle|hwy|pkwy)\b",
+    re.I,
+)
+_CITY_LINE = re.compile(r"^[A-Za-z][A-Za-z.'\- ]+,\s*[A-Z]{2}\s+\d{5}(?:-\d{4})?$")
+_HEADER_WORDS = {"state", "riverside", "card", "member", "identification", "client", "license",
+                 "issued", "expires", "signature", "id", "no"}
+
+
+def _by_shape(lines: list[Line], texts: list[str], found: dict, today: date | None) -> None:
+    date_rows = [i for i, t in enumerate(texts) if parse_date(t, today)]
+    if found["date_of_birth"] is None and len(date_rows) == 1:
+        i = date_rows[0]
+        found["date_of_birth"] = Candidate(parse_date(texts[i], today), _words_conf(lines[i], texts[i]))
+
+    street_rows = [i for i, t in enumerate(texts) if _STREET.match(t)]
+    if found["address"] is None and len(street_rows) == 1:
+        i = street_rows[0]
+        parts = [(lines[i], texts[i])]
+        if i + 1 < len(texts) and _CITY_LINE.match(texts[i + 1].strip()):
+            parts.append((lines[i + 1], texts[i + 1]))
+            joined = ", ".join(clean_address_line(t) for _, t in parts)
+            if valid_address(joined):
+                conf = sum(_words_conf(ln, t) for ln, t in parts) / len(parts)
+                found["address"] = Candidate(joined, conf)
+
+    if found["name"] is None and len(date_rows) == 1 and date_rows[0] > 0:
+        i = date_rows[0] - 1  # the name sits directly above the date of birth
+        words = {w.lower().strip(".:") for w in texts[i].split()}
+        name = clean_name(texts[i]) if not words & _HEADER_WORDS else None
+        if name and not re.search(r"\d", texts[i]):
+            found["name"] = Candidate(name, _words_conf(lines[i], texts[i]))

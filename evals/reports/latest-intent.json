@@ -1,0 +1,25 @@
+{
+  "provider": "fake",
+  "model": "fake-intake-1",
+  "cases": 65,
+  "overall_pass_rate": 0.615,
+  "per_intent": {
+    "ask-question": 0.556,
+    "check_in": 1.0,
+    "crisis": 0.8,
+    "express-distress": 0.667,
+    "out-of-scope": 0.833,
+    "provide-details": 0.6,
+    "request-human": 0.333,
+    "request-reschedule": 0.333,
+    "withdraw-consent": 0.333
+  },
+  "every_intent_handled": false,
+  "unambiguous_crisis_always_pauses": true,
+  "llm_failures": 0,
+  "latency_ms": {
+    "p50": 0.1,
+    "p95": 0.3
+  },
+  "passes": false
+}
