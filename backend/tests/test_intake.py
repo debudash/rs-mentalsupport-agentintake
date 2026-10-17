@@ -226,18 +226,6 @@ def test_retry_assistant_leaves_scripted_mode(conductor, llm):
     [
         {"intent": "book-now", "answers": [], "approved_answer_id": "none", "reply": "ok"},
         {
-            "intent": "provide-details",
-            "answers": [{"item": "duration", "value": "forever"}],
-            "approved_answer_id": "none",
-            "reply": "ok",
-        },
-        {
-            "intent": "provide-details",
-            "answers": [{"item": "made_up", "value": "x"}],
-            "approved_answer_id": "none",
-            "reply": "ok",
-        },
-        {
             "intent": "ask-question",
             "answers": [],
             "approved_answer_id": "free_lunch",
@@ -252,6 +240,29 @@ def test_invalid_llm_output_is_never_shown_or_saved(conductor, llm, bad):
     assert reply.signals.llm_failure == "invalid_output"
     assert "made_up" not in state.answers and "duration" not in state.answers
     assert all(m != "ok" for m in reply.messages)
+
+
+def test_invalid_extracted_values_are_dropped_and_valid_ones_kept(conductor, llm):
+    """ISSUE-004 regression. Found by: walking the UI on real Claude Haiku — "mostly anxiety
+    honestly, the last few months" came back with duration "3_6_months" (not an allowed
+    value) and the whole turn failed, losing the valid "anxiety" too."""
+    llm.script(
+        turn_result(
+            answers=[("reason_category", "anxiety"), ("duration", "3_6_months"), ("made_up", "x")],
+            reply="Thank you for sharing that.",
+        )
+    )
+    state, reply = conductor.respond(IntakeState(), Turn(text="mostly anxiety, last few months"))
+    assert reply.signals.llm_failure is None
+    assert state.answers == {"reason_category": "anxiety"}  # invalid values never saved
+    assert reply.pending_item == "reason_text"  # the checklist asks on; duration comes later
+    assert "Thank you for sharing that." in reply.messages
+
+
+def test_system_prompt_requires_exact_allowed_values(conductor, llm):
+    llm.script(turn_result())
+    conductor.respond(IntakeState(), Turn(text="hi there"))
+    assert "exactly one of the allowed values" in llm.calls[0][0]
 
 
 def test_unsafe_llm_reply_is_replaced(conductor, llm):

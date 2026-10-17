@@ -343,10 +343,16 @@ class IntakeConductor:
         )
         if not known_answer:
             raise LLMFailure(FailureKind.INVALID_OUTPUT, "approved answer")
-        for answer in result.answers:
-            item = self._items.get(answer.item)
-            if item is None or validate_value(item, answer.value) is None:
-                raise LLMFailure(FailureKind.INVALID_OUTPUT, "answer value")
+        # ISSUE-004: models sometimes invent a near-miss value ("3_6_months" for "the last
+        # few months"). Failing the whole turn also threw away the valid answers and showed
+        # an error. Each extracted value is checked on its own: invalid ones are dropped —
+        # never saved — and the checklist simply asks for that item. A bad intent or
+        # approved-answer id still fails the turn, since the reply would depend on it.
+        result.answers = [
+            a
+            for a in result.answers
+            if a.item in self._items and validate_value(self._items[a.item], a.value) is not None
+        ]
         return result
 
     def _apply(
@@ -442,8 +448,9 @@ class IntakeConductor:
         lines.append("Approved answers (id: question):")
         lines += [f"- {a.id}: {a.question}" for a in self._profile.approved_answers]
         lines.append(
-            "Only extract answers the client actually gave. Personal details appear as "
-            "placeholders like [phone]."
+            "Only extract answers the client actually gave. Each value must be exactly one of "
+            "the allowed values listed for that item; if what they said doesn't fit one "
+            "exactly, leave that item out. Personal details appear as placeholders like [phone]."
         )
         lines.append(f"PENDING_ITEM: {pending.id if pending else 'none'}")
         return "\n".join(lines)
