@@ -1,5 +1,7 @@
 """The app's database connections must fit the Supabase pooler it connects through."""
 
+import pytest
+
 from app.config import Settings
 from app.db.session import make_engine
 
@@ -24,3 +26,23 @@ def test_postgres_pool_fits_the_supabase_session_pooler():
 def test_pool_size_is_configurable_for_bigger_poolers():
     engine = make_engine("postgresql+psycopg://user:pw@localhost:5432/db", 20, 5)
     assert (engine.pool.size(), engine.pool._max_overflow) == (20, 5)
+
+
+# ISSUE-012 (continued): even a pool that fits got refused after a redeploy, because in
+# session mode every client connection - idle, or left behind by a killed container - pins
+# one of the 15 server slots. The app uses the transaction pooler (port 6543), which only
+# holds a slot during a transaction and doesn't support prepared statements.
+def test_postgres_connections_never_use_prepared_statements():
+    from sqlalchemy import event
+
+    engine = make_engine("postgresql+psycopg://user:pw@localhost:6543/db")
+    seen = {}
+
+    @event.listens_for(engine, "do_connect")
+    def capture(dialect, conn_rec, cargs, cparams):
+        seen.update(cparams)
+        raise RuntimeError("stop before the network")
+
+    with pytest.raises(Exception, match="stop before the network"):
+        engine.connect()
+    assert "prepare_threshold" in seen and seen["prepare_threshold"] is None

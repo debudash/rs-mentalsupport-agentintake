@@ -10,6 +10,9 @@ from sqlalchemy.pool import StaticPool
 
 from app.config import get_settings
 
+# Safe on the transaction pooler, the session pooler and plain Postgres alike.
+POSTGRES_CONNECT_ARGS = {"prepare_threshold": None}
+
 
 def make_engine(url: str, pool_size: int = 5, max_overflow: int = 1) -> Engine:
     if url.startswith("sqlite"):
@@ -21,8 +24,17 @@ def make_engine(url: str, pool_size: int = 5, max_overflow: int = 1) -> Engine:
     # session pooler admits 15 clients, so under 20 users connections were refused
     # (EMAXCONNSESSION) and requests failed with 500s. The pool is now sized from settings to
     # fit the pooler; when it's busy, a request waits for a connection instead of failing.
+    # Continued: in session mode every client connection pins one of the pooler's 15 server
+    # slots, idle or orphaned by a killed container, so the app uses the transaction pooler
+    # (port 6543), which holds a slot only during a transaction. It can't keep prepared
+    # statements across transactions, so psycopg must never prepare them.
     return create_engine(
-        url, pool_size=pool_size, max_overflow=max_overflow, pool_timeout=20, pool_pre_ping=True
+        url,
+        pool_size=pool_size,
+        max_overflow=max_overflow,
+        pool_timeout=20,
+        pool_pre_ping=True,
+        connect_args=POSTGRES_CONNECT_ARGS,
     )
 
 
