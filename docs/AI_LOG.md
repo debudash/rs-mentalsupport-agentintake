@@ -96,3 +96,15 @@ and what a human decided. Tools and models used inside the product are in
 - **Deployment:** Railway is logged in but no project is linked, and the hosted Supabase
   keys and pooler URL weren't available. Steps in [DEPLOY.md](DEPLOY.md).
 - **Enabling the pre-push hook (`make hooks`) and the demo video.** (Pushed and CI on: done.)
+
+## 2026-10-17 — Banner from the design system cover
+
+- The plain top bar became the Riverside Counseling cover (`1be7014`), then was fitted to
+  the page column with the 988 line right under the blocks (`87fc5f5`). The user reported
+  the signed-in band cropping the blocks from a screenshot: ISSUE-009 (`68ddbac`), fixed
+  test-first.
+- Design review afterwards: all browser walks re-run on the new banner (full journey,
+  keyboard 17/17, gentle 7/7, staff, panels); no horizontal scroll at 320/375 px; the 988
+  line now sits on the page background, so that colour pair joined the contrast test.
+  Screenshots refreshed (sign-up screenshot added to show the full banner); stale test
+  counts in the README and accessibility doc corrected.
