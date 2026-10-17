@@ -32,3 +32,6 @@ supabase/.temp/
 Thumbs.db
 .idea/
 .vscode/
+
+# e2e screenshots
+e2e/shots/

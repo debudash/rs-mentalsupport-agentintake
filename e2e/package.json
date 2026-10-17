@@ -1,0 +1,13 @@
+{
+  "name": "rs-assist-e2e",
+  "private": true,
+  "type": "module",
+  "description": "Browser walks of the running app (headless Chromium). BASE_URL defaults to http://localhost:8000.",
+  "scripts": {
+    "setup": "npx playwright install chromium",
+    "walk": "node walk.mjs",
+    "staff": "node staff.mjs",
+    "keyboard": "node keyboard.mjs"
+  },
+  "dependencies": { "playwright": "^1.56.0" }
+}

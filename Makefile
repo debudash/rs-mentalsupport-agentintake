@@ -9,7 +9,7 @@ UV := $(shell command -v uv >/dev/null 2>&1 && echo uv || echo python -m uv)
 DEV := $(COMPOSE) run --rm dev
 
 .PHONY: help setup seed up down test test-backend test-frontend eval eval-record load \
-        timings lint ci hooks deploy golden-set smoke
+        timings lint ci hooks deploy golden-set smoke e2e
 
 help:
 	@echo "make setup        .env + encryption key + local Supabase (first run downloads images)"
@@ -80,3 +80,8 @@ deploy:
 
 smoke:
 	cd backend && $(UV) run python ../scripts/smoke_test.py $${BASE_URL:-http://localhost:8000}
+
+# Browser walks of the running app (headless Chromium): full journey, keyboard-only, staff.
+e2e:
+	cd e2e && npm install --no-audit --no-fund && npx playwright install chromium && \
+		node walk.mjs && node keyboard.mjs && node staff.mjs

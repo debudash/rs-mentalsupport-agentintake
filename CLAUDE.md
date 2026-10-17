@@ -44,6 +44,15 @@ The stack is open (justify in README) but these are fixed by the brief:
 - An eval harness command that prints a scorecard (per-field OCR accuracy,
   per-intent pass/fail)
 
+## Build status (2026-10-17)
+
+Built and verified locally (see docs/AI_LOG.md, docs/ISSUE_LOG.md). Open items that need
+the user: real-model intent eval (`LLM_PROVIDER=anthropic make eval` — no key on this
+machine), Railway deploy (project not linked; hosted Supabase keys needed — docs/DEPLOY.md),
+pushing to GitLab, enabling CI (`CI_ENABLED`) and the hook (`make hooks`), demo video.
+Not built: dashboard layer 2 (funnel), stretch #6, stretch #5 — listed in the README.
+Bug fixes follow the Issue/Root cause/Fix/Test commit format; log them in docs/ISSUE_LOG.md.
+
 ## Timebox and scope (2 days — user, 2026-10-16)
 
 - **Day 1 AM:** tracer bullet — whole flow end to end with scripted Intake + manual
