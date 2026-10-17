@@ -112,7 +112,7 @@ def set_id_scan(db: Session, profile: ServiceProfile, client: Client, allowed: b
 
 
 def _delete_auth_audit_rows(db: Session, account_id: str) -> bool:
-    """Supabase keeps sign-in events (with IP and user agent) in auth.audit_log_entries.
+    """Supabase keeps auth events (with email, IP and user agent) in auth.audit_log_entries.
 
     Only meaningful on the Supabase Postgres; elsewhere there is nothing to delete.
     """
@@ -120,8 +120,15 @@ def _delete_auth_audit_rows(db: Session, account_id: str) -> bool:
         return True
     try:
         with db.begin_nested():
+            # ISSUE-001: sign-up and admin-deletion events name the user in
+            # payload.traits.user_id, with the system (00000000-...) as actor_id. Matching
+            # actor_id alone left those rows — including the user's email — behind after
+            # Withdrawal. Match the user in either place.
             db.execute(
-                text("delete from auth.audit_log_entries where payload->>'actor_id' = :id"),
+                text(
+                    "delete from auth.audit_log_entries "
+                    "where payload->>'actor_id' = :id or payload->'traits'->>'user_id' = :id"
+                ),
                 {"id": account_id},
             )
         return True
