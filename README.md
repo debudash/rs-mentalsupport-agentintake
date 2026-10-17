@@ -7,6 +7,9 @@ appointment, and support at the moments people tend to give up.
 Built for Riverside Partners' take-home brief ([client PRD](docs/source/client-prd.md)).
 Our build spec is [docs/PRD.md](docs/PRD.md).
 
+**Live demo: https://app-production-2fdf.up.railway.app** — Railway (US East) + hosted
+Supabase, Claude Haiku 5.5. Demo logins (the same on the live site): [below](#demo-accounts-created-by-make-seed). Synthetic data only.
+
 ## Rubric map
 
 Where each line of the client's rubric is satisfied, and the command that checks it.
@@ -28,7 +31,7 @@ Where each line of the client's rubric is satisfied, and the command that checks
 |---|---|
 | **Onboarding** | Consent → Intake (chat) → Identity (ID photo or typing) → Scheduling |
 | **AI** | One structured LLM call per message (Claude, or OpenRouter/Ollama, or a keyless Fake); Tesseract OCR, local |
-| **Results** | OCR **98.9%** field accuracy (held-out **93.3%**, **0** fabricated fields); intents **100%** on Claude Haiku 5.5, crisis language pauses **100%**; chat p95 **2.28 s on real Claude Haiku at 20 users** (Opus 5.5 would miss the 3 s target), OCR p95 **1.18 s**, booking p95 **85 ms** (local) |
+| **Results** | OCR **98.9%** field accuracy (held-out **93.3%**, **0** fabricated fields); intents **100%** on Claude Haiku 5.5, crisis language pauses **100%**; on the **deployed app** at 20 users: chat p95 **2.03 s**, all API **1.76 s**, **0%** failed, OCR p95 **698 ms**, booking p95 **239 ms** (Opus 5.5 would miss the 3 s chat target) |
 | **Impact** | Funnel and "why" signals verified exact against a scripted cohort; simulated time to complete **2.8 min median** (target ≤ 15); what can't be shown without real people is stated — [docs/IMPACT.md](docs/IMPACT.md) |
 | **Tests** | 239 backend tests (**94%** coverage; 3 need Tesseract/Postgres and run in CI), 64 frontend tests incl. axe + WCAG contrast, browser walks in `e2e/` |
 
@@ -291,13 +294,16 @@ numbers above: Windows 11 laptop, Docker (Rancher Desktop), 2 uvicorn workers.
 
 ## Performance
 
-| Target | Result (local) | How |
-|---|---|---|
-| Chat / API p95 < 3.0 s at 20 VUs × 60 s | **2.28 s** chat, 1.91 s all API, 0% errors, 0 LLM errors in 290 messages | `make load` (k6) against **real Claude Haiku 5.5** — requires `LLM_MODEL=claude-haiku-5-5`; Opus 5.5's own p95 (~3 s) misses this target |
-| (same, model latency removed) | 1.15 s chat with a fixed 800 ms fake model | `make load` with `LLM_PROVIDER=fake FAKE_LLM_DELAY_MS=800` |
-| OCR p95 < 8.0 s (20 runs) | **1.18 s** | `make timings`, server `Server-Timing` header |
-| Booking p95 < 1.0 s (20 runs) | **85 ms** | same |
-| Uptime ≥ 99% | pinger on `/health` once deployed | [docs/DEPLOY.md](docs/DEPLOY.md) |
+| Target | Deployed (Railway + hosted Supabase) | Local | How |
+|---|---|---|---|
+| Chat / API p95 < 3.0 s at 20 VUs × 60 s | **2.03 s** chat, **1.76 s** all API, **0%** failed (492 requests) | 2.28 s chat, 1.91 s all API, 0% | k6 against **real Claude Haiku 5.5** — requires `LLM_MODEL=claude-haiku-5-5`; Opus 5.5's own p95 (~3 s) misses this target |
+| (same, model latency removed) | — | 1.15 s chat with a fixed 800 ms fake model | `make load` with `LLM_PROVIDER=fake FAKE_LLM_DELAY_MS=800` |
+| OCR p95 < 8.0 s (20 runs) | **698 ms** | 1.18 s | `k6/timings.py`, server `Server-Timing` header |
+| Booking p95 < 1.0 s (20 runs) | **239 ms** | 85 ms | same |
+| Uptime ≥ 99% | UptimeRobot on `/api/health` every 5 min | — | [docs/DEPLOY.md](docs/DEPLOY.md) |
+
+The first load test on the deployment failed 11% of requests (database connections), which
+never happens against local Postgres; fixed in [ISSUE-012/013](docs/ISSUE_LOG.md).
 
 Details and the real-model plan: [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
 

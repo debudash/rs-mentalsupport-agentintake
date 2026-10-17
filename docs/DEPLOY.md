@@ -16,37 +16,54 @@ RLS **on**.
    built-in email is heavily rate-limited; see Production upgrades in the README).
 2. **Project Settings → API keys:** copy the **anon / publishable** key and the
    **service_role / secret** key.
-3. **Connect → Connection string → Session pooler** (IPv4): copy it and change the scheme
-   to `postgresql+psycopg://`. Do **not** use the direct connection (IPv6-only).
+3. **Connect → Connection string → Session pooler** (IPv4): copy it, change the scheme to
+   `postgresql+psycopg://` and the port from **5432 to 6543** — that is the **transaction
+   pooler** on the same host. Do **not** use the direct connection (IPv6-only).
+   Why 6543: the Free session pooler admits only 15 clients and pins a slot per open
+   connection, idle or orphaned by a redeploy; under load the app was refused connections
+   ([ISSUE-012](ISSUE_LOG.md)). The transaction pooler holds a slot only during a
+   transaction; the app disables prepared statements, which it doesn't support.
 4. **JWT:** new projects sign tokens with asymmetric keys, verified through JWKS — leave
    `SUPABASE_JWT_SECRET` empty. Only projects on the legacy shared secret need it set.
 
 ## 2. Railway service (once)
 
 ```bash
-railway login                      # already done on this machine
-railway init                       # or: railway link, to an existing project
+railway login
+railway link --project rs-assist --environment production
+railway add --service app          # first time only; the project's single service
 ```
+
+Keep the hosted Supabase values in `.env.production` (git-ignored, from the template
+there) and set variables from it with `railway variable set NAME --stdin --service app`, so
+secrets never appear on a command line. New Supabase projects issue `sb_publishable_…` /
+`sb_secret_…` keys; both work as-is (verified 2026-10-17).
 
 In the Railway dashboard for the service:
 
-- **Region:** US East (Virginia), next to Supabase.
+- **Region:** US East (Virginia), next to Supabase. From the CLI:
+  `railway scale --service app us-east=1 sfo=0` (name every other region with `=0`, by the
+  id `railway status --json` shows, or a replica stays there).
 - **Serverless / app sleeping:** **off** (uptime ≥ 99%).
 - **Variables** (Raw editor), from `.env.example`:
 
 ```
 APP_ENV=production
-DATABASE_URL=postgresql+psycopg://postgres.<ref>:<password>@aws-0-us-east-1.pooler.supabase.com:5432/postgres
+DATABASE_URL=postgresql+psycopg://postgres.<ref>:<password>@aws-0-us-east-1.pooler.supabase.com:6543/postgres
+DB_POOL_SIZE=4                      # per worker; defaults fit either pooler
+DB_MAX_OVERFLOW=1
 SUPABASE_URL=https://<ref>.supabase.co
 SUPABASE_ANON_KEY=<anon key>
 SUPABASE_SERVICE_ROLE_KEY=<service role key>
 SUPABASE_JWT_SECRET=
 LLM_PROVIDER=anthropic
-LLM_MODEL=claude-opus-5-5
+LLM_MODEL=claude-haiku-5-5          # Opus misses the 3 s chat target (PERFORMANCE.md)
 LLM_EFFORT=low
 LLM_TIMEOUT_SECONDS=5
 ANTHROPIC_API_KEY=<key>
 OCR_ENGINE=tesseract
+OCR_CONFIDENCE_THRESHOLD=70
+UPLOAD_MAX_BYTES=8388608
 FIELD_ENCRYPTION_KEY=<new key — do not reuse the local one>
 ```
 
@@ -57,7 +74,8 @@ Losing it makes stored identity details unreadable; keep it in a password manage
 ## 3. Deploy
 
 ```bash
-make deploy          # = railway up --detach  (builds the Dockerfile on Railway)
+railway up --service app --ci      # builds the Dockerfile on Railway, streams the build log
+railway domain --service app       # first time: the public *.up.railway.app URL
 ```
 
 The container runs `alembic upgrade head` on start, then serves on `$PORT`. Railway honours
@@ -67,23 +85,37 @@ file list on the first deploy.
 Seed the hosted database once (clinicians, slots, demo accounts), from your machine:
 
 ```bash
-DATABASE_URL=<pooler url> SUPABASE_URL=https://<ref>.supabase.co \
-SUPABASE_SERVICE_ROLE_KEY=<key> FIELD_ENCRYPTION_KEY=<the Railway key> \
-  docker compose run --rm -e DOCKER_HOST_ALIAS= dev -m app.seed
+set -a && . ./.env.production && set +a     # incl. the FIELD_ENCRYPTION_KEY set on Railway
+docker compose --profile tools run --rm -e DOCKER_HOST_ALIAS= -e APP_ENV=production \
+  -e DATABASE_URL="${DATABASE_URL/postgresql:/postgresql+psycopg:}" -e SUPABASE_URL \
+  -e SUPABASE_SERVICE_ROLE_KEY -e SUPABASE_ANON_KEY -e FIELD_ENCRYPTION_KEY dev -m app.seed
 ```
 
 Re-run the seed weekly (or on a Railway cron) to keep two weeks of open slots.
 
 ## 4. Verify
 
+With `.env.production` loaded (as above), from `backend/`:
+
 ```bash
-BASE_URL=https://<app>.up.railway.app make smoke   # 21 end-to-end checks
-make eval-record                                   # scorecards onto the dashboard (point DATABASE_URL at the hosted DB)
+uv run python ../scripts/smoke_test.py https://<app>.up.railway.app   # 21 end-to-end checks
+uv run python ../k6/timings.py https://<app>.up.railway.app           # 20-run OCR + booking
+docker run --rm -i -e BASE_URL=https://<app>.up.railway.app -e SUPABASE_URL \
+  -e SUPABASE_ANON_KEY -v "$PWD/../k6:/k6" grafana/k6 run /k6/journey.js   # 20 users, 60 s
 ```
 
-Then `make timings` against the deployed URL and, if the Anthropic tier allows ~200
-requests/min, `make load` with `BASE_URL` set — record results in
+Wait for `/api/health` to answer `ok` a few times in a row after a deploy before load
+testing: a run that starts mid-rollout measures the rollout. Record results in
 [PERFORMANCE.md](PERFORMANCE.md).
+
+### Deployed 2026-10-17
+
+- https://app-production-2fdf.up.railway.app: Railway `rs-assist` / service `app`, US East,
+  1 replica, sleeping off; Supabase us-east-1 through the transaction pooler.
+- Smoke 21/21; k6 0% failed, chat p95 2.03 s; OCR p95 698 ms; booking p95 239 ms.
+- Supabase auth audit rows (ISSUE-001): this project's `auth.audit_log_entries` holds no
+  rows at all, so Withdrawal has none to remove; sign-in metadata lives in Supabase's
+  platform logs instead (README known limit).
 
 ## 5. Uptime and keep-alive
 

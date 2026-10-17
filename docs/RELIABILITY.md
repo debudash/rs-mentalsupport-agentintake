@@ -19,7 +19,8 @@ shows up on the Operations dashboard.
 | | Partial read | Per-field confidence below threshold | Read fields pre-filled and marked "please check"; the rest blank — **never guessed** | Client completes the blanks | `test_ocr.py::test_partial_card_leaves_missing_fields_blank`, `test_api_flow.py::test_partial_read_marks_missing_fields_blank` |
 | **Upload** | Wrong type, corrupt, empty, > 8 MB | Server decodes the content (not the file name) | A plain reason ("That file isn't a photo…") + the same card | Client retries or types | `test_ocr.py::test_bad_uploads_are_rejected_with_a_reason`, `test_api_flow.py::test_bad_upload_is_rejected_with_message_and_support` |
 | **Database** | Unreachable / paused (Supabase Free pauses after 7 idle days) | `/health` → `database: unreachable`, `status: degraded`; uptime monitor alerts | "Something went wrong on our side. Your progress is saved — please try again in a moment." (no stack trace) | Operator restores; the `/health` heartbeat write prevents the pause | `test_api_flow.py::test_unexpected_error_is_friendly` |
-| | Slow | `db` stage in `Server-Timing` and timing records; dashboard p95 | Slower Steps; nothing breaks | Pool of 10 + 10, `pool_pre_ping` | `FAULT_INJECT=db_slow` drill below |
+| | Slow | `db` stage in `Server-Timing` and timing records; dashboard p95 | Slower Steps; nothing breaks | Pool of 4 + 1 per worker, `pool_pre_ping` | `FAULT_INJECT=db_slow` drill below |
+| | Connection limit (Supabase pooler: 15 server slots) | `unhandled_error` with `OperationalError` in logs; dashboard server errors | Under load, requests failed — found on the deployment ([ISSUE-012](ISSUE_LOG.md)) | Transaction pooler (slots held only during a transaction); app pool capped; timing records on their own pool so requests can't deadlock ([ISSUE-013](ISSUE_LOG.md)) | `test_db_pool.py`; k6 on the deployment: 0% failed |
 | | Two Clients book the same slot at once | Unique index: one active Booking per Slot | "That time was just taken" + nearest alternatives | None needed | `test_postgres_concurrency.py` (20 simultaneous bookings, exactly one wins) |
 | **Auth** (Supabase) | Expired or invalid token | Signature/audience check on every request | "Please sign in again"; progress is kept | Sign in again | `test_adapters_and_dashboard.py::test_verifier_accepts_valid_and_rejects_wrong_audience_or_secret` |
 | | Auth service down | Sign-in call fails in the browser | Sign-in error message; signed-in Clients keep working for a few minutes (signing keys are cached for 5 min) | Supabase recovers | Not automated (third-party outage) |
@@ -69,7 +70,7 @@ reliability work starts.
 | Chat reply latency | 95% of replies < 3.0 s | 5% of replies may exceed 3 s | p95 **2.28 s** at 20 users on Claude Haiku 5.5 (k6, 290 messages) | Dashboard "Chat reply" p95 vs target; timing records |
 | ID reading latency | 95% < 8.0 s | 5% may exceed 8 s | p95 **1.18 s** (20 runs) | Dashboard "ID reading" p95 |
 | Booking latency | 95% < 1.0 s | 5% may exceed 1 s | p95 **85 ms** (20 runs) | Dashboard "Booking" p95 |
-| Availability | ≥ 99% of 5-minute health checks succeed | ~7.2 h of downtime | Pending deployment | Uptime monitor on `/health` |
+| Availability | ≥ 99% of 5-minute health checks succeed | ~7.2 h of downtime | Deployed 2026-10-17; monitor history from then | Uptime monitor on `/api/health` |
 | Requests without a server error | ≥ 99.5% of API requests return < 500 | 0.5% | 0 server errors in 4,003 requests (local, mixed load) | Dashboard "server errors" count |
 | Intake completes despite the LLM | 100% of Intakes can finish with the LLM down | **0** — this one has no budget | Drill above; `test_faults.py` | Fallback-rate panel |
 
