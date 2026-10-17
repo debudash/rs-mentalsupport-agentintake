@@ -21,21 +21,34 @@ pytestmark = [pytest.mark.postgres, pytest.mark.skipif(not URL, reason="TEST_POS
 SYSTEM_ACTOR = "00000000-0000-0000-0000-000000000000"
 
 
-def audit_row(session: Session, user_id: str, actor_id: str = SYSTEM_ACTOR, action: str = "user_signedup"):
-    payload = {"action": action, "actor_id": actor_id, "actor_username": "service_role",
-               "traits": {"user_id": user_id, "user_email": f"{user_id[:6]}@riverside.test",
-                          "provider": "email"}}
+def audit_row(
+    session: Session, user_id: str, actor_id: str = SYSTEM_ACTOR, action: str = "user_signedup"
+):
+    payload = {
+        "action": action,
+        "actor_id": actor_id,
+        "actor_username": "service_role",
+        "traits": {
+            "user_id": user_id,
+            "user_email": f"{user_id[:6]}@riverside.test",
+            "provider": "email",
+        },
+    }
     session.execute(
-        text("insert into auth.audit_log_entries (instance_id, id, payload, created_at, ip_address) "
-             "values (:inst, :id, cast(:payload as json), now(), '203.0.113.7')"),
+        text(
+            "insert into auth.audit_log_entries (instance_id, id, payload, created_at, ip_address) "
+            "values (:inst, :id, cast(:payload as json), now(), '203.0.113.7')"
+        ),
         {"inst": SYSTEM_ACTOR, "id": str(uuid.uuid4()), "payload": json.dumps(payload)},
     )
 
 
 def rows_for(session: Session, user_id: str) -> int:
     return session.execute(
-        text("select count(*) from auth.audit_log_entries where payload->>'actor_id' = :id "
-             "or payload->'traits'->>'user_id' = :id"),
+        text(
+            "select count(*) from auth.audit_log_entries where payload->>'actor_id' = :id "
+            "or payload->'traits'->>'user_id' = :id"
+        ),
         {"id": user_id},
     ).scalar()
 
@@ -58,6 +71,8 @@ def test_withdrawal_removes_audit_rows_that_name_the_user_in_traits():
 
         assert rows_for(session, gone) == 0
         assert rows_for(session, kept) == 1
-        session.execute(text("delete from auth.audit_log_entries where payload->'traits'->>'user_id' = :id"),
-                        {"id": kept})
+        session.execute(
+            text("delete from auth.audit_log_entries where payload->'traits'->>'user_id' = :id"),
+            {"id": kept},
+        )
         session.commit()

@@ -1,14 +1,15 @@
 # rs-assist — grader quick-start. Needs only Docker (and npx for the Supabase CLI).
-# The same commands exist as scripts/*.sh for shells without make.
+# Each target is a plain command or script, so it can be run without make too.
 
 # Git Bash on Windows rewrites "/container/paths"; this turns that off (no-op elsewhere).
 export MSYS_NO_PATHCONV := 1
 
 COMPOSE := docker compose
+UV := $(shell command -v uv >/dev/null 2>&1 && echo uv || echo python -m uv)
 DEV := $(COMPOSE) run --rm dev
 
 .PHONY: help setup seed up down test test-backend test-frontend eval eval-record load \
-        load-real timings lint ci hooks deploy golden-set
+        timings lint ci hooks deploy golden-set smoke
 
 help:
 	@echo "make setup        .env + encryption key + local Supabase (first run downloads images)"
@@ -62,12 +63,12 @@ timings:
 	$(DEV) ../k6/timings.py
 
 lint:
-	cd backend && uv run ruff check . && uv run ruff format --check .
+	cd backend && $(UV) run ruff check . && $(UV) run ruff format --check .
 	cd frontend && npm run lint && npx tsc -b
 
 # What CI and the pre-push hook run (local toolchain: uv + npm).
 ci: lint
-	cd backend && uv run pytest --cov --cov-fail-under=80 -q
+	cd backend && $(UV) run pytest --cov --cov-fail-under=80 -q
 	cd frontend && npm test
 
 hooks:
@@ -76,3 +77,6 @@ hooks:
 
 deploy:
 	railway up --detach
+
+smoke:
+	cd backend && $(UV) run python ../scripts/smoke_test.py $${BASE_URL:-http://localhost:8000}

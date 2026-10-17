@@ -1,0 +1,85 @@
+# GitLab CI — lint -> test (coverage gate) -> build -> deploy.
+#
+# Dormant until switched on: the instance has no shared runners, so jobs run on a project
+# runner you register yourself (GitLab Runner in Docker Desktop, tag rs-assist-local).
+# To enable: register the runner, then add CI/CD variable CI_ENABLED=true
+# (Settings -> CI/CD -> Variables). Until then GitLab creates no pipelines at all.
+# Deploy also needs a masked RAILWAY_TOKEN variable (Railway project token).
+
+workflow:
+  rules:
+    - if: $CI_ENABLED == "true"
+
+default:
+  tags: [rs-assist-local]
+
+stages: [lint, test, build, deploy]
+
+variables:
+  UV_CACHE_DIR: .uv-cache
+  npm_config_cache: .npm-cache
+
+.backend:
+  image: ghcr.io/astral-sh/uv:0.13.1-python3.12-bookworm-slim
+  before_script:
+    - cd backend
+    - uv sync --frozen
+  cache:
+    key: uv-$CI_COMMIT_REF_SLUG
+    paths: [backend/.uv-cache]
+
+.frontend:
+  image: node:22-slim
+  before_script:
+    - cd frontend
+    - npm ci --no-audit --no-fund
+  cache:
+    key: npm-$CI_COMMIT_REF_SLUG
+    paths: [frontend/.npm-cache]
+
+lint:backend:
+  extends: .backend
+  stage: lint
+  script:
+    - uv run ruff check .
+    - uv run ruff format --check .
+
+lint:frontend:
+  extends: .frontend
+  stage: lint
+  script:
+    - npm run lint
+    - npx tsc -b
+
+test:backend:
+  extends: .backend
+  stage: test
+  script:
+    - apt-get update -qq && apt-get install -y -qq tesseract-ocr libglib2.0-0 >/dev/null
+    - uv run pytest --cov --cov-report=term --cov-report=xml --cov-fail-under=80
+  coverage: '/TOTAL.*\s+(\d+%)$/'
+  artifacts:
+    reports:
+      coverage_report: { coverage_format: cobertura, path: backend/coverage.xml }
+
+test:frontend:
+  extends: .frontend
+  stage: test
+  script:
+    - npm run test:coverage
+
+build:image:
+  stage: build
+  image: docker:27
+  services: [docker:27-dind]
+  script:
+    - docker build --target runtime -t rs-assist:$CI_COMMIT_SHORT_SHA .
+
+deploy:railway:
+  stage: deploy
+  image: node:22-slim
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $RAILWAY_TOKEN
+  script:
+    - npm install -g @railway/cli
+    - railway up --ci --detach
