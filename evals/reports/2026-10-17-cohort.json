@@ -1,0 +1,640 @@
+{
+  "generated_at": "2026-10-17T15:40:24.040465+00:00",
+  "label": "SYNTHETIC COHORT \u2014 simulated people on the real system; not field data",
+  "pacing_model": {
+    "read_wpm": 230,
+    "type_s_per_char": 0.3,
+    "mental_s": 1.35,
+    "point_s": 1.1,
+    "tap_s": 0.2,
+    "photo_s": 20.0,
+    "find_id_s": 15.0,
+    "break_s": 60.0
+  },
+  "cohort": {
+    "size": 30,
+    "booked": 25,
+    "scripted_drop_outs": 5,
+    "outcomes": {
+      "calm_scan-00": "booked",
+      "calm_scan-01": "booked",
+      "calm_scan-02": "booked",
+      "calm_scan-03": "booked",
+      "calm_scan-04": "booked",
+      "calm_scan-05": "booked",
+      "calm_scan-06": "booked",
+      "calm_scan-07": "booked",
+      "calm_scan-08": "booked",
+      "calm_scan-09": "booked",
+      "calm_typist-10": "booked",
+      "calm_typist-11": "booked",
+      "calm_typist-12": "booked",
+      "calm_typist-13": "booked",
+      "calm_typist-14": "booked",
+      "stressed-15": "booked",
+      "stressed-16": "booked",
+      "stressed-17": "booked",
+      "stressed-18": "booked",
+      "stressed-19": "booked",
+      "stressed-20": "booked",
+      "photo_trouble-21": "booked",
+      "photo_trouble-22": "booked",
+      "photo_trouble-23": "booked",
+      "photo_trouble-24": "booked",
+      "drop_consent-25": "left at consent",
+      "drop_consent-26": "left at consent",
+      "drop_intake-27": "left at intake",
+      "drop_identity-28": "left at identity",
+      "drop_identity-29": "left at identity"
+    }
+  },
+  "time_to_complete_min": {
+    "median_all_completers": 2.8,
+    "p90_all_completers": 3.9,
+    "median_by_persona": {
+      "calm_scan": 2.4,
+      "calm_typist": 2.9,
+      "stressed": 3.9,
+      "photo_trouble": 2.8
+    },
+    "median_by_step": {
+      "consent": 0.52,
+      "intake": 0.93,
+      "identity": 0.72,
+      "scheduling": 0.26
+    }
+  },
+  "effort": {
+    "median_typed_chars_ours": 0,
+    "conventional_form": {
+      "seconds": 143.5,
+      "typed_chars": 150,
+      "fields_typed": 12
+    }
+  },
+  "people": [
+    {
+      "name": "calm_scan-00",
+      "kind": "calm_scan",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.2,
+        "intake": 55.3,
+        "identity": 43.8,
+        "scheduling": 15.5
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "calm_scan-01",
+      "kind": "calm_scan",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.0,
+        "intake": 56.9,
+        "identity": 43.7,
+        "scheduling": 15.6
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "calm_scan-02",
+      "kind": "calm_scan",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.1,
+        "intake": 55.3,
+        "identity": 43.8,
+        "scheduling": 15.5
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "calm_scan-03",
+      "kind": "calm_scan",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.2,
+        "intake": 55.3,
+        "identity": 43.5,
+        "scheduling": 15.6
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "calm_scan-04",
+      "kind": "calm_scan",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.0,
+        "intake": 55.3,
+        "identity": 43.7,
+        "scheduling": 15.5
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "calm_scan-05",
+      "kind": "calm_scan",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.0,
+        "intake": 55.5,
+        "identity": 43.7,
+        "scheduling": 15.5
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "calm_scan-06",
+      "kind": "calm_scan",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.1,
+        "intake": 55.2,
+        "identity": 43.7,
+        "scheduling": 15.5
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "calm_scan-07",
+      "kind": "calm_scan",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.1,
+        "intake": 55.3,
+        "identity": 43.7,
+        "scheduling": 15.5
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "calm_scan-08",
+      "kind": "calm_scan",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.1,
+        "intake": 55.3,
+        "identity": 43.7,
+        "scheduling": 15.5
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "calm_scan-09",
+      "kind": "calm_scan",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 30.9,
+        "intake": 55.2,
+        "identity": 43.5,
+        "scheduling": 18.3
+      },
+      "counts": {
+        "taps": 14,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "calm_typist-10",
+      "kind": "calm_typist",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.1,
+        "intake": 63.7,
+        "identity": 41.7,
+        "scheduling": 15.5
+      },
+      "counts": {
+        "taps": 10,
+        "typed_chars": 118,
+        "llm_messages": 1
+      },
+      "notes": [
+        "typed identity"
+      ]
+    },
+    {
+      "name": "calm_typist-11",
+      "kind": "calm_typist",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.0,
+        "intake": 86.9,
+        "identity": 41.7,
+        "scheduling": 15.6
+      },
+      "counts": {
+        "taps": 10,
+        "typed_chars": 147,
+        "llm_messages": 2
+      },
+      "notes": [
+        "typed identity"
+      ]
+    },
+    {
+      "name": "calm_typist-12",
+      "kind": "calm_typist",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.1,
+        "intake": 80.8,
+        "identity": 42.0,
+        "scheduling": 15.5
+      },
+      "counts": {
+        "taps": 10,
+        "typed_chars": 140,
+        "llm_messages": 2
+      },
+      "notes": [
+        "typed identity"
+      ]
+    },
+    {
+      "name": "calm_typist-13",
+      "kind": "calm_typist",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.0,
+        "intake": 85.8,
+        "identity": 39.3,
+        "scheduling": 15.6
+      },
+      "counts": {
+        "taps": 10,
+        "typed_chars": 139,
+        "llm_messages": 2
+      },
+      "notes": [
+        "typed identity"
+      ]
+    },
+    {
+      "name": "calm_typist-14",
+      "kind": "calm_typist",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.0,
+        "intake": 87.1,
+        "identity": 41.4,
+        "scheduling": 15.5
+      },
+      "counts": {
+        "taps": 10,
+        "typed_chars": 146,
+        "llm_messages": 2
+      },
+      "notes": [
+        "typed identity"
+      ]
+    },
+    {
+      "name": "stressed-15",
+      "kind": "stressed",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.0,
+        "intake": 137.1,
+        "identity": 43.4,
+        "scheduling": 15.7
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 39,
+        "llm_messages": 1
+      },
+      "notes": [
+        "took a break",
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "stressed-16",
+      "kind": "stressed",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.0,
+        "intake": 142.5,
+        "identity": 43.2,
+        "scheduling": 15.6
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 56,
+        "llm_messages": 1
+      },
+      "notes": [
+        "took a break",
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "stressed-17",
+      "kind": "stressed",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 30.9,
+        "intake": 142.6,
+        "identity": 43.3,
+        "scheduling": 15.5
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 56,
+        "llm_messages": 1
+      },
+      "notes": [
+        "took a break",
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "stressed-18",
+      "kind": "stressed",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.1,
+        "intake": 136.6,
+        "identity": 43.3,
+        "scheduling": 15.6
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 39,
+        "llm_messages": 1
+      },
+      "notes": [
+        "took a break",
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "stressed-19",
+      "kind": "stressed",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 30.9,
+        "intake": 143.1,
+        "identity": 43.2,
+        "scheduling": 15.5
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 56,
+        "llm_messages": 1
+      },
+      "notes": [
+        "took a break",
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "stressed-20",
+      "kind": "stressed",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 30.9,
+        "intake": 142.2,
+        "identity": 43.3,
+        "scheduling": 15.6
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 56,
+        "llm_messages": 1
+      },
+      "notes": [
+        "took a break",
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "photo_trouble-21",
+      "kind": "photo_trouble",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.0,
+        "intake": 55.3,
+        "identity": 63.7,
+        "scheduling": 15.5
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "first upload rejected: wrong_type",
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "photo_trouble-22",
+      "kind": "photo_trouble",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 30.9,
+        "intake": 55.1,
+        "identity": 63.8,
+        "scheduling": 15.6
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "first upload rejected: wrong_type",
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "photo_trouble-23",
+      "kind": "photo_trouble",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.0,
+        "intake": 55.2,
+        "identity": 63.6,
+        "scheduling": 15.6
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "first upload rejected: wrong_type",
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "photo_trouble-24",
+      "kind": "photo_trouble",
+      "outcome": "booked",
+      "steps_s": {
+        "consent": 31.3,
+        "intake": 55.2,
+        "identity": 63.8,
+        "scheduling": 15.5
+      },
+      "counts": {
+        "taps": 13,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "first upload rejected: wrong_type",
+        "OCR edits: []"
+      ]
+    },
+    {
+      "name": "drop_consent-25",
+      "kind": "drop_consent",
+      "outcome": "left at consent",
+      "steps_s": {},
+      "counts": {
+        "taps": 0,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "changed their mind at consent (scripted)"
+      ]
+    },
+    {
+      "name": "drop_consent-26",
+      "kind": "drop_consent",
+      "outcome": "left at consent",
+      "steps_s": {},
+      "counts": {
+        "taps": 0,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "changed their mind at consent (scripted)"
+      ]
+    },
+    {
+      "name": "drop_intake-27",
+      "kind": "drop_intake",
+      "outcome": "left at intake",
+      "steps_s": {
+        "consent": 31.3
+      },
+      "counts": {
+        "taps": 4,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "stalled mid-intake (scripted)"
+      ]
+    },
+    {
+      "name": "drop_identity-28",
+      "kind": "drop_identity",
+      "outcome": "left at identity",
+      "steps_s": {
+        "consent": 31.3,
+        "intake": 56.9
+      },
+      "counts": {
+        "taps": 10,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "no ID to hand (scripted)"
+      ]
+    },
+    {
+      "name": "drop_identity-29",
+      "kind": "drop_identity",
+      "outcome": "left at identity",
+      "steps_s": {
+        "consent": 31.1,
+        "intake": 56.9
+      },
+      "counts": {
+        "taps": 10,
+        "typed_chars": 0,
+        "llm_messages": 0
+      },
+      "notes": [
+        "no ID to hand (scripted)"
+      ]
+    }
+  ]
+}

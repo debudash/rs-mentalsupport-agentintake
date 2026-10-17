@@ -1,0 +1,96 @@
+{
+ "funnel": [
+  {
+   "event": "signed_up",
+   "reached": 30,
+   "drop_off_pct": null,
+   "median_minutes_from_previous": null
+  },
+  {
+   "event": "consent_completed",
+   "reached": 28,
+   "drop_off_pct": 6.7,
+   "median_minutes_from_previous": 0.5
+  },
+  {
+   "event": "intake_completed",
+   "reached": 27,
+   "drop_off_pct": 3.6,
+   "median_minutes_from_previous": 0.9
+  },
+  {
+   "event": "identity_completed",
+   "reached": 25,
+   "drop_off_pct": 7.4,
+   "median_minutes_from_previous": 0.7
+  },
+  {
+   "event": "booked",
+   "reached": 25,
+   "drop_off_pct": 0.0,
+   "median_minutes_from_previous": 0.3
+  }
+ ],
+ "friction": [
+  {
+   "step": "consent",
+   "kind": "long_pause",
+   "count": "<5"
+  },
+  {
+   "step": "intake",
+   "kind": "high_stress",
+   "count": 6
+  },
+  {
+   "step": "intake",
+   "kind": "long_pause",
+   "count": "<5"
+  },
+  {
+   "step": "identity",
+   "kind": "upload_rejected",
+   "count": "<5"
+  },
+  {
+   "step": "identity",
+   "kind": "upload_problem",
+   "count": "<5"
+  },
+  {
+   "step": "identity",
+   "kind": "long_pause",
+   "count": "<5"
+  }
+ ],
+ "nps": {
+  "responses": 25,
+  "promoters_pct": 64.0,
+  "passives_pct": 36.0,
+  "detractors_pct": 0.0,
+  "nps": 64
+ },
+ "ocr_corrections": [
+  {
+   "field": "legal_name",
+   "reviews": 20,
+   "prefilled_pct": 100.0,
+   "blank_pct": 0.0,
+   "edited_pct": 0.0
+  },
+  {
+   "field": "date_of_birth",
+   "reviews": 20,
+   "prefilled_pct": 100.0,
+   "blank_pct": 0.0,
+   "edited_pct": 0.0
+  },
+  {
+   "field": "address",
+   "reviews": 20,
+   "prefilled_pct": 100.0,
+   "blank_pct": 0.0,
+   "edited_pct": 0.0
+  }
+ ]
+}

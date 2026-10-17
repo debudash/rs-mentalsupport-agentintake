@@ -79,6 +79,18 @@ and what a human decided. Tools and models used inside the product are in
   to CI; migrations made to run on plain Postgres (role-conditional revoke).
 - README and `.env.example` now state that the chat benchmark requires Haiku.
 
+## 2026-10-17 — Business metrics: measurable, simulated, or stated
+
+- **Human asked** where the brief's business case (50% completion, 25–30 min, no visibility
+  of drop-off) was evidenced; agent confirmed it wasn't, and on the human's direction built
+  a post-booking NPS question, per-Step friction signals, and a synthetic cohort.
+- 30 simulated Clients on the real system (Claude Haiku, Tesseract), paced by KLM: median
+  2.8 min to complete; dashboard matched the scripted cohort exactly. First run silently
+  missed NPS/friction (container predated the code; simulator didn't check responses) —
+  agent made the simulator strict, rebuilt, re-ran; found and fixed ISSUE-008.
+- Reported honestly that a typed form of the same information estimates at 2.4 min (no raw
+  time win); the gain is in typing (0 vs 150 chars), scope and stress. docs/IMPACT.md.
+
 ## Not done by the agent (needs the human)
 
 - **Deployment:** Railway is logged in but no project is linked, and the hosted Supabase

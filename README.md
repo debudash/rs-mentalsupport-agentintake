@@ -12,6 +12,7 @@ Our build spec is [docs/PRD.md](docs/PRD.md).
 | **Onboarding** | Consent → Intake (chat) → Identity (ID photo or typing) → Scheduling |
 | **AI** | One structured LLM call per message (Claude, or OpenRouter/Ollama, or a keyless Fake); Tesseract OCR, local |
 | **Results** | OCR **98.9%** field accuracy (held-out **93.3%**, **0** fabricated fields); intents **100%** on Claude Haiku 5.5, crisis language pauses **100%**; chat p95 **2.28 s on real Claude Haiku at 20 users** (Opus 5.5 would miss the 3 s target), OCR p95 **1.18 s**, booking p95 **85 ms** (local) |
+| **Impact** | Funnel and "why" signals verified exact against a scripted cohort; simulated time to complete **2.8 min median** (target ≤ 15); what can't be shown without real people is stated — [docs/IMPACT.md](docs/IMPACT.md) |
 | **Tests** | 188 backend tests (**93%** coverage; 2 need Tesseract/Postgres and run in Docker), 50 frontend tests incl. axe + WCAG contrast, browser walks in `e2e/` |
 
 ![Intake conversation](docs/screenshots/03-intake-chat.png)
@@ -37,6 +38,7 @@ make smoke     # end-to-end check of the running app (21 checks)
 make e2e       # browser walks: full journey, keyboard-only (16 checks), staff screens
 make load      # k6: 20 virtual users for 60 s
 make timings   # 20-run OCR and booking timings
+make cohort    # 30 simulated Clients at human pace -> evals/reports (see docs/IMPACT.md)
 ```
 
 No `make` (plain Windows)? Every target is one command; read it in the [Makefile](Makefile).
@@ -258,7 +260,7 @@ supabase/           local Supabase config (auth + Postgres only)
 docs/               PRD, architecture, decisions, test plan, runbook, deploy, logs
 ```
 
-Docs index: [PRD](docs/PRD.md) · [Users](docs/USERS.md) · [Architecture](docs/ARCHITECTURE.md) ·
+Docs index: [Impact](docs/IMPACT.md) · [PRD](docs/PRD.md) · [Users](docs/USERS.md) · [Architecture](docs/ARCHITECTURE.md) ·
 [Decisions](docs/DECISIONS.md) · [Test plan](docs/TEST_PLAN.md) ·
 [Performance](docs/PERFORMANCE.md) · [Accessibility](docs/ACCESSIBILITY.md) ·
 [Deploy](docs/DEPLOY.md) · [Runbook](docs/RUNBOOK.md) · [Issue log](docs/ISSUE_LOG.md) ·
