@@ -114,6 +114,11 @@ Then `make up` again, and `make eval` for the intent scorecard on that model.
   AI quality, the onboarding funnel (drop-off and time per step) and how often Clients
   correct each field the ID reader filled in — with no individual's data.
 
+- **Quiet privacy reassurance.** Each Step carries one short, true line ("Your ID photo is
+  never stored. Your details are encrypted."), and a footer — "Encrypted and used only to
+  arrange your care" — opens a short explanation on request. No compliance claims are made
+  to Clients; see [Privacy and compliance](#privacy-and-compliance).
+
 Screenshots: [docs/screenshots](docs/screenshots).
 
 ---
@@ -253,9 +258,9 @@ Docs index: [PRD](docs/PRD.md) · [Users](docs/USERS.md) · [Architecture](docs/
 ## CI, hooks and deploy (GitLab)
 
 - **CI:** [.gitlab-ci.yml](.gitlab-ci.yml) runs lint → tests with an 80% coverage gate →
-  image build → deploy. Gauntlet's GitLab has no shared runners, so the pipeline targets a
-  self-registered project runner and stays dormant until the `CI_ENABLED=true` CI/CD
-  variable is set.
+  image build → deploy on every push. Gauntlet's GitLab has no shared runners, so it runs
+  on a self-registered project runner (GitLab Runner in Docker, tag `rs-assist-local`);
+  `CI_ENABLED=true` switches it on. Deploy runs once a `RAILWAY_TOKEN` variable exists.
 - **Pre-push hook:** [.githooks/pre-push](.githooks/pre-push) runs `make ci`; switch it on
   with `make hooks`.
 - **Deploy limitation:** Railway's push-to-deploy integration supports GitHub only. With

@@ -50,8 +50,17 @@ and what a human decided. Tools and models used inside the product are in
   default, both reports kept for discussion.
 - k6 against real Haiku at 20 users × 60 s: chat p95 2.28 s, 0% failed, 0 LLM errors.
 
+## 2026-10-17 — Privacy lines, CI on, real-Claude fixes
+
+- **Human decided:** short per-Step privacy lines plus a footer (option A), kept subtle;
+  no "HIPAA compliant" claim (agent advised it would be untrue and risky).
+- Agent pushed to GitLab, created a project runner via the API, ran GitLab Runner in Docker,
+  set `CI_ENABLED`; fixed two CI setup errors (image tag, dind TLS); pipeline green.
+- Walking the UI on real Claude found ISSUE-004/005/006 (invalid value failed the turn,
+  scripted matching, an outcome promise passing the output check); fixed test-first.
+
 ## Not done by the agent (needs the human)
 
 - **Deployment:** Railway is logged in but no project is linked, and the hosted Supabase
   keys and pooler URL weren't available. Steps in [DEPLOY.md](DEPLOY.md).
-- **Push to GitLab, enabling CI and the hook, the demo video.**
+- **Enabling the pre-push hook (`make hooks`) and the demo video.** (Pushed and CI on: done.)

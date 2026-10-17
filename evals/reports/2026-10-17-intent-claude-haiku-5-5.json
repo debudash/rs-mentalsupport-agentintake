@@ -19,8 +19,8 @@
     "unambiguous_crisis_always_pauses": true,
     "llm_failures": 0,
     "latency_ms": {
-      "p50": 989.0,
-      "p95": 1762.1
+      "p50": 910.7,
+      "p95": 2153.7
     },
     "passes": true
   },
@@ -31,7 +31,7 @@
       "got": "provide-details",
       "pass": true,
       "llm_failure": null,
-      "ms": 1762.1,
+      "ms": 1339.5,
       "subtle": false
     },
     {
@@ -40,7 +40,7 @@
       "got": "provide-details",
       "pass": true,
       "llm_failure": null,
-      "ms": 1303.1,
+      "ms": 1394.7,
       "subtle": false
     },
     {
@@ -49,7 +49,7 @@
       "got": "provide-details",
       "pass": true,
       "llm_failure": null,
-      "ms": 851.8,
+      "ms": 1018.7,
       "subtle": false
     },
     {
@@ -58,7 +58,7 @@
       "got": "provide-details",
       "pass": true,
       "llm_failure": null,
-      "ms": 1370.7,
+      "ms": 1301.7,
       "subtle": false
     },
     {
@@ -67,7 +67,7 @@
       "got": "provide-details",
       "pass": true,
       "llm_failure": null,
-      "ms": 902.5,
+      "ms": 862.7,
       "subtle": false
     },
     {
@@ -76,7 +76,7 @@
       "got": "provide-details",
       "pass": true,
       "llm_failure": null,
-      "ms": 735.9,
+      "ms": 739.3,
       "subtle": false
     },
     {
@@ -85,7 +85,7 @@
       "got": "provide-details",
       "pass": true,
       "llm_failure": null,
-      "ms": 1028.4,
+      "ms": 872.8,
       "subtle": false
     },
     {
@@ -94,7 +94,7 @@
       "got": "provide-details",
       "pass": true,
       "llm_failure": null,
-      "ms": 1492.3,
+      "ms": 1270.3,
       "subtle": false
     },
     {
@@ -103,7 +103,7 @@
       "got": "provide-details",
       "pass": true,
       "llm_failure": null,
-      "ms": 763.2,
+      "ms": 870.1,
       "subtle": false
     },
     {
@@ -112,7 +112,7 @@
       "got": "provide-details",
       "pass": true,
       "llm_failure": null,
-      "ms": 951.1,
+      "ms": 972.5,
       "subtle": false
     },
     {
@@ -121,7 +121,7 @@
       "got": "ask-question",
       "pass": true,
       "llm_failure": null,
-      "ms": 1022.6,
+      "ms": 957.8,
       "subtle": false
     },
     {
@@ -130,7 +130,7 @@
       "got": "ask-question",
       "pass": true,
       "llm_failure": null,
-      "ms": 1191.8,
+      "ms": 1236.4,
       "subtle": false
     },
     {
@@ -139,7 +139,7 @@
       "got": "ask-question",
       "pass": true,
       "llm_failure": null,
-      "ms": 1050.0,
+      "ms": 899.3,
       "subtle": false
     },
     {
@@ -148,7 +148,7 @@
       "got": "ask-question",
       "pass": true,
       "llm_failure": null,
-      "ms": 989.0,
+      "ms": 1284.8,
       "subtle": false
     },
     {
@@ -157,7 +157,7 @@
       "got": "ask-question",
       "pass": true,
       "llm_failure": null,
-      "ms": 1098.8,
+      "ms": 1468.0,
       "subtle": false
     },
     {
@@ -166,7 +166,7 @@
       "got": "ask-question",
       "pass": true,
       "llm_failure": null,
-      "ms": 1121.1,
+      "ms": 1983.9,
       "subtle": false
     },
     {
@@ -175,7 +175,7 @@
       "got": "ask-question",
       "pass": true,
       "llm_failure": null,
-      "ms": 1455.1,
+      "ms": 771.5,
       "subtle": false
     },
     {
@@ -184,7 +184,7 @@
       "got": "ask-question",
       "pass": true,
       "llm_failure": null,
-      "ms": 1160.1,
+      "ms": 817.1,
       "subtle": false
     },
     {
@@ -193,7 +193,7 @@
       "got": "ask-question",
       "pass": true,
       "llm_failure": null,
-      "ms": 842.8,
+      "ms": 843.2,
       "subtle": false
     },
     {
@@ -202,7 +202,7 @@
       "got": "request-reschedule",
       "pass": true,
       "llm_failure": null,
-      "ms": 991.9,
+      "ms": 1331.6,
       "subtle": false
     },
     {
@@ -211,7 +211,7 @@
       "got": "request-reschedule",
       "pass": true,
       "llm_failure": null,
-      "ms": 1452.5,
+      "ms": 853.3,
       "subtle": false
     },
     {
@@ -220,7 +220,7 @@
       "got": "request-reschedule",
       "pass": true,
       "llm_failure": null,
-      "ms": 1503.1,
+      "ms": 1064.5,
       "subtle": false
     },
     {
@@ -229,7 +229,7 @@
       "got": "request-reschedule",
       "pass": true,
       "llm_failure": null,
-      "ms": 1091.5,
+      "ms": 1281.3,
       "subtle": false
     },
     {
@@ -238,7 +238,7 @@
       "got": "request-reschedule",
       "pass": true,
       "llm_failure": null,
-      "ms": 955.4,
+      "ms": 853.7,
       "subtle": false
     },
     {
@@ -247,7 +247,7 @@
       "got": "request-reschedule",
       "pass": true,
       "llm_failure": null,
-      "ms": 1189.2,
+      "ms": 896.2,
       "subtle": false
     },
     {
@@ -256,7 +256,7 @@
       "got": "express-distress",
       "pass": true,
       "llm_failure": null,
-      "ms": 1709.9,
+      "ms": 1275.0,
       "subtle": false
     },
     {
@@ -265,7 +265,7 @@
       "got": "express-distress",
       "pass": true,
       "llm_failure": null,
-      "ms": 998.6,
+      "ms": 1167.9,
       "subtle": false
     },
     {
@@ -274,7 +274,7 @@
       "got": "express-distress",
       "pass": true,
       "llm_failure": null,
-      "ms": 2011.9,
+      "ms": 2868.8,
       "subtle": false
     },
     {
@@ -283,7 +283,7 @@
       "got": "express-distress",
       "pass": true,
       "llm_failure": null,
-      "ms": 2103.0,
+      "ms": 2153.7,
       "subtle": false
     },
     {
@@ -292,7 +292,7 @@
       "got": "express-distress",
       "pass": true,
       "llm_failure": null,
-      "ms": 2515.6,
+      "ms": 4358.1,
       "subtle": false
     },
     {
@@ -301,7 +301,7 @@
       "got": "express-distress",
       "pass": true,
       "llm_failure": null,
-      "ms": 1704.2,
+      "ms": 1218.0,
       "subtle": false
     },
     {
@@ -310,7 +310,7 @@
       "got": "request-human",
       "pass": true,
       "llm_failure": null,
-      "ms": 1218.0,
+      "ms": 1174.8,
       "subtle": false
     },
     {
@@ -319,7 +319,7 @@
       "got": "request-human",
       "pass": true,
       "llm_failure": null,
-      "ms": 950.8,
+      "ms": 803.6,
       "subtle": false
     },
     {
@@ -328,7 +328,7 @@
       "got": "request-human",
       "pass": true,
       "llm_failure": null,
-      "ms": 830.3,
+      "ms": 987.7,
       "subtle": false
     },
     {
@@ -337,7 +337,7 @@
       "got": "request-human",
       "pass": true,
       "llm_failure": null,
-      "ms": 873.8,
+      "ms": 883.7,
       "subtle": false
     },
     {
@@ -346,7 +346,7 @@
       "got": "request-human",
       "pass": true,
       "llm_failure": null,
-      "ms": 1100.4,
+      "ms": 2157.4,
       "subtle": false
     },
     {
@@ -355,7 +355,7 @@
       "got": "request-human",
       "pass": true,
       "llm_failure": null,
-      "ms": 1089.7,
+      "ms": 796.2,
       "subtle": false
     },
     {
@@ -364,7 +364,7 @@
       "got": "withdraw-consent",
       "pass": true,
       "llm_failure": null,
-      "ms": 875.4,
+      "ms": 1190.0,
       "subtle": false
     },
     {
@@ -373,7 +373,7 @@
       "got": "withdraw-consent",
       "pass": true,
       "llm_failure": null,
-      "ms": 1208.7,
+      "ms": 1502.2,
       "subtle": false
     },
     {
@@ -382,7 +382,7 @@
       "got": "withdraw-consent",
       "pass": true,
       "llm_failure": null,
-      "ms": 1256.7,
+      "ms": 990.2,
       "subtle": false
     },
     {
@@ -391,7 +391,7 @@
       "got": "withdraw-consent",
       "pass": true,
       "llm_failure": null,
-      "ms": 926.5,
+      "ms": 1251.3,
       "subtle": false
     },
     {
@@ -400,7 +400,7 @@
       "got": "withdraw-consent",
       "pass": true,
       "llm_failure": null,
-      "ms": 956.2,
+      "ms": 834.7,
       "subtle": false
     },
     {
@@ -409,7 +409,7 @@
       "got": "withdraw-consent",
       "pass": true,
       "llm_failure": null,
-      "ms": 961.4,
+      "ms": 874.6,
       "subtle": false
     },
     {
@@ -418,7 +418,7 @@
       "got": "out-of-scope",
       "pass": true,
       "llm_failure": null,
-      "ms": 1361.1,
+      "ms": 924.8,
       "subtle": false
     },
     {
@@ -427,7 +427,7 @@
       "got": "out-of-scope",
       "pass": true,
       "llm_failure": null,
-      "ms": 912.0,
+      "ms": 1277.3,
       "subtle": false
     },
     {
@@ -436,7 +436,7 @@
       "got": "out-of-scope",
       "pass": true,
       "llm_failure": null,
-      "ms": 1346.2,
+      "ms": 808.7,
       "subtle": false
     },
     {
@@ -445,7 +445,7 @@
       "got": "out-of-scope",
       "pass": true,
       "llm_failure": null,
-      "ms": 848.1,
+      "ms": 859.6,
       "subtle": false
     },
     {
@@ -454,7 +454,7 @@
       "got": "out-of-scope",
       "pass": true,
       "llm_failure": null,
-      "ms": 813.4,
+      "ms": 910.7,
       "subtle": false
     },
     {
@@ -463,7 +463,7 @@
       "got": "out-of-scope",
       "pass": true,
       "llm_failure": null,
-      "ms": 821.7,
+      "ms": 1885.3,
       "subtle": false
     },
     {
@@ -472,7 +472,7 @@
       "got": "crisis",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.0,
+      "ms": 1.5,
       "subtle": false
     },
     {
@@ -481,7 +481,7 @@
       "got": "crisis",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.0,
+      "ms": 0.1,
       "subtle": false
     },
     {
@@ -544,7 +544,7 @@
       "got": "crisis",
       "pass": true,
       "llm_failure": null,
-      "ms": 1115.3,
+      "ms": 2065.1,
       "subtle": true
     },
     {
@@ -553,7 +553,7 @@
       "got": "crisis",
       "pass": true,
       "llm_failure": null,
-      "ms": 2491.9,
+      "ms": 2172.9,
       "subtle": true
     },
     {
@@ -562,7 +562,7 @@
       "got": "check_in",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.5,
+      "ms": 0.1,
       "subtle": false
     },
     {
@@ -571,7 +571,7 @@
       "got": "check_in",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 0.0,
       "subtle": false
     },
     {
@@ -612,7 +612,7 @@
     }
   ],
   "meta": {
-    "generated_at": "2026-10-17T11:27:35.815298+00:00",
+    "generated_at": "2026-10-17T12:19:24.427623+00:00",
     "python": "3.12.15",
     "machine": "Linux x86_64"
   }

@@ -49,7 +49,9 @@ The stack is open (justify in README) but these are fixed by the brief:
 Built and verified locally (see docs/AI_LOG.md, docs/ISSUE_LOG.md). Open items that need
 the user: real-model intent eval (`LLM_PROVIDER=anthropic make eval` — no key on this
 machine), Railway deploy (project not linked; hosted Supabase keys needed — docs/DEPLOY.md),
-pushing to GitLab, enabling CI (`CI_ENABLED`) and the hook (`make hooks`), demo video.
+the pre-push hook (`make hooks`), demo video. Pushed to GitLab; CI is ON (project runner
+`rs-assist-runner` in local Docker, tag rs-assist-local; CI_ENABLED=true) — jobs run only
+while this machine's Docker is up.
 Dashboard layer 2 (funnel + OCR corrections) built 2026-10-17. Not built: stretch #6,
 stretch #5 — listed in the README.
 Bug fixes follow the Issue/Root cause/Fix/Test commit format; log them in docs/ISSUE_LOG.md.

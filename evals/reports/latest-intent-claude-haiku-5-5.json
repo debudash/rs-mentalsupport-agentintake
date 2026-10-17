@@ -18,8 +18,8 @@
   "unambiguous_crisis_always_pauses": true,
   "llm_failures": 0,
   "latency_ms": {
-    "p50": 989.0,
-    "p95": 1762.1
+    "p50": 910.7,
+    "p95": 2153.7
   },
   "passes": true
 }
