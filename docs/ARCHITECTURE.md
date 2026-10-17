@@ -122,7 +122,7 @@ sequenceDiagram
     R-->>A: UploadRejected(reason, message)
     A-->>B: message + "upload problem" supportive card
   else image
-    R->>R: find card → flatten, or deskew; CLAHE
+    R->>R: find card → flatten (or deskew), then even out contrast (CLAHE)
     R->>R: Tesseract → lines with confidence
     R->>R: parse by labels, else by shape (only if unambiguous)
     R->>R: keep fields that parse AND confidence ≥ 70, else blank
@@ -131,7 +131,7 @@ sequenceDiagram
   end
   Note over A,R: the image exists only in memory for this request
   B->>A: POST /api/identity/confirm (edited fields + which were changed)
-  A->>A: validate; adults only
+  A->>A: validate fields, adults only
   A->>D: store encrypted name, DOB, address
 ```
 
@@ -150,7 +150,7 @@ sequenceDiagram
   A->>U: admin delete user
   A->>D: delete auth.audit_log_entries naming the user (actor_id or traits.user_id)
   A-->>B: receipt (reference, time, what was deleted)
-  Note over A: later calls with the old token → 401; the Account is never re-created
+  Note over A: later calls with the old token → 401, and the Account is never re-created
 ```
 
 ## Data model

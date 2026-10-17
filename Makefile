@@ -9,7 +9,7 @@ UV := $(shell command -v uv >/dev/null 2>&1 && echo uv || echo python -m uv)
 DEV := $(COMPOSE) run --rm dev
 
 .PHONY: help setup seed up down test test-backend test-frontend eval eval-record load \
-        timings lint ci hooks deploy golden-set smoke e2e
+        timings lint ci hooks deploy golden-set smoke e2e docs-check
 
 help:
 	@echo "make setup        .env + encryption key + local Supabase (first run downloads images)"
@@ -85,3 +85,9 @@ smoke:
 e2e:
 	cd e2e && npm install --no-audit --no-fund && npx playwright install chromium && \
 		node walk.mjs && node keyboard.mjs && node gentle.mjs && node staff.mjs && node panels.mjs
+
+# Render every Mermaid diagram in the docs with Mermaid itself (11 and the older 10).
+docs-check:
+	cd e2e && npm install --no-audit --no-fund && npx playwright install chromium && \
+		node mermaid-check.mjs ../README.md ../docs/*.md ../docs/adr/*.md && \
+		MERMAID_VERSION=10.9.1 node mermaid-check.mjs ../README.md ../docs/*.md ../docs/adr/*.md
