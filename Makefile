@@ -1,6 +1,9 @@
 # rs-assist — grader quick-start. Needs only Docker (and npx for the Supabase CLI).
 # The same commands exist as scripts/*.sh for shells without make.
 
+# Git Bash on Windows rewrites "/container/paths"; this turns that off (no-op elsewhere).
+export MSYS_NO_PATHCONV := 1
+
 COMPOSE := docker compose
 DEV := $(COMPOSE) run --rm dev
 
