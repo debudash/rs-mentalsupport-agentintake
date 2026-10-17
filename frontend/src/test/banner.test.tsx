@@ -1,5 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import { Banner } from '../Banner';
 import { axe } from './axe';
@@ -38,6 +40,21 @@ describe('banner', () => {
     expect(container.querySelector('header')).not.toHaveClass('wide');
     rerender(<Banner compact wide onSignOut={() => {}} />);
     expect(container.querySelector('header')).toHaveClass('wide');
+  });
+
+  // ISSUE-009 — found by the user: the signed-in band cropped the blocks and misaligned its row.
+  it('compact band: whole blocks, and one vertical alignment for the row', () => {
+    const css = readFileSync(resolve(process.cwd(), 'src/styles.css'), 'utf8');
+    const wide = css.slice(0, css.indexOf('@media (max-width: 640px)'));
+    const rule = (sel: string) => {
+      const at = wide.indexOf(`${sel} {`);
+      expect(at, sel).toBeGreaterThan(-1);
+      return wide.slice(at, wide.indexOf('}', at));
+    };
+    // A forced width breaks the artwork's 60:31 shape, and the slice crops the block tops.
+    expect(wide).not.toMatch(/\.banner\.compact \.banner-art \{[^}]*width/);
+    expect(rule('.banner.compact .banner-inner')).toMatch(/align-items: center/);
+    expect(rule('.banner.compact .banner-words')).not.toMatch(/align-self: (start|end)/);
   });
 
   it('the artwork is decoration, hidden from assistive technology', () => {

@@ -161,17 +161,21 @@ a {
   fill: var(--ok);
 }
 
+/* ISSUE-009: the compact band forced the art to 160×48 (not its 60:31 shape), so the slice cropped
+   the block tops, and its row mixed end/center alignment. Keep the art's own shape (whole blocks)
+   and centre the wordmark, Sign out and art on one line. */
 .banner.compact .banner-inner {
-  --art-h: 48px;
+  --art-h: 40px;
   grid-template-columns: auto minmax(0, 1fr) auto;
   grid-template-areas:
     'words signout art'
-    '. . crisis';
-  align-items: end;
+    '. crisis crisis';
+  align-items: center;
+  padding-top: 0.6rem;
 }
 .banner.compact .banner-words {
   align-self: center;
-  padding: 0.75rem 0 0;
+  padding: 0;
 }
 .banner.compact .banner-name {
   font-size: 1.25rem;
@@ -183,9 +187,6 @@ a {
 }
 .banner.compact .banner-signout {
   justify-self: end;
-}
-.banner.compact .banner-art {
-  width: 160px;
 }
 
 @media (max-width: 640px) {
