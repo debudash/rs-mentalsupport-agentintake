@@ -477,7 +477,7 @@ def slots(
     with telemetry.timed("db"):
         found = Scheduling(db, prof).open_slots(filters, tz)
     return {
-        "slots": [_slot_out(s, tz) for s in found[:60]],
+        "slots": [_slot_out(s, tz) for s in found[:400]],
         "filtered": not show_all,
         "filters": {
             "session_format": filters.session_format,

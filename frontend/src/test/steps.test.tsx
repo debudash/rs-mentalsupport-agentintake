@@ -320,11 +320,31 @@ describe('SchedulingStep', () => {
     });
     const onDone = vi.fn();
     const { container } = render(<SchedulingStep onDone={onDone} />);
-    await userEvent.click(await screen.findByRole('button', { name: /Tue 20 Oct/ }));
+    await userEvent.click(await screen.findByRole('button', { name: /Tue 20 Oct, 10:00 AM/ }));
     expect(await axe(container)).toHaveNoViolations();
     await userEvent.click(screen.getByRole('button', { name: /^Book/ }));
     await waitFor(() => expect(onDone).toHaveBeenCalled());
     expect(calls.at(-1)?.body).toMatchObject({ slot_id: 's1' });
+  });
+
+  it('shows one day at a time with a day picker', async () => {
+    mockFetch({
+      'GET /api/slots': () => ({
+        json: {
+          slots: [slot('a', 'Mon 19 Oct, 9:00 AM'), slot('b', 'Tue 20 Oct, 10:00 AM')],
+          filtered: true,
+        },
+      }),
+    });
+    render(<SchedulingStep onDone={vi.fn()} />);
+    expect(await screen.findByRole('button', { name: /Mon 19 Oct, 9:00 AM/ })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Tue 20 Oct, 10:00 AM/ })).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'Tue 20 Oct' }));
+    expect(screen.getByRole('button', { name: /Tue 20 Oct, 10:00 AM/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Tue 20 Oct' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
   });
 
   it('shows alternatives when the slot was just taken', async () => {

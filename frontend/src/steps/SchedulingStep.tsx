@@ -9,10 +9,14 @@ interface SlotsResponse {
 
 const FORMAT = { video: 'Video', in_person: 'In person' } as const;
 
+// The server's local label is "Tue 20 Oct, 10:00 AM": the day is everything before the comma.
+const dayOf = (s: SlotView) => s.local_label.split(',')[0];
+
 export function SchedulingStep({ onDone }: { onDone: () => void }) {
   const [slots, setSlots] = useState<SlotView[] | null>(null);
   const [showAll, setShowAll] = useState(false);
   const [chosen, setChosen] = useState<SlotView | null>(null);
+  const [day, setDay] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -52,6 +56,11 @@ export function SchedulingStep({ onDone }: { onDone: () => void }) {
     }
   }
 
+  // One day at a time keeps the Book button in view, even on a phone.
+  const days = [...new Set((slots ?? []).map(dayOf))];
+  const activeDay = day && days.includes(day) ? day : days[0];
+  const visible = (slots ?? []).filter((s) => dayOf(s) === activeDay);
+
   return (
     <section className="card" aria-labelledby="slots-title">
       <h2 id="slots-title">Choose a time for your free initial consultation</h2>
@@ -69,10 +78,19 @@ export function SchedulingStep({ onDone }: { onDone: () => void }) {
         <p>No times match your preferences in the next two weeks. Try showing all times.</p>
       )}
       {slots && slots.length > 0 && (
+        <div className="quick-replies" role="group" aria-label="Choose a day">
+          {days.map((d) => (
+            <button key={d} type="button" aria-pressed={d === activeDay} onClick={() => setDay(d)}>
+              {d}
+            </button>
+          ))}
+        </div>
+      )}
+      {slots && slots.length > 0 && (
         <fieldset>
-          <legend className="sr-only">Available times</legend>
+          <legend className="sr-only">Available times on {activeDay}</legend>
           <ul className="slots">
-            {slots.map((s) => (
+            {visible.map((s) => (
               <li key={s.id}>
                 <button
                   type="button"
