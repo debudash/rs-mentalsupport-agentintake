@@ -408,3 +408,43 @@ describe('Withdrawal, crisis panel and support card', () => {
     expect(onDismiss).toHaveBeenCalled();
   });
 });
+
+describe('IntakeStep gentle mode', () => {
+  it('"Take a break" pauses on screen without sending anything, then resumes', async () => {
+    const calls = mockFetch({
+      'GET /api/intake': () => ({
+        json: {
+          messages: ['We can take this slowly.', 'How long has this been going on?'],
+          pending_item: 'duration',
+          input_kind: 'choice',
+          quick_replies: [
+            { value: '1_6_months', label: '1 to 6 months' },
+            { value: '__break__', label: 'Take a break' },
+          ],
+          complete: false,
+          actions: [],
+          crisis: false,
+          gentle: true,
+          transcript: [],
+        },
+      }),
+    });
+    const { container } = render(
+      <IntakeStep
+        paused={false}
+        onSupport={vi.fn()}
+        onWithdraw={vi.fn()}
+        onDone={vi.fn()}
+        onResumed={vi.fn()}
+      />,
+    );
+    await userEvent.click(await screen.findByRole('button', { name: 'Take a break' }));
+    expect(
+      screen.getByRole('heading', { name: /take all the time you need/i }),
+    ).toBeInTheDocument();
+    expect(await axe(container)).toHaveNoViolations();
+    expect(calls.filter((c) => c.key === 'POST /api/intake/messages')).toHaveLength(0);
+    await userEvent.click(screen.getByRole('button', { name: /ready to continue/i }));
+    expect(screen.getByText('How long has this been going on?')).toBeInTheDocument();
+  });
+});

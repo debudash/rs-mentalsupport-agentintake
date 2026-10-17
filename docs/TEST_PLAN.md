@@ -55,6 +55,17 @@ Coverage: backend **93%** (gate 80% on core logic, enforced in CI); frontend ~79
 | Tokens | `test_adapters_and_dashboard.py::test_verifier_accepts_valid_and_rejects_wrong_audience_or_secret`; expired/garbage tokens in `test_api_flow.py` |
 | Browser cannot read tables | Verified against local Supabase REST with the public key (permission denied); RLS enabled by migrations 0001–0002 |
 
+## Gentle mode (stretch #6)
+
+| Concern | Tests |
+|---|---|
+| Each high-stress signal switches it on; calm conversations stay normal | `test_gentle.py::test_each_high_stress_signal_turns_gentle_mode_on`, `::test_calm_conversation_stays_normal` |
+| No repeated reassurance in the chat; break offered on every question | same file |
+| Prompt asks for one short sentence; reply trimmed to one sentence | `::test_gentle_mode_shapes_the_prompt_and_trims_the_reply` |
+| Crisis handling unchanged; the break value is never an answer | `::test_gentle_mode_never_changes_safety`, `::test_break_value_is_never_stored_as_an_answer` |
+| Persists across sessions | `::test_gentle_mode_persists_across_sessions`; `e2e/gentle.mjs` (7 checks on real Claude) |
+| Break screen pauses without sending anything | `steps.test.tsx` "IntakeStep gentle mode" |
+
 ## Funnel analytics
 
 | Concern | Tests |

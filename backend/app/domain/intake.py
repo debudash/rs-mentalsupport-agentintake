@@ -37,6 +37,13 @@ MAX_TEXT = 1000
 HISTORY_TURNS = 6
 FAILURES_BEFORE_SCRIPTED = 2
 
+# Gentle mode (sentiment-adaptive tone): switched on by the first high-stress signal and kept
+# for the rest of Intake. It changes how things are said and offers a break — never what is
+# asked, and never the safety rules.
+BREAK_VALUE = "__break__"
+BREAK_REPLY = {"value": BREAK_VALUE, "label": "Take a break"}
+_SENTENCE_END = re.compile(r"(?<=[.!?])\s+")
+
 
 @dataclass
 class IntakeState:
@@ -46,6 +53,7 @@ class IntakeState:
     llm_failures: int = 0
     scripted_mode: bool = False
     crisis_paused: bool = False
+    gentle: bool = False
 
 
 @dataclass(frozen=True)
@@ -199,13 +207,38 @@ class IntakeConductor:
             quick = [{"value": str(n), "label": str(n)} for n in range(item.min, item.max + 1)]
         if item.declinable:
             quick.append({"value": DECLINED, "label": "Prefer not to say"})
-        return Reply(messages, item.id, item.type, quick)
+        reply = Reply(messages, item.id, item.type, quick)
+        if state.gentle:
+            reply.quick_replies.append(dict(BREAK_REPLY))
+        return reply
 
     # ---- the turn ------------------------------------------------------------------
 
     def respond(self, state: IntakeState, turn: Turn) -> tuple[IntakeState, Reply]:
+        state, reply = self._respond(state, turn)
+        return self._adapt_tone(state, reply)
+
+    def _adapt_tone(self, state: IntakeState, reply: Reply) -> tuple[IntakeState, Reply]:
+        """Gentle mode: the first high-stress signal switches it on; from then on replies are
+        short and every question offers a break. No extra chat message: the same signal shows
+        the high-stress supportive card, which already says "we can go slowly". Crisis always
+        takes precedence."""
+        if state.crisis_paused or reply.signals.crisis:
+            return state, reply
+        if reply.signals.high_stress:
+            state.gentle = True
+        has_question = reply.pending_item not in (None, CHECK_IN_ITEM)
+        if state.gentle and has_question and BREAK_REPLY not in reply.quick_replies:
+            reply.quick_replies.append(dict(BREAK_REPLY))
+        return state, reply
+
+    def _respond(self, state: IntakeState, turn: Turn) -> tuple[IntakeState, Reply]:
         state = replace(state, answers=dict(state.answers), history=list(state.history))
         signals = Signals()
+
+        if turn.value == BREAK_VALUE:
+            # Handled by the browser; if it ever arrives, it is never an answer.
+            return state, self._with(self.prompt_for(state), signals)
 
         if turn.retry_assistant:
             state.scripted_mode = False
@@ -375,6 +408,9 @@ class IntakeConductor:
         actions: list[str] = []
         ack, tripped = output_check.check(result.reply)
         signals.output_check_tripped = tripped
+        if state.gentle and not tripped:
+            # Brevity doesn't depend on the model: keep the first sentence only.
+            ack = _SENTENCE_END.split(ack.strip(), maxsplit=1)[0]
 
         for answer in result.answers:
             item = self._items[answer.item]
@@ -461,6 +497,11 @@ class IntakeConductor:
             "the allowed values listed for that item; if what they said doesn't fit one "
             "exactly, leave that item out. Personal details appear as placeholders like [phone]."
         )
+        if state.gentle:
+            lines.append(
+                "The client is finding this hard. Make the reply one short, warm sentence that "
+                "acknowledges how they feel. No advice, no exclamation marks."
+            )
         lines.append(f"PENDING_ITEM: {pending.id if pending else 'none'}")
         return "\n".join(lines)
 

@@ -433,3 +433,7 @@ td {
   margin-right: 0.35em;
   vertical-align: -0.05em;
 }
+.break-offer {
+  font-size: 0.9rem;
+  margin: -0.25rem 0 0.75rem;
+}

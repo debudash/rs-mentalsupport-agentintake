@@ -107,6 +107,11 @@ Then `make up` again, and `make eval` for the intent scorecard on that model.
   confirmation with a calendar file.
 - **Supportive content at three moments only:** a 45 s pause, an upload problem, high
   stress. Once per moment per step, never otherwise.
+- **Tone adapts to stress (stretch #6).** The first sign of high stress — saying they're
+  overwhelmed, rating distress 4–5, or "just stressed" at a safety check-in — switches the
+  rest of Intake to a gentler mode: replies cut to one short, warm sentence, and every
+  question offers a quiet "Take a break" that pauses on screen without losing anything.
+  It changes how things are said, never what is asked or the safety rules.
 - **Withdraw and delete everything**, with a receipt; afterwards every endpoint refuses
   that Account.
 - **Clinicians** see only clients booked with them, without date of birth or address;

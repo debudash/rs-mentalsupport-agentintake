@@ -18,7 +18,7 @@ session; no sub-agents built separate parts.
 | Same, fully local | Ollama (OpenAI-compatible) | any local model | the operator's machine | Same as above; nothing leaves the machine |
 | Same, keyless default | Fake adapter (keyword heuristic, not a model) | — | in process | — |
 | ID reading | Tesseract OCR + OpenCV preprocessing | Tesseract 5.5.0 (Debian package in the image), OpenCV 5.0 | in the app container | The ID image, in memory only |
-| Sentiment / stress | No model. High stress = the `express-distress` intent, a self-rated distress of 4–5, or "No" to the Safety check-in | — | — | — |
+| Sentiment / stress (gentle mode) | No separate model. High stress = the `express-distress` intent (from the same single LLM call), a self-rated distress of 4–5, or "No" to the Safety check-in. It then adds one line to the system prompt ("the client is finding this hard … one short, warm sentence") | — | — | — |
 
 **Never sent to any LLM:** name, date of birth or address from the ID; the ID image; quick-reply
 button answers (handled without the LLM); anything a Clinician or Operator sees.

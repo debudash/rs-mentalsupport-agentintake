@@ -55,6 +55,7 @@ export interface IntakeReply {
   crisis_resources?: CrisisResource[];
   support?: SupportCardData | null;
   scripted_mode?: boolean;
+  gentle?: boolean;
   transcript?: { role: 'client' | 'assistant'; text: string }[];
 }
 

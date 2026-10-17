@@ -233,6 +233,7 @@ def intake_state(
     out = _reply_out(reply, prof)
     out["transcript"] = svc.transcript(db, client)
     out["scripted_mode"] = client.scripted_mode
+    out["gentle"] = bool(client.gentle_mode)
     return out
 
 
@@ -307,6 +308,7 @@ def intake_message(
     out = _reply_out(reply, prof)
     out["complete"] = completed or reply.complete
     out["scripted_mode"] = new_state.scripted_mode
+    out["gentle"] = new_state.gentle
     if s.high_stress:
         out["support"] = _support_card(
             db, prof, client, support.Event(kind="high_stress", step="intake")

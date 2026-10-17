@@ -16,6 +16,9 @@ interface Props {
   onResumed: () => void;
 }
 
+// Gentle mode's "Take a break" option: handled here, never sent as an answer.
+const BREAK_VALUE = '__break__';
+
 const PAUSE_FALLBACK =
   "Your safety matters more than finishing this. Please reach out to one of these now — they're free, confidential and available 24/7.";
 
@@ -27,6 +30,7 @@ export function IntakeStep({ paused, onSupport, onWithdraw, onDone, onResumed }:
   const [busy, setBusy] = useState(false);
   const [crisis, setCrisis] = useState(paused);
   const [error, setError] = useState<string | null>(null);
+  const [onBreak, setOnBreak] = useState(false);
   const end = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -82,6 +86,10 @@ export function IntakeStep({ paused, onSupport, onWithdraw, onDone, onResumed }:
   }
 
   function choose(option: QuickReply) {
+    if (option.value === BREAK_VALUE) {
+      setOnBreak(true);
+      return;
+    }
     if (reply?.input_kind === 'multichoice') {
       setSelected((s) =>
         s.includes(option.value) ? s.filter((v) => v !== option.value) : [...s, option.value],
@@ -102,6 +110,21 @@ export function IntakeStep({ paused, onSupport, onWithdraw, onDone, onResumed }:
     onResumed();
   }
 
+  if (onBreak) {
+    return (
+      <section className="notice info" aria-labelledby="break-title">
+        <h2 id="break-title">Take all the time you need</h2>
+        <p>
+          Your progress is saved. You can stay here, step away, or close this page and come back
+          later — we'll pick up where you left off.
+        </p>
+        <button type="button" onClick={() => setOnBreak(false)}>
+          I'm ready to continue
+        </button>
+      </section>
+    );
+  }
+
   if (crisis) {
     return (
       <CrisisPanel
@@ -113,6 +136,9 @@ export function IntakeStep({ paused, onSupport, onWithdraw, onDone, onResumed }:
   }
 
   const multi = reply?.input_kind === 'multichoice';
+  // Gentle mode's break offer arrives with the options; show it apart from the answers.
+  const answers = (reply?.quick_replies ?? []).filter((q) => q.value !== BREAK_VALUE);
+  const offersBreak = (reply?.quick_replies ?? []).some((q) => q.value === BREAK_VALUE);
   const labels = Object.fromEntries((reply?.quick_replies ?? []).map((q) => [q.value, q.label]));
 
   return (
@@ -133,13 +159,13 @@ export function IntakeStep({ paused, onSupport, onWithdraw, onDone, onResumed }:
         <div ref={end} />
       </div>
 
-      {reply && reply.quick_replies.length > 0 && !reply.complete && (
+      {reply && answers.length > 0 && !reply.complete && (
         <div
           className="quick-replies"
           role="group"
           aria-label={multi ? 'Choose any that apply' : 'Quick answers'}
         >
-          {reply.quick_replies.map((q) => (
+          {answers.map((q) => (
             <button
               key={q.value}
               type="button"
@@ -166,6 +192,14 @@ export function IntakeStep({ paused, onSupport, onWithdraw, onDone, onResumed }:
             </button>
           )}
         </div>
+      )}
+
+      {offersBreak && !reply?.complete && (
+        <p className="break-offer">
+          <button type="button" className="link" onClick={() => setOnBreak(true)}>
+            Take a break
+          </button>
+        </p>
       )}
 
       {reply?.actions.includes('offer_retry_assistant') && (

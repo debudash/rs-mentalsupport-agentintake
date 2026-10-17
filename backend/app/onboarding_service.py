@@ -57,6 +57,7 @@ def load_intake(db: Session, client: Client) -> IntakeState:
         llm_failures=client.llm_failures,
         scripted_mode=client.scripted_mode,
         crisis_paused=client.crisis_paused,
+        gentle=bool(client.gentle_mode),
     )
 
 
@@ -81,6 +82,7 @@ def save_intake(
     client.llm_failures = state.llm_failures
     client.scripted_mode = state.scripted_mode
     client.crisis_paused = state.crisis_paused
+    client.gentle_mode = state.gentle
     client.updated_at = datetime.now(UTC)
 
     completed_now = assessment.completed_at is None and conductor.is_complete(state)

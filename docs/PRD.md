@@ -480,7 +480,7 @@ run against the Fake provider (~800 ms simulated latency); OCR and booking timed
 
 ## Further Notes
 
-- **Stretch #6 (sentiment-adaptive tone)** is built only after the core and edge cases
+- **Stretch #6 (sentiment-adaptive tone)** — built 2026-10-17 as "gentle mode" (see README); originally planned only after the core and edge cases
   are done: a high-stress signal switches replies to a "gentle" mode (shorter, more
   acknowledgement, one question at a time), shows quick replies on every question and
   offers to pause; tested deterministically.

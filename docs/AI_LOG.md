@@ -59,6 +59,17 @@ and what a human decided. Tools and models used inside the product are in
 - Walking the UI on real Claude found ISSUE-004/005/006 (invalid value failed the turn,
   scripted matching, an outcome promise passing the output check); fixed test-first.
 
+## 2026-10-17 — Stretch #6: sentiment-adaptive tone
+
+- Gentle mode built test-first (11 tests): switched on by any high-stress signal, persisted
+  per Client (migration 0004), shorter prompt-shaped replies trimmed to one sentence, a
+  "Take a break" offer on every question; crisis handling unchanged.
+- First version repeated "we can go slowly" three times (card, an extra chat line, Claude's
+  reply) and mixed "Take a break" into the answers; the agent removed the extra line and
+  moved the break to a quiet link after reviewing the screenshot against the user's
+  "subtle, not distracting" brief. Verified on real Claude: 7/7 gentle checks, full and
+  keyboard walks unchanged (17/17).
+
 ## Not done by the agent (needs the human)
 
 - **Deployment:** Railway is logged in but no project is linked, and the hosted Supabase

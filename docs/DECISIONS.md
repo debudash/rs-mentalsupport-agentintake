@@ -32,7 +32,8 @@ surprising ones have a full ADR.
 | Clinician view: own bookings only, no DOB/address, every view in an Access log | Shows role-scoped, audited staff access |
 | Operator dashboard: layer 1 (performance, AI health, AI quality) and layer 2 (funnel, OCR corrections) | Layer 1 replaces LangSmith observability; layer 2 shows where people drop off and the real-world OCR error rate |
 | Funnel events keyed by a random Journey id; the Account→Journey link is deleted at Withdrawal | Aggregate analytics survive a deletion request without pointing back to anyone; crisis pauses are never on a Journey (daily count only) |
-| Stretch #6 (sentiment-adaptive tone) and #5 (multi-language) not built | Timebox; core and edge cases first |
+| Stretch #6 built as "gentle mode": same high-stress signals as the supportive card; one-sentence replies; "Take a break" link; no extra chat message | Reuses an existing, tested signal; the card already reassures once, so the chat doesn't repeat it |
+| Stretch #5 (multi-language) not built | Timebox; the per-language profile path is documented |
 
 ## Technical
 

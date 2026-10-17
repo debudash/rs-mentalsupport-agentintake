@@ -52,8 +52,8 @@ machine), Railway deploy (project not linked; hosted Supabase keys needed — do
 the pre-push hook (`make hooks`), demo video. Pushed to GitLab; CI is ON (project runner
 `rs-assist-runner` in local Docker, tag rs-assist-local; CI_ENABLED=true) — jobs run only
 while this machine's Docker is up.
-Dashboard layer 2 (funnel + OCR corrections) built 2026-10-17. Not built: stretch #6,
-stretch #5 — listed in the README.
+Dashboard layer 2 (funnel + OCR corrections) and stretch #6 (gentle mode) built
+2026-10-17. Not built: stretch #5 (multi-language) — listed in the README.
 Bug fixes follow the Issue/Root cause/Fix/Test commit format; log them in docs/ISSUE_LOG.md.
 
 ## Timebox and scope (2 days — user, 2026-10-16)

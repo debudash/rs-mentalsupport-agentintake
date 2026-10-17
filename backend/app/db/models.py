@@ -54,6 +54,7 @@ class Client(Base):
     check_in_pending: Mapped[bool] = mapped_column(Boolean, default=False)
     llm_failures: Mapped[int] = mapped_column(Integer, default=0)
     scripted_mode: Mapped[bool] = mapped_column(Boolean, default=False)
+    gentle_mode: Mapped[bool] = mapped_column(Boolean, default=False)
     support_shown: Mapped[list] = mapped_column(JSON, default=list)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
