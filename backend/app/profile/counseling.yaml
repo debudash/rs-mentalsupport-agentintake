@@ -1,0 +1,267 @@
+# Service profile — outpatient mental-health counseling.
+# Everything specific to one Service lives here. Swap this file to re-target the assistant.
+
+service:
+  name: Riverside Counseling
+  consultation_minutes: 30
+  booking_window_days: 14
+  booking_min_notice_hours: 2
+  minimum_age: 18
+
+consents:
+  onboarding:
+    version: "2026-10-1"
+    title: Onboarding data
+    required: true
+    text: >-
+      To arrange your first consultation we store your answers to the intake questions,
+      your confirmed name, date of birth and address, and your booking. Only you and the
+      clinician you book with can see your answers. You can withdraw and delete everything
+      at any time.
+  id_scan:
+    version: "2026-10-1"
+    title: ID scan (optional)
+    required: false
+    text: >-
+      If you choose, we read a photo of your ID to fill in your details for you. The photo
+      is processed in memory and never stored. You can type your details instead.
+
+assessment:
+  - id: reason_category
+    question: "What's been bringing you here? Pick whatever fits best."
+    type: choice
+    options:
+      anxiety: Anxiety or worry
+      low_mood: Low mood
+      stress: Stress or burnout
+      relationships: Relationships or family
+      grief: Grief or loss
+      trauma: A difficult experience
+      sleep: Sleep
+      other: Something else
+  - id: reason_text
+    question: "If you'd like, tell me a little more in your own words. It's fine to keep it short."
+    type: text
+    declinable: true
+    sensitive: true
+  - id: duration
+    question: "How long has this been going on?"
+    type: choice
+    options:
+      under_1_month: Less than a month
+      1_6_months: 1 to 6 months
+      6_12_months: 6 to 12 months
+      over_1_year: More than a year
+  - id: distress
+    question: "Right now, how are you feeling overall, from 1 (doing okay) to 5 (really struggling)?"
+    type: scale
+    min: 1
+    max: 5
+  - id: safety
+    question: >-
+      I ask everyone this, and you can answer honestly: are you having any thoughts of
+      harming yourself or someone else?
+    type: choice
+    sensitive: true
+    options:
+      "no": "No"
+      "yes": "Yes"
+  - id: session_format
+    question: "Would you prefer video sessions or meeting in person?"
+    type: choice
+    options:
+      video: Video
+      in_person: In person
+      either: Either is fine
+  - id: availability
+    question: "Which times of day usually work for you? Choose any."
+    type: multichoice
+    options:
+      mornings: Mornings
+      afternoons: Afternoons
+      evenings: Evenings
+  - id: clinician_gender
+    question: "Do you have a preference for your clinician's gender?"
+    type: choice
+    declinable: true
+    options:
+      no_preference: No preference
+      woman: A woman
+      man: A man
+      nonbinary: A non-binary clinician
+  - id: clinician_language
+    question: "Which language would you like your sessions in?"
+    type: choice
+    options:
+      english: English
+      spanish: Spanish
+      no_preference: Either
+
+approved_answers:
+  - id: cost
+    question: How much does it cost?
+    answer: >-
+      Your initial consultation is free. After that, your clinician will talk you through
+      session fees and whether your insurance can cover them before anything is booked.
+  - id: insurance
+    question: Do you take insurance?
+    answer: >-
+      Many plans can cover sessions. We'll check your coverage with you after your initial
+      consultation, before any paid session is booked.
+  - id: who_sees
+    question: Who can see my answers?
+    answer: >-
+      Only you and the clinician you book with. Our operations team only ever sees
+      anonymous totals, never your answers.
+  - id: privacy_ai
+    question: Does the AI see my personal details?
+    answer: >-
+      The assistant only sees the messages you type here, with phone numbers, emails,
+      dates and addresses hidden. It never sees your name, date of birth, address or ID.
+  - id: id_photo
+    question: What happens to my ID photo?
+    answer: >-
+      It's read in memory to fill in your details and is never stored. You can type your
+      details instead if you prefer.
+  - id: delete_data
+    question: Can I delete my data?
+    answer: >-
+      Yes, at any time. Use "Withdraw and delete everything" at the bottom of the page and
+      everything you've given us is deleted, including your account.
+  - id: what_next
+    question: What happens after I book?
+    answer: >-
+      You'll meet your clinician for a 30-minute initial consultation. It's a chance to talk
+      about what's going on and decide together on next steps. There's no commitment.
+  - id: session_length
+    question: How long is the first appointment?
+    answer: The initial consultation lasts 30 minutes.
+  - id: video_how
+    question: How do video sessions work?
+    answer: >-
+      Video sessions run in your browser through a private link your clinician shares
+      before the session. You'll just need a quiet space and a device with a camera.
+  - id: cancel
+    question: Can I cancel or change my appointment?
+    answer: >-
+      Yes. You can choose a different time on the scheduling step at any point, and your
+      old time is released for someone else.
+  - id: confidential
+    question: Is this confidential?
+    answer: >-
+      Yes. What you share is kept confidential between you and your clinician. The rare
+      exception is if someone's safety is at serious risk, which your clinician will
+      explain at your first meeting.
+  - id: medication
+    question: Can I get medication?
+    answer: >-
+      Our clinicians are counselors and don't prescribe medication. If medication might
+      help, your clinician can talk with you about seeing your doctor.
+  - id: emergency
+    question: What if I need help right now?
+    answer: >-
+      If you're in danger or need urgent help, call or text 988 (Suicide & Crisis
+      Lifeline) or call 911. You don't need to finish signing up first.
+  - id: how_long_onboarding
+    question: How long does signing up take?
+    answer: >-
+      Most people finish in about 10 to 15 minutes. Your progress is saved, so you can
+      stop and come back at any time.
+  - id: choose_clinician
+    question: Can I choose my clinician?
+    answer: >-
+      You'll see available times with each clinician on the scheduling step, filtered by
+      the preferences you share here, so you can pick who you book with.
+  - id: age
+    question: Can my teenager use this service?
+    answer: >-
+      This service is for adults aged 18 and over. For younger people, a school counselor
+      or family doctor is a good place to start, and 988 is available to everyone.
+
+supportive_content:
+  long_pause:
+    title: Take your time
+    body: >-
+      There's no rush. Your progress is saved, so you can step away and come back whenever
+      you're ready.
+  upload_problem:
+    title: That's okay — photos can be tricky
+    body: >-
+      You can try another photo, or type your details instead. It only takes about a
+      minute.
+  high_stress:
+    title: You're doing something positive
+    body: >-
+      Many people feel this way when they reach out. We can go slowly, and you can pause at
+      any time — your progress is saved.
+
+step_guidance:
+  consent: "First, a quick look at what we collect and why. About a minute."
+  intake: "A short conversation about what's going on. About 5 minutes."
+  identity: "Your name, date of birth and address. Photo or typing, about 2 minutes."
+  scheduling: "Pick a time for your free 30-minute initial consultation."
+
+crisis:
+  # Tier 1: unambiguous self-harm or harm-to-others language -> immediate Crisis pause.
+  unambiguous:
+    - kill myself
+    - killing myself
+    - end my life
+    - ending my life
+    - take my own life
+    - want to die
+    - wanna die
+    - don't want to live
+    - do not want to live
+    - don't want to be here anymore
+    - don't want to be alive
+    - better off dead
+    - hurt myself
+    - hurting myself
+    - harm myself
+    - self harm
+    - self-harm
+    - cut myself
+    - cutting myself
+    - suicide
+    - suicidal
+    - overdose
+    - kill someone
+    - hurt someone
+  # Tier 2: ambiguous idioms -> Safety check-in, never ignored.
+  ambiguous:
+    - killing me
+    - kill me
+    - dying here
+    - i'm dying
+    - can't go on
+    - cannot go on
+    - done with everything
+    - done with it all
+    - give up on everything
+    - no point anymore
+    - what's the point
+    - shoot me
+    - end it all
+    - want to disappear
+    - can't do this anymore
+    - cannot do this anymore
+  check_in_question: >-
+    Just checking in — when you say that, do you mean you're having thoughts of harming
+    yourself?
+  resources:
+    - label: Call or text 988 (Suicide & Crisis Lifeline)
+      href: "tel:988"
+    - label: Text HOME to 741741 (Crisis Text Line)
+      href: "sms:741741"
+    - label: Call 911 if you are in immediate danger
+      href: "tel:911"
+  pause_message: >-
+    Thank you for telling me. Your safety matters more than finishing this. Please reach
+    out to one of these right now — they're free, confidential and available 24/7. Your
+    progress is saved and you can come back whenever you're ready.
+
+contact:
+  phone: "(555) 010-0199"
+  email: care@riverside-counseling.example
+  hours: Monday to Friday, 9am to 5pm ET

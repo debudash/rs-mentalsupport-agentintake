@@ -1,0 +1,183 @@
+"""Access control: who is calling, with which role, and what they may see.
+
+Verifies the Supabase login token (JWKS for asymmetric keys, or the legacy HS256 secret),
+creates our Account row on first sight (role: client), and scopes Clinician reads to
+Bookings in their own Slots — writing the Access log for every Clinician record view.
+"""
+
+from dataclasses import dataclass
+from functools import lru_cache
+from typing import Protocol
+
+import jwt
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from app.config import Settings, get_settings
+from app.db.models import (
+    AccessLogEntry,
+    Account,
+    Assessment,
+    Booking,
+    Client,
+    Clinician,
+    ConsentLogEntry,
+    Slot,
+)
+
+
+class Unauthenticated(Exception):
+    pass
+
+
+class Forbidden(Exception):
+    pass
+
+
+class TokenVerifier(Protocol):
+    def verify(self, token: str) -> str: ...  # returns the Account id (JWT "sub")
+
+
+class SupabaseTokenVerifier:
+    def __init__(self, supabase_url: str, jwt_secret: str = ""):
+        self._secret = jwt_secret
+        self._jwks = (
+            jwt.PyJWKClient(f"{supabase_url.rstrip('/')}/auth/v1/.well-known/jwks.json")
+            if supabase_url and not jwt_secret
+            else None
+        )
+
+    def verify(self, token: str) -> str:
+        try:
+            if self._secret:
+                claims = jwt.decode(
+                    token, self._secret, algorithms=["HS256"], audience="authenticated"
+                )
+            elif self._jwks is not None:
+                key = self._jwks.get_signing_key_from_jwt(token)
+                claims = jwt.decode(
+                    token,
+                    key.key,
+                    algorithms=["ES256", "RS256", "EdDSA"],
+                    audience="authenticated",
+                )
+            else:
+                raise Unauthenticated("auth is not configured")
+        except jwt.PyJWTError as exc:
+            raise Unauthenticated("invalid token") from exc
+        sub = claims.get("sub")
+        if not sub:
+            raise Unauthenticated("token has no subject")
+        return sub
+
+
+class StaticSecretVerifier(SupabaseTokenVerifier):
+    """Test adapter: HS256 tokens signed with a known secret."""
+
+    def __init__(self, secret: str):
+        super().__init__("", secret)
+
+
+@lru_cache
+def get_verifier() -> TokenVerifier:
+    settings: Settings = get_settings()
+    return SupabaseTokenVerifier(settings.supabase_url, settings.supabase_jwt_secret)
+
+
+@dataclass(frozen=True)
+class Caller:
+    account_id: str
+    role: str  # client | clinician | operator
+
+
+def identify(db: Session, verifier: TokenVerifier, authorization: str | None) -> Caller:
+    if not authorization or not authorization.lower().startswith("bearer "):
+        raise Unauthenticated("missing bearer token")
+    account_id = verifier.verify(authorization.split(" ", 1)[1].strip())
+    account = db.get(Account, account_id)
+    if account is None:
+        withdrawn = db.scalars(
+            select(ConsentLogEntry.id).where(
+                ConsentLogEntry.account_id == account_id, ConsentLogEntry.action == "deleted"
+            )
+        ).first()
+        if withdrawn:
+            # A still-unexpired token for an Account that withdrew: never recreate it.
+            raise Unauthenticated("account withdrawn")
+        account = Account(id=account_id, role="client")
+        db.add(account)
+        db.commit()
+    return Caller(account_id=account.id, role=account.role)
+
+
+def require(caller: Caller, *roles: str) -> None:
+    if caller.role not in roles:
+        raise Forbidden(f"requires role {' or '.join(roles)}")
+
+
+@dataclass(frozen=True)
+class ClinicianBooking:
+    booking_id: str
+    starts_at: object
+    format: str
+    reference: str
+    client_first_name: str | None
+    assessment: dict | None
+
+
+def _clinician_for(db: Session, caller: Caller) -> Clinician:
+    require(caller, "clinician")
+    clinician = db.scalars(
+        select(Clinician).where(Clinician.account_id == caller.account_id)
+    ).first()
+    if clinician is None:
+        raise Forbidden("no clinician profile for this account")
+    return clinician
+
+
+def clinician_bookings(db: Session, caller: Caller) -> list[tuple[Booking, Slot]]:
+    clinician = _clinician_for(db, caller)
+    rows = db.execute(
+        select(Booking, Slot)
+        .join(Slot, Slot.id == Booking.slot_id)
+        .where(Slot.clinician_id == clinician.id, Booking.status == "active")
+        .order_by(Slot.starts_at)
+    ).all()
+    return [tuple(r) for r in rows]
+
+
+def clinician_view(db: Session, caller: Caller, booking_id: str) -> ClinicianBooking:
+    """One booked Client's preparation view. Writes the Access log. Never DOB or address."""
+    clinician = _clinician_for(db, caller)
+    row = db.execute(
+        select(Booking, Slot)
+        .join(Slot, Slot.id == Booking.slot_id)
+        .where(Booking.id == booking_id, Booking.status == "active")
+    ).first()
+    if row is None or row[1].clinician_id != clinician.id:
+        # Same answer for "does not exist" and "not yours": no probing other Clinicians' Clients.
+        raise Forbidden("booking not found")
+    booking, slot = row
+    client = db.get(Client, booking.client_id)
+    assessment = db.get(Assessment, booking.client_id)
+    db.add(
+        AccessLogEntry(
+            clinician_account_id=caller.account_id,
+            client_account_id=booking.client_id,
+            booking_id=booking.id,
+        )
+    )
+    db.commit()
+    view = None
+    if assessment is not None:
+        view = dict(assessment.answers)
+        view.pop("safety", None)
+        view["reason_text"] = assessment.reason_text
+    return ClinicianBooking(
+        booking_id=booking.id,
+        starts_at=slot.starts_at,
+        format=slot.format,
+        reference=booking.reference,
+        client_first_name=client.first_name if client else None,
+        assessment=view,
+    )
