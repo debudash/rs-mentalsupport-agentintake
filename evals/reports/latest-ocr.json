@@ -28,8 +28,8 @@
   },
   "fabricated_fields": 0,
   "latency_ms": {
-    "p50": 872.0,
-    "p95": 1424.8,
+    "p50": 775.1,
+    "p95": 1239.7,
     "runs": 40
   },
   "passes": true

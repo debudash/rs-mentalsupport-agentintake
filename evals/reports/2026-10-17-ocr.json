@@ -29,8 +29,8 @@
     },
     "fabricated_fields": 0,
     "latency_ms": {
-      "p50": 872.0,
-      "p95": 1424.8,
+      "p50": 775.1,
+      "p95": 1239.7,
       "runs": 40
     },
     "passes": true
@@ -63,7 +63,7 @@
           "blank": false
         }
       },
-      "ms": 902.1
+      "ms": 1332.5
     },
     {
       "file": "golden/clean_01.jpg",
@@ -92,7 +92,7 @@
           "blank": false
         }
       },
-      "ms": 853.1
+      "ms": 725.3
     },
     {
       "file": "golden/clean_02.jpg",
@@ -121,7 +121,7 @@
           "blank": false
         }
       },
-      "ms": 857.2
+      "ms": 876.7
     },
     {
       "file": "golden/clean_03.jpg",
@@ -150,7 +150,7 @@
           "blank": false
         }
       },
-      "ms": 851.8
+      "ms": 714.7
     },
     {
       "file": "golden/clean_04.jpg",
@@ -179,7 +179,7 @@
           "blank": false
         }
       },
-      "ms": 888.5
+      "ms": 661.8
     },
     {
       "file": "golden/clean_05.jpg",
@@ -208,7 +208,7 @@
           "blank": false
         }
       },
-      "ms": 704.3
+      "ms": 722.0
     },
     {
       "file": "golden/clean_06.jpg",
@@ -237,7 +237,7 @@
           "blank": false
         }
       },
-      "ms": 709.8
+      "ms": 636.1
     },
     {
       "file": "golden/clean_07.jpg",
@@ -266,7 +266,7 @@
           "blank": false
         }
       },
-      "ms": 825.5
+      "ms": 722.1
     },
     {
       "file": "golden/clean_08.jpg",
@@ -295,7 +295,7 @@
           "blank": false
         }
       },
-      "ms": 970.6
+      "ms": 758.5
     },
     {
       "file": "golden/clean_09.jpg",
@@ -324,7 +324,7 @@
           "blank": false
         }
       },
-      "ms": 893.9
+      "ms": 651.9
     },
     {
       "file": "golden/photo_00.jpg",
@@ -353,7 +353,7 @@
           "blank": false
         }
       },
-      "ms": 1359.5
+      "ms": 844.2
     },
     {
       "file": "golden/photo_01.jpg",
@@ -382,7 +382,7 @@
           "blank": false
         }
       },
-      "ms": 1460.0
+      "ms": 772.0
     },
     {
       "file": "golden/photo_02.jpg",
@@ -411,7 +411,7 @@
           "blank": false
         }
       },
-      "ms": 1334.2
+      "ms": 778.3
     },
     {
       "file": "golden/photo_03.jpg",
@@ -440,7 +440,7 @@
           "blank": false
         }
       },
-      "ms": 1156.2
+      "ms": 1100.7
     },
     {
       "file": "golden/photo_04.jpg",
@@ -469,7 +469,7 @@
           "blank": false
         }
       },
-      "ms": 844.3
+      "ms": 706.5
     },
     {
       "file": "golden/photo_05.jpg",
@@ -498,7 +498,7 @@
           "blank": false
         }
       },
-      "ms": 1035.6
+      "ms": 1010.3
     },
     {
       "file": "golden/photo_06.jpg",
@@ -527,7 +527,7 @@
           "blank": false
         }
       },
-      "ms": 1730.5
+      "ms": 988.0
     },
     {
       "file": "golden/photo_07.jpg",
@@ -556,7 +556,7 @@
           "blank": false
         }
       },
-      "ms": 886.8
+      "ms": 931.5
     },
     {
       "file": "golden/photo_08.jpg",
@@ -585,7 +585,7 @@
           "blank": false
         }
       },
-      "ms": 943.4
+      "ms": 749.2
     },
     {
       "file": "golden/photo_09.jpg",
@@ -614,7 +614,7 @@
           "blank": false
         }
       },
-      "ms": 942.8
+      "ms": 1090.6
     },
     {
       "file": "golden/hard_skew_00.jpg",
@@ -643,7 +643,7 @@
           "blank": false
         }
       },
-      "ms": 985.8
+      "ms": 972.2
     },
     {
       "file": "golden/hard_skew_01.jpg",
@@ -672,7 +672,7 @@
           "blank": false
         }
       },
-      "ms": 1045.0
+      "ms": 982.4
     },
     {
       "file": "golden/hard_skew_02.jpg",
@@ -701,7 +701,7 @@
           "blank": false
         }
       },
-      "ms": 1057.2
+      "ms": 903.3
     },
     {
       "file": "golden/hard_glare_03.jpg",
@@ -730,7 +730,7 @@
           "blank": false
         }
       },
-      "ms": 1424.8
+      "ms": 1736.8
     },
     {
       "file": "golden/hard_glare_04.jpg",
@@ -759,7 +759,7 @@
           "blank": false
         }
       },
-      "ms": 759.3
+      "ms": 1042.8
     },
     {
       "file": "golden/hard_two_line_05.jpg",
@@ -788,7 +788,7 @@
           "blank": false
         }
       },
-      "ms": 768.8
+      "ms": 750.7
     },
     {
       "file": "golden/hard_two_line_06.jpg",
@@ -817,7 +817,7 @@
           "blank": false
         }
       },
-      "ms": 1119.0
+      "ms": 785.8
     },
     {
       "file": "golden/hard_unusual_07.jpg",
@@ -846,7 +846,7 @@
           "blank": false
         }
       },
-      "ms": 847.5
+      "ms": 885.7
     },
     {
       "file": "golden/hard_unusual_08.jpg",
@@ -875,7 +875,7 @@
           "blank": false
         }
       },
-      "ms": 1002.5
+      "ms": 907.6
     },
     {
       "file": "golden/hard_cut_off_09.jpg",
@@ -904,7 +904,7 @@
           "blank": true
         }
       },
-      "ms": 1215.8
+      "ms": 1239.7
     },
     {
       "file": "held_out/layout_b_00.jpg",
@@ -933,7 +933,7 @@
           "blank": false
         }
       },
-      "ms": 629.7
+      "ms": 436.3
     },
     {
       "file": "held_out/layout_b_01.jpg",
@@ -962,7 +962,7 @@
           "blank": false
         }
       },
-      "ms": 837.7
+      "ms": 744.8
     },
     {
       "file": "held_out/layout_b_02.jpg",
@@ -991,7 +991,7 @@
           "blank": false
         }
       },
-      "ms": 690.5
+      "ms": 542.6
     },
     {
       "file": "held_out/layout_b_03.jpg",
@@ -1020,7 +1020,7 @@
           "blank": false
         }
       },
-      "ms": 655.8
+      "ms": 717.8
     },
     {
       "file": "held_out/layout_b_04.jpg",
@@ -1049,7 +1049,7 @@
           "blank": false
         }
       },
-      "ms": 570.2
+      "ms": 645.3
     },
     {
       "file": "held_out/layout_b_05.jpg",
@@ -1078,7 +1078,7 @@
           "blank": false
         }
       },
-      "ms": 693.4
+      "ms": 789.2
     },
     {
       "file": "held_out/layout_b_06.jpg",
@@ -1107,7 +1107,7 @@
           "blank": false
         }
       },
-      "ms": 704.6
+      "ms": 535.4
     },
     {
       "file": "held_out/layout_b_07.jpg",
@@ -1136,7 +1136,7 @@
           "blank": false
         }
       },
-      "ms": 785.4
+      "ms": 557.6
     },
     {
       "file": "held_out/layout_b_08.jpg",
@@ -1165,7 +1165,7 @@
           "blank": false
         }
       },
-      "ms": 781.8
+      "ms": 688.6
     },
     {
       "file": "held_out/layout_b_09.jpg",
@@ -1194,11 +1194,11 @@
           "blank": false
         }
       },
-      "ms": 809.6
+      "ms": 830.7
     }
   ],
   "meta": {
-    "generated_at": "2026-10-17T02:52:18.590575+00:00",
+    "generated_at": "2026-10-17T03:37:15.721284+00:00",
     "python": "3.12.15",
     "machine": "Linux x86_64"
   }

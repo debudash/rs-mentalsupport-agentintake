@@ -14,7 +14,15 @@ import httpx
 from sqlalchemy import select
 
 from app.config import get_settings
-from app.db.models import Account, Clinician, Slot
+from app.db.models import (
+    Account,
+    Assessment,
+    Booking,
+    Client,
+    Clinician,
+    IdentityDetails,
+    Slot,
+)
 from app.db.session import get_sessionmaker
 
 SERVICE_TZ = ZoneInfo("America/New_York")
@@ -33,8 +41,11 @@ CLINICIANS = [
     ("Grace Chen", "woman", ["english"], [10, 11, 13, 15, 16], "clinician.grace@riverside.test"),
 ]
 
+BOOKED_DEMO = "client.booked@riverside.test"  # finished onboarding, booked with Ana
+
 DEMO_ACCOUNTS = [
     ("client.demo@riverside.test", "DemoClient!2026", "client"),
+    (BOOKED_DEMO, "DemoClient!2026", "client"),
     ("operator.demo@riverside.test", "DemoOperator!2026", "operator"),
 ] + [(c[4], "DemoClinician!2026", "clinician") for c in CLINICIANS]
 
@@ -108,10 +119,67 @@ def seed(today: date | None = None) -> dict:
                     if login == email:
                         by_name[name].account_id = account_id
             summary["accounts"].append(email)
+            if email == BOOKED_DEMO:
+                session.flush()
+                _booked_client(session, account_id, by_name["Ana Rivera"], start)
         session.commit()
     finally:
         session.close()
     return summary
+
+
+def _booked_client(session, account_id: str, clinician: Clinician, start: date) -> None:
+    """A fictional Client who completed Onboarding, so the Clinician view has data."""
+    if session.get(Client, account_id) is not None:
+        return
+    session.add(
+        Client(
+            account_id=account_id,
+            first_name="Sam",
+            age_confirmed=True,
+            onboarding_consent_version="2026-10-1",
+            support_shown=[],
+        )
+    )
+    session.flush()
+    session.add(
+        Assessment(
+            client_id=account_id,
+            answers={
+                "reason_category": "stress",
+                "duration": "6_12_months",
+                "distress": 3,
+                "session_format": "video",
+                "availability": ["mornings"],
+                "clinician_gender": "no_preference",
+                "clinician_language": "english",
+            },
+            reason_text="Work pressure has been building and I'm not sleeping well.",
+            safety="no",
+            completed_at=datetime.now(UTC),
+        )
+    )
+    session.add(
+        IdentityDetails(
+            client_id=account_id,
+            legal_name="Sam Example",
+            date_of_birth="1988-06-01",
+            address="10 Demo St, Springfield, RS 10001",
+            source="manual",
+            edited={},
+        )
+    )
+    soonest = session.scalars(
+        select(Slot)
+        .where(
+            Slot.clinician_id == clinician.id,
+            Slot.format == "video",
+            Slot.starts_at >= datetime.combine(start + timedelta(days=2), time(0), SERVICE_TZ),
+        )
+        .order_by(Slot.starts_at)
+    ).first()
+    if soonest is not None:
+        session.add(Booking(client_id=account_id, slot_id=soonest.id, reference="DEMO0001"))
 
 
 def _aware(value: datetime) -> datetime:

@@ -19,7 +19,7 @@
   "llm_failures": 0,
   "latency_ms": {
     "p50": 0.1,
-    "p95": 0.3
+    "p95": 0.2
   },
   "passes": false
 }
