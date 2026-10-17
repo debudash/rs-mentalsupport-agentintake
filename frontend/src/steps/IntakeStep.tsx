@@ -43,7 +43,12 @@ export function IntakeStep({ paused, onSupport, onWithdraw, onDone, onResumed }:
       .catch(() => setError('We could not load the conversation. Please reload the page.'));
   }, [paused]);
 
-  useEffect(() => end.current?.scrollIntoView?.({ block: 'nearest' }), [bubbles]);
+  // ISSUE-003: effects must not return a value. Current Chromium's scrollIntoView() and
+  // focus() return Promises, so an expression-bodied effect handed React a Promise as its
+  // "cleanup" and the Step crashed. Block bodies return nothing.
+  useEffect(() => {
+    end.current?.scrollIntoView?.({ block: 'nearest' });
+  }, [bubbles]);
 
   async function send(body: Record<string, unknown>, shown: string | null) {
     setBusy(true);

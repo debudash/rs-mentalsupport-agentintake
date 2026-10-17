@@ -42,7 +42,9 @@ export function ClinicianView() {
       .catch(() => setError('We could not load your consultations.'));
   }, []);
 
-  useEffect(() => detailHeading.current?.focus(), [detail]);
+  useEffect(() => {
+    detailHeading.current?.focus(); // ISSUE-003: block body, see IntakeStep
+  }, [detail]);
 
   async function open(id: string) {
     try {

@@ -14,7 +14,9 @@ export function Withdrawal({ onCancel, onDone }: { onCancel: () => void; onDone:
   const [busy, setBusy] = useState(false);
   const heading = useRef<HTMLHeadingElement>(null);
 
-  useEffect(() => heading.current?.focus(), [receipt]);
+  useEffect(() => {
+    heading.current?.focus(); // ISSUE-003: block body, see IntakeStep
+  }, [receipt]);
 
   async function withdraw() {
     setBusy(true);
