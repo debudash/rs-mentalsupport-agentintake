@@ -132,7 +132,17 @@ def clean_address_line(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip(" ,.")
 
 
+# ISSUE-011: a ZIP cut short by the card edge or a shadow ("RS 350") still passed the shape
+# check, so a wrong address was pre-filled. When the address ends in a state and a number,
+# that number must be a whole ZIP (5 digits, or ZIP+4); otherwise the address stays blank.
+_ZIP_TAIL = re.compile(r"\b[A-Za-z]{2}\s+(\d[\d-]*)$")
+_WHOLE_ZIP = re.compile(r"\d{5}(?:-\d{4})?")
+
+
 def valid_address(text: str) -> bool:
+    tail = _ZIP_TAIL.search(text.strip())
+    if tail and not _WHOLE_ZIP.fullmatch(tail[1]):
+        return False
     return (
         bool(re.search(r"\d", text))
         and len(re.findall(r"[A-Za-z]{2,}", text)) >= 2
