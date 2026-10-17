@@ -12,7 +12,10 @@ from sqlalchemy.orm import Session
 from app.db.models import JourneyEvent, JourneyLink
 
 FUNNEL = ["signed_up", "consent_completed", "intake_completed", "identity_completed", "booked"]
-OTHER_EVENTS = {"withdrawn", "ocr_field"}
+OTHER_EVENTS = {"withdrawn", "ocr_field", "friction", "nps"}
+REPEATABLE = {"ocr_field", "friction"}
+# Friction signals: where people hit trouble. Crisis and safety check-ins are never recorded.
+FRICTION_KINDS = {"long_pause", "upload_problem", "high_stress", "upload_rejected", "llm_fallback"}
 OCR_FIELDS = ("legal_name", "date_of_birth", "address")
 
 
@@ -27,13 +30,16 @@ def start(db: Session, account_id: str) -> None:
 
 
 def record(db: Session, account_id: str, event: str, detail: dict | None = None) -> None:
-    """Record an event once per Journey (ocr_field may repeat). No-op without a Journey."""
+    """Record an event once per Journey (ocr_field and friction may repeat). No-op without a
+    Journey."""
     if event not in FUNNEL and event not in OTHER_EVENTS:
         raise ValueError(f"unknown journey event {event}")
     link = db.get(JourneyLink, account_id)
     if link is None:
         return
-    if event != "ocr_field":
+    if event == "friction" and (detail or {}).get("kind") not in FRICTION_KINDS:
+        raise ValueError(f"unknown friction kind {detail}")
+    if event not in REPEATABLE:
         seen = db.scalars(
             select(JourneyEvent.id).where(
                 JourneyEvent.journey_id == link.journey_id, JourneyEvent.event == event
@@ -59,6 +65,24 @@ def record_ocr_review(db: Session, account_id: str, prefilled: dict, edited: dic
                 "edited": bool(edited.get(field)) if was_prefilled else False,
             },
         )
+
+
+def friction(db: Session, account_id: str, step: str, kind: str) -> None:
+    record(db, account_id, "friction", {"step": step, "kind": kind})
+
+
+def has_event(db: Session, account_id: str, event: str) -> bool:
+    link = db.get(JourneyLink, account_id)
+    if link is None:
+        return False
+    return (
+        db.scalars(
+            select(JourneyEvent.id).where(
+                JourneyEvent.journey_id == link.journey_id, JourneyEvent.event == event
+            )
+        ).first()
+        is not None
+    )
 
 
 def unlink(db: Session, account_id: str) -> None:

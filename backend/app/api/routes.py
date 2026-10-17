@@ -68,6 +68,7 @@ def _support_card(db: Session, prof: ServiceProfile, client: Client, event: supp
     client.support_shown = list(client.support_shown or []) + [
         support.shown_key(event.step, trigger)
     ]
+    journeys.friction(db, client.account_id, event.step, trigger.value)
     db.commit()
     card = prof.supportive_content[trigger.value]
     return {"trigger": trigger.value, "title": card.title, "body": card.body}
@@ -292,6 +293,7 @@ def intake_message(
         model=llm.model if s.llm_used else None,
     )
     if s.llm_failure:
+        journeys.friction(db, client.account_id, "intake", "llm_fallback")
         telemetry.log(
             "llm_error",
             provider=llm.provider,
@@ -355,6 +357,7 @@ async def identity_scan(
     except UploadRejected as rejected:
         del data
         telemetry.note(outcome=f"rejected:{rejected.reason}")
+        journeys.friction(db, client.account_id, "identity", "upload_rejected")
         card = _support_card(db, prof, client, support.Event(kind="upload_failed", step="identity"))
         return {
             "accepted": False,
@@ -604,10 +607,39 @@ def support_event(
     step_complete = body.step in [s.value for s in current.completed]
     # Only events reported by the browser; high stress is decided server-side in Intake.
     kind = body.kind if body.kind in ("idle", "upload_failed") else "ignored"
+    if body.step not in ("consent", "intake", "identity", "scheduling"):
+        # The step name ends up in analytics: accept only real Step names, never free text.
+        return {"support": None}
     event = support.Event(
         kind=kind, step=body.step, idle_seconds=body.idle_seconds, step_complete=step_complete
     )
     return {"support": _support_card(db, prof, client, event)}
+
+
+# ---- feedback (NPS) ---------------------------------------------------------------------
+
+
+class FeedbackIn(BaseModel):
+    score: int = Field(ge=0, le=10)
+
+
+@router.post("/feedback")
+def feedback(
+    body: FeedbackIn,
+    who: Caller = Depends(caller),
+    db: Session = Depends(get_db),
+    prof: ServiceProfile = Depends(profile),
+) -> dict:
+    """The one post-booking question: how likely to recommend (0-10). Anonymous on the
+    Journey, once per Client; skippable in the UI."""
+    client = _require_client(db, who)
+    if Scheduling(db, prof).current_booking(client.account_id) is None:
+        raise HTTPException(409, "Feedback opens after booking.")
+    if journeys.has_event(db, client.account_id, "nps"):
+        raise HTTPException(409, "Thanks — we already have your answer.")
+    journeys.record(db, client.account_id, "nps", {"score": body.score})
+    db.commit()
+    return {"thanks": True}
 
 
 # ---- withdrawal -------------------------------------------------------------------------

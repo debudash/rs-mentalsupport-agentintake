@@ -40,6 +40,14 @@ interface DashboardData {
     drop_off_pct: number | null;
     median_minutes_from_previous: number | null;
   }[];
+  nps?: {
+    responses: number | string;
+    promoters_pct: number | null;
+    passives_pct: number | null;
+    detractors_pct: number | null;
+    nps: number | null;
+  };
+  friction_by_step?: { step: string; kind: string; count: number | string }[];
   ocr_corrections?: {
     field: string;
     reviews: number | string;
@@ -51,11 +59,19 @@ interface DashboardData {
 
 const NAMES: Record<string, string> = { chat: 'Chat reply', ocr: 'ID reading', booking: 'Booking' };
 const STAGE: Record<string, string> = {
+  scheduling_completed: 'Book',
   signed_up: 'Signed up',
   consent_completed: 'Consent',
   intake_completed: 'About you (intake)',
   identity_completed: 'Your details',
   booked: 'Booked',
+};
+const FRICTION: Record<string, string> = {
+  long_pause: 'Long pause',
+  upload_problem: 'Photo could not be read',
+  upload_rejected: 'Wrong or broken file',
+  high_stress: 'Said they were struggling',
+  llm_fallback: 'Assistant unavailable (simple questions used)',
 };
 const FIELD: Record<string, string> = {
   legal_name: 'Name',
@@ -286,6 +302,51 @@ export function Dashboard() {
               the real-world error rate of the ID reader.
             </p>
           </section>
+
+          <div className="grid">
+            <section className="card" aria-labelledby="nps-title">
+              <h3 id="nps-title">Would recommend (NPS)</h3>
+              {data.nps && data.nps.nps !== null ? (
+                <>
+                  <div className="stat">{data.nps.nps > 0 ? `+${data.nps.nps}` : data.nps.nps}</div>
+                  <p className="muted">
+                    {data.nps.responses} answers · promoters {data.nps.promoters_pct}% · passives{' '}
+                    {data.nps.passives_pct}% · detractors {data.nps.detractors_pct}% · target 70+
+                  </p>
+                </>
+              ) : (
+                <p className="muted">
+                  {data.nps?.responses ?? 0} answers so far — shown from 5. Asked once, after
+                  booking.
+                </p>
+              )}
+            </section>
+            <section className="card" aria-labelledby="friction-title">
+              <h3 id="friction-title">Where people hit trouble</h3>
+              {(data.friction_by_step ?? []).length === 0 ? (
+                <p className="muted">No friction signals in this window.</p>
+              ) : (
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Step</th>
+                      <th scope="col">Signal</th>
+                      <th scope="col">Times</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(data.friction_by_step ?? []).map((f) => (
+                      <tr key={`${f.step}-${f.kind}`}>
+                        <td>{STAGE[`${f.step}_completed`] ?? f.step}</td>
+                        <td>{FRICTION[f.kind] ?? f.kind}</td>
+                        <td>{f.count}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </section>
+          </div>
 
           <h2>AI quality (latest eval)</h2>
           <div className="grid">

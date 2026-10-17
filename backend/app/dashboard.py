@@ -111,6 +111,56 @@ def ocr_corrections(db: Session, since: datetime) -> list[dict]:
     return out
 
 
+def nps(db: Session, since: datetime) -> dict:
+    """Net Promoter Score from the post-booking question: % promoters (9-10) minus %
+    detractors (0-6). Withheld below SUPPRESS_BELOW responses."""
+    scores = [
+        d["score"]
+        for d in db.scalars(
+            select(JourneyEvent.detail).where(JourneyEvent.event == "nps", JourneyEvent.at >= since)
+        )
+        if d and isinstance(d.get("score"), int)
+    ]
+    n = len(scores)
+    out = {
+        "responses": suppress(n),
+        "promoters_pct": None,
+        "passives_pct": None,
+        "detractors_pct": None,
+        "nps": None,
+    }
+    if n >= SUPPRESS_BELOW:
+        promoters = sum(1 for s in scores if s >= 9)
+        detractors = sum(1 for s in scores if s <= 6)
+        out.update(
+            responses=n,
+            promoters_pct=round(100 * promoters / n, 1),
+            passives_pct=round(100 * (n - promoters - detractors) / n, 1),
+            detractors_pct=round(100 * detractors / n, 1),
+            nps=round(100 * (promoters - detractors) / n),
+        )
+    return out
+
+
+def friction_by_step(db: Session, since: datetime) -> list[dict]:
+    """Where people hit trouble: friction signals counted by Step and kind."""
+    counts: Counter = Counter()
+    for d in db.scalars(
+        select(JourneyEvent.detail).where(
+            JourneyEvent.event == "friction", JourneyEvent.at >= since
+        )
+    ):
+        if d:
+            counts[(d.get("step"), d.get("kind"))] += 1
+    order = {e.replace("_completed", ""): i for i, e in enumerate(FUNNEL)}
+    return [
+        {"step": step, "kind": kind, "count": suppress(n)}
+        for (step, kind), n in sorted(
+            counts.items(), key=lambda kv: (order.get(kv[0][0], 9), -kv[1])
+        )
+    ]
+
+
 def dashboard(db: Session, window_hours: int = 24, now: datetime | None = None) -> dict:
     now = now or datetime.now(UTC)
     since = now - timedelta(hours=window_hours)
@@ -207,6 +257,8 @@ def dashboard(db: Session, window_hours: int = 24, now: datetime | None = None) 
         "ai_quality": reports,
         "funnel": funnel(db, since),
         "ocr_corrections": ocr_corrections(db, since),
+        "friction_by_step": friction_by_step(db, since),
+        "nps": nps(db, since),
         "safety_and_privacy": {
             "crisis_pauses": suppress(totals.get("crisis_pauses", 0)),
             "withdrawals": suppress(totals.get("withdrawals", 0)),

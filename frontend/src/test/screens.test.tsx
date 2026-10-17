@@ -236,6 +236,17 @@ describe('Dashboard', () => {
               median_minutes_from_previous: null,
             },
           ],
+          nps: {
+            responses: 12,
+            promoters_pct: 58.3,
+            passives_pct: 25,
+            detractors_pct: 16.7,
+            nps: 42,
+          },
+          friction_by_step: [
+            { step: 'intake', kind: 'long_pause', count: 7 },
+            { step: 'identity', kind: 'upload_problem', count: '<5' },
+          ],
           ocr_corrections: [
             { field: 'legal_name', reviews: 8, prefilled_pct: 100, blank_pct: 0, edited_pct: 12.5 },
             {
@@ -262,11 +273,14 @@ describe('Dashboard', () => {
     expect(screen.getByText('✗ Misses target')).toBeInTheDocument();
     expect(screen.getByText('No data')).toBeInTheDocument();
     expect(screen.getAllByText('<5').length).toBeGreaterThanOrEqual(3);
-    expect(screen.getByText('About you (intake)')).toBeInTheDocument();
+    expect(screen.getAllByText('About you (intake)')).toHaveLength(2); // funnel + friction
     expect(screen.getByText('33.3%')).toBeInTheDocument();
     expect(screen.getByText('6 min')).toBeInTheDocument();
     expect(screen.getAllByText('12.5%', { selector: 'td' })).toHaveLength(2); // edited name, blank DOB
     expect(screen.getByText('Corrected by the client')).toBeInTheDocument();
+    expect(screen.getByText('+42')).toBeInTheDocument();
+    expect(screen.getByText('Long pause')).toBeInTheDocument();
+    expect(screen.getByText('Photo could not be read')).toBeInTheDocument();
     expect(await axe(container)).toHaveNoViolations();
   });
 });

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Feedback } from './Feedback';
 import { download, get, timeZone } from '../lib/api';
 import type { BookingView } from '../lib/types';
 
@@ -47,6 +48,7 @@ export function DoneStep({ onReschedule }: { onReschedule: () => void }) {
           Choose a different time
         </button>
       </div>
+      <Feedback />
     </section>
   );
 }
