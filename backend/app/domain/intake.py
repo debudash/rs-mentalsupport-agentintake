@@ -8,6 +8,7 @@ The LLM interprets free text, extracts answers, picks an Approved answer and wri
 acknowledgement. Any LLM failure or invalid output degrades to scripted questions.
 """
 
+import re
 import time
 from dataclasses import dataclass, field, replace
 from typing import Any
@@ -134,7 +135,15 @@ def _scripted_match(item: AssessmentItem, text: str) -> Any | None:
     if item.type == "scale":
         digits = [c for c in lowered if c.isdigit()]
         return validate_value(item, digits[0]) if digits else None
-    hits = [k for k, label in item.options.items() if label.lower() in lowered]
+    # ISSUE-005: people say "mostly anxiety", not the full label "Anxiety or worry". An option
+    # matches on its full label or on its own key words ("anxiety", "low mood") as whole
+    # words. All matches count together, so the single-match rule below refuses to guess
+    # whenever several options are mentioned.
+    hits = [
+        k
+        for k, label in item.options.items()
+        if label.lower() in lowered or re.search(rf"\b{re.escape(k.replace('_', ' '))}\b", lowered)
+    ]
     if not hits:
         return None
     return hits if item.type == "multichoice" else (hits[0] if len(hits) == 1 else None)

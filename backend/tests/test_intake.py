@@ -265,6 +265,18 @@ def test_system_prompt_requires_exact_allowed_values(conductor, llm):
     assert "exactly one of the allowed values" in llm.calls[0][0]
 
 
+def test_scripted_mode_matches_option_words_without_guessing(conductor, llm):
+    """ISSUE-005 regression. Found by: same walk — in scripted fallback "mostly anxiety
+    honestly" did not match the option "Anxiety or worry", so the Client was asked again."""
+    state = IntakeState(scripted_mode=True)
+    state, _ = conductor.respond(state, Turn(text="mostly anxiety honestly"))
+    assert state.answers.get("reason_category") == "anxiety"
+    ambiguous = IntakeState(scripted_mode=True)
+    ambiguous, reply = conductor.respond(ambiguous, Turn(text="anxiety and grief and sleep"))
+    assert "reason_category" not in ambiguous.answers  # several options: ask, don't guess
+    assert reply.pending_item == "reason_category"
+
+
 def test_unsafe_llm_reply_is_replaced(conductor, llm):
     llm.script(
         turn_result(
