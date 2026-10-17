@@ -398,5 +398,205 @@
       "date_of_birth": "1965-05-28",
       "address": "9798 Ewing Ct, Evanston, RS 42042"
     }
+  },
+  {
+    "file": "stress/motion_blur_a_00.jpg",
+    "set": "stress",
+    "variant": "motion_blur",
+    "expected": {
+      "name": "Juan Kim",
+      "date_of_birth": "1952-09-20",
+      "address": "1992 Martinez Blvd, Brendafort, RS 78618"
+    }
+  },
+  {
+    "file": "stress/low_light_a_01.jpg",
+    "set": "stress",
+    "variant": "low_light",
+    "expected": {
+      "name": "Sara Palmer",
+      "date_of_birth": "1999-10-19",
+      "address": "5907 Elliott Way, Lake Jacob, RS 60016"
+    }
+  },
+  {
+    "file": "stress/far_away_a_02.jpg",
+    "set": "stress",
+    "variant": "far_away",
+    "expected": {
+      "name": "Johnny Strong",
+      "date_of_birth": "1988-04-24",
+      "address": "7585 Jenna Ave, Tiffanytown, RS 30083"
+    }
+  },
+  {
+    "file": "stress/laminate_glare_a_03.jpg",
+    "set": "stress",
+    "variant": "laminate_glare",
+    "expected": {
+      "name": "Angela Casey",
+      "date_of_birth": "1993-09-26",
+      "address": "949 Hicks Ln, Saundersbury, RS 91270"
+    }
+  },
+  {
+    "file": "stress/hard_shadow_a_04.jpg",
+    "set": "stress",
+    "variant": "hard_shadow",
+    "expected": {
+      "name": "Nguyen Thi Lan",
+      "date_of_birth": "1989-11-21",
+      "address": "3794 Parker Way, Richardmouth, RS 75271"
+    }
+  },
+  {
+    "file": "stress/security_print_a_05.jpg",
+    "set": "stress",
+    "variant": "security_print",
+    "expected": {
+      "name": "Ruben E Diaz",
+      "date_of_birth": "1989-04-12",
+      "address": "7411 Schroeder Ct, Port Ashley, RS 13307"
+    }
+  },
+  {
+    "file": "stress/thumb_a_06.jpg",
+    "set": "stress",
+    "variant": "thumb",
+    "expected": {
+      "name": "Rebecca M Gomez",
+      "date_of_birth": "1979-08-15",
+      "address": null
+    }
+  },
+  {
+    "file": "stress/bent_a_07.jpg",
+    "set": "stress",
+    "variant": "bent",
+    "expected": {
+      "name": "Sarah Simmons",
+      "date_of_birth": "1967-04-07",
+      "address": "6119 Miller Blvd Apt 14C, Smithfort, RS 79184"
+    }
+  },
+  {
+    "file": "stress/photocopy_a_08.jpg",
+    "set": "stress",
+    "variant": "photocopy",
+    "expected": {
+      "name": "Katrina Solomon",
+      "date_of_birth": "1990-06-28",
+      "address": "8647 Anderson Ln, South Gregoryland, RS 46563"
+    }
+  },
+  {
+    "file": "stress/worst_case_a_09.jpg",
+    "set": "stress",
+    "variant": "worst_case",
+    "expected": {
+      "name": "Debra B Bruce",
+      "date_of_birth": "1978-02-15",
+      "address": "1157 Christine Ln, South Charlesside, RS 67857"
+    }
+  },
+  {
+    "file": "stress/motion_blur_b_10.jpg",
+    "set": "stress",
+    "variant": "motion_blur",
+    "expected": {
+      "name": "Veronica Preston",
+      "date_of_birth": "2001-08-29",
+      "address": "9531 Barker Dr, North Jeffreyport, RS 55333"
+    }
+  },
+  {
+    "file": "stress/low_light_b_11.jpg",
+    "set": "stress",
+    "variant": "low_light",
+    "expected": {
+      "name": "Lisa Ferguson",
+      "date_of_birth": "1982-10-26",
+      "address": "5049 Koch Rd, East Coryshire, RS 55849"
+    }
+  },
+  {
+    "file": "stress/far_away_b_12.jpg",
+    "set": "stress",
+    "variant": "far_away",
+    "expected": {
+      "name": "Patricia Romero",
+      "date_of_birth": "1997-10-13",
+      "address": "7744 Stevens Ct, New Michael, RS 58743"
+    }
+  },
+  {
+    "file": "stress/laminate_glare_b_13.jpg",
+    "set": "stress",
+    "variant": "laminate_glare",
+    "expected": {
+      "name": "Jean-Luc D'Souza",
+      "date_of_birth": "1986-12-31",
+      "address": "8823 Diaz Ct, Smithfort, RS 47842"
+    }
+  },
+  {
+    "file": "stress/hard_shadow_b_14.jpg",
+    "set": "stress",
+    "variant": "hard_shadow",
+    "expected": {
+      "name": "Mike Hinton",
+      "date_of_birth": "1972-08-22",
+      "address": "2347 Alexis Ln, East Donald, RS 35053"
+    }
+  },
+  {
+    "file": "stress/security_print_b_15.jpg",
+    "set": "stress",
+    "variant": "security_print",
+    "expected": {
+      "name": "Angela Hayes",
+      "date_of_birth": "1976-06-03",
+      "address": "2003 Mitchell Way, North Kathrynside, RS 11338"
+    }
+  },
+  {
+    "file": "stress/thumb_b_16.jpg",
+    "set": "stress",
+    "variant": "thumb",
+    "expected": {
+      "name": "Jennifer X Johnson",
+      "date_of_birth": "1989-01-15",
+      "address": null
+    }
+  },
+  {
+    "file": "stress/bent_b_17.jpg",
+    "set": "stress",
+    "variant": "bent",
+    "expected": {
+      "name": "Courtney H Howard",
+      "date_of_birth": "2003-11-21",
+      "address": "869 Thomas Blvd, Meganstad, RS 13810"
+    }
+  },
+  {
+    "file": "stress/photocopy_b_18.jpg",
+    "set": "stress",
+    "variant": "photocopy",
+    "expected": {
+      "name": "Robert L Ray",
+      "date_of_birth": "1958-06-12",
+      "address": "6331 Mendoza Ave, Riversberg, RS 47280"
+    }
+  },
+  {
+    "file": "stress/worst_case_b_19.jpg",
+    "set": "stress",
+    "variant": "worst_case",
+    "expected": {
+      "name": "William O Fox",
+      "date_of_birth": "1966-08-12",
+      "address": "2242 Meyer Dr, Palmerland, RS 51001"
+    }
   }
 ]
