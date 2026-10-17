@@ -1,6 +1,8 @@
 # Runbook
 
 For whoever operates the demo. Start at `/api/health` and the Operator dashboard.
+What each failure should look like, and how to rehearse it with `FAULT_INJECT`:
+[RELIABILITY.md](RELIABILITY.md). A `faults` list in `/api/health` means a drill is on.
 
 ## Health check
 

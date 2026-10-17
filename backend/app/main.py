@@ -8,7 +8,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-from app import telemetry
+from app import faults, telemetry
 from app.access import Forbidden, Unauthenticated
 from app.api.routes import router
 from app.config import get_settings
@@ -40,6 +40,9 @@ def create_app() -> FastAPI:
     telemetry.configure_logging()
     get_profile()  # a broken Service profile stops the app here
     fernet()  # so does a missing encryption key
+    injected = faults.active(settings)  # FAULT_INJECT in production stops the app here
+    if injected:
+        telemetry.log("faults_injected", faults=sorted(injected))
 
     app = FastAPI(
         title="rs-assist onboarding", docs_url="/api/docs", openapi_url="/api/openapi.json"

@@ -7,13 +7,30 @@ appointment, and support at the moments people tend to give up.
 Built for Riverside Partners' take-home brief ([client PRD](docs/source/client-prd.md)).
 Our build spec is [docs/PRD.md](docs/PRD.md).
 
+## Rubric map
+
+Where each line of the client's rubric is satisfied, and the command that checks it.
+
+| Rubric line (weight) | Where it's satisfied | Check it |
+|---|---|---|
+| **Core flows work, incl. edge cases & failure modes** (30) | All 4 flows with confirmation UX ([What it does](#what-it-does)); every edge case mapped to a test ([TEST_PLAN](docs/TEST_PLAN.md)); per-dependency failure matrix and fault injection ([RELIABILITY](docs/RELIABILITY.md)) | `make test` · `make smoke` · `make e2e` · `FAULT_INJECT=llm_down,ocr_fail make up` |
+| **AI quality: OCR + chatbot meet thresholds, incl. hard cases** (20) | OCR 98.9% golden, **93.3% on a held-out set never tuned against**, 0 made-up fields, every miss categorised; intents 100% on Claude Haiku, crisis 100% incl. subtle cases ([AI evaluation](#ai-evaluation)); OCR eval is a CI gate | `make eval` |
+| **Security, privacy & compliance** (20) | Consent, minimisation, retention, verifiable deletion, scoped access ([Privacy](#privacy-and-compliance)); PII boundary diagram ([ARCHITECTURE](docs/ARCHITECTURE.md#data-flow-and-the-pii-boundary)); [THREAT_MODEL](docs/THREAT_MODEL.md); log-grep test for seeded PII | `make test` (privacy tests) · `make smoke` (deletion verified) |
+| **Code quality & architecture** (15) | Deep modules behind seams with fakes ([ARCHITECTURE](docs/ARCHITECTURE.md)); 94% backend coverage, 80% gate; GitLab CI ([below](#ci-hooks-and-deploy-gitlab)); [decisions](docs/DECISIONS.md) and [ADRs](docs/adr) | `make lint` · `make ci` |
+| **Performance: p95 targets under stated load** (10) | Chat 2.28 s, OCR 1.18 s, booking 85 ms ([Performance](#performance)); service levels and error budgets ([RELIABILITY](docs/RELIABILITY.md#service-levels-and-error-budgets)) | `make load` · `make timings` |
+| **Docs, AI disclosure & demo** (5) | This README, [AI_USAGE.md](AI_USAGE.md), eval harness, demo video *(link to follow)* | — |
+| *Stretch #6, #7* | Sentiment-adaptive tone (gentle mode); Operations dashboard with funnel, per-Step time and OCR corrections. #5 multi-language not built ([why](docs/DECISIONS.md)) | `make e2e` (gentle walk) |
+| *Business case* | Where and why people drop off, time to complete, NPS — measured, simulated or stated as not shown ([IMPACT](docs/IMPACT.md)) | `make cohort` |
+
+## At a glance
+
 | | |
 |---|---|
 | **Onboarding** | Consent → Intake (chat) → Identity (ID photo or typing) → Scheduling |
 | **AI** | One structured LLM call per message (Claude, or OpenRouter/Ollama, or a keyless Fake); Tesseract OCR, local |
 | **Results** | OCR **98.9%** field accuracy (held-out **93.3%**, **0** fabricated fields); intents **100%** on Claude Haiku 5.5, crisis language pauses **100%**; chat p95 **2.28 s on real Claude Haiku at 20 users** (Opus 5.5 would miss the 3 s target), OCR p95 **1.18 s**, booking p95 **85 ms** (local) |
 | **Impact** | Funnel and "why" signals verified exact against a scripted cohort; simulated time to complete **2.8 min median** (target ≤ 15); what can't be shown without real people is stated — [docs/IMPACT.md](docs/IMPACT.md) |
-| **Tests** | 229 backend tests (**94%** coverage; 3 need Tesseract/Postgres and run in CI), 64 frontend tests incl. axe + WCAG contrast, browser walks in `e2e/` |
+| **Tests** | 239 backend tests (**94%** coverage; 3 need Tesseract/Postgres and run in CI), 64 frontend tests incl. axe + WCAG contrast, browser walks in `e2e/` |
 
 ![Intake conversation](docs/screenshots/03-intake-chat.png)
 
@@ -29,6 +46,8 @@ make seed      # migrations + 4 clinicians, 2 weeks of slots, demo accounts
 make up        # app on http://localhost:8000
 ```
 
+Or all three in one: `make demo`.
+
 Then, in another terminal:
 
 ```bash
@@ -39,6 +58,7 @@ make e2e       # browser walks: full journey, keyboard-only (17 checks), gentle 
 make load      # k6: 20 virtual users for 60 s
 make timings   # 20-run OCR and booking timings
 make cohort    # 30 simulated Clients at human pace -> evals/reports (see docs/IMPACT.md)
+FAULT_INJECT=llm_down,ocr_fail make up   # break things on purpose (docs/RELIABILITY.md)
 ```
 
 No `make` (plain Windows)? Every target is one command; read it in the [Makefile](Makefile).
@@ -202,8 +222,17 @@ by [tools/golden_set/generate.py](tools/golden_set/generate.py).
 | Golden (target ≥ 90%) | **98.9%** (89/90) | 100% | 100% | 97% | 0 |
 | Held-out | **93.3%** (28/30) | 80% | 100% | 100% | 0 |
 
-Remaining misses: Tesseract's English model drops "é" (José → Jos), and one cut-off ZIP
-digit. Both land on the review screen for the Client to correct.
+Every miss, by cause (3 of 120 fields; from [evals/reports/2026-10-17-ocr.json](evals/reports/2026-10-17-ocr.json)):
+
+| Failure category | Count | Example | Caught by | Next step |
+|---|---|---|---|---|
+| Accented letters dropped | 2 (held-out, name) | "José Álvarez-Ruiz" → "Jos Alvarez-Ruiz" | The review screen: pre-filled and marked "please check" | Tesseract's `eng+spa` models or a Latin-script model; score names accent-insensitively *and* report both |
+| Field cut off by the card edge | 1 (golden, address) | ZIP "68326" → "6832" | The review screen — but the value was **pre-filled, not left blank**: the truncated digits were read with high confidence | Validate ZIP length (5 digits) before pre-filling, so a short ZIP is left blank instead |
+| Made-up values (no basis in the image) | 0 | — | Confidence threshold + format validation | — |
+
+The cut-off ZIP is the one miss that the "never guess" rule didn't stop. It isn't
+fabricated (the digits are on the card), but a Client who skims the review screen could
+confirm a wrong ZIP. It's the first fix on the list.
 
 **Intents** — 65 labelled messages across all 8 intents, plus unambiguous crisis
 language, subtle risk, and ambiguous idioms ([evals/datasets/intents.yaml](evals/datasets/intents.yaml)).
@@ -261,7 +290,7 @@ docs/               PRD, architecture, decisions, test plan, runbook, deploy, lo
 ```
 
 Docs index: [Impact](docs/IMPACT.md) · [PRD](docs/PRD.md) · [Users](docs/USERS.md) · [Architecture](docs/ARCHITECTURE.md) ·
-[Decisions](docs/DECISIONS.md) · [Test plan](docs/TEST_PLAN.md) ·
+[Decisions](docs/DECISIONS.md) · [Reliability](docs/RELIABILITY.md) · [Threat model](docs/THREAT_MODEL.md) · [Test plan](docs/TEST_PLAN.md) ·
 [Performance](docs/PERFORMANCE.md) · [Accessibility](docs/ACCESSIBILITY.md) ·
 [Deploy](docs/DEPLOY.md) · [Runbook](docs/RUNBOOK.md) · [Issue log](docs/ISSUE_LOG.md) ·
 [AI log](docs/AI_LOG.md) · [Glossary](docs/GLOSSARY.md) · [AI usage](AI_USAGE.md)
@@ -274,6 +303,9 @@ Docs index: [Impact](docs/IMPACT.md) · [PRD](docs/PRD.md) · [Users](docs/USERS
   image build → deploy on every push. Gauntlet's GitLab has no shared runners, so it runs
   on a self-registered project runner (GitLab Runner in Docker, tag `rs-assist-local`);
   `CI_ENABLED=true` switches it on. Deploy runs once a `RAILWAY_TOKEN` variable exists.
+- **AI quality gate:** `eval:ocr` fails the pipeline if golden-set accuracy drops below 90%
+  or any field is made up. `eval:intent` (every intent handled, crisis 100%) runs on `main`
+  once a masked `ANTHROPIC_API_KEY` variable exists — the keyless Fake can't pass it.
 - **Pre-push hook:** [.githooks/pre-push](.githooks/pre-push) runs `make ci`; switch it on
   with `make hooks`.
 - **Deploy limitation:** Railway's push-to-deploy integration supports GitHub only. With

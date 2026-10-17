@@ -82,6 +82,9 @@ class DocumentReader:
 
 @lru_cache
 def get_reader() -> DocumentReader:
+    from app import faults
+
     settings = get_settings()
     engine: OCREngine = TesseractEngine() if settings.ocr_engine == "tesseract" else FakeEngine()
+    engine = faults.wrap_engine(engine, faults.active(settings))
     return DocumentReader(engine, settings.ocr_confidence_threshold, settings.upload_max_bytes)
