@@ -46,14 +46,16 @@ The stack is open (justify in README) but these are fixed by the brief:
 
 ## Build status (2026-10-17)
 
-Built and verified locally (see docs/AI_LOG.md, docs/ISSUE_LOG.md). Open items that need
-the user: real-model intent eval (`LLM_PROVIDER=anthropic make eval` — no key on this
-machine), Railway deploy (project not linked; hosted Supabase keys needed — docs/DEPLOY.md),
-the pre-push hook (`make hooks`), demo video. Pushed to GitLab; CI is ON (project runner
-`rs-assist-runner` in local Docker, tag rs-assist-local; CI_ENABLED=true) — jobs run only
-while this machine's Docker is up.
-Dashboard layer 2 (funnel + OCR corrections) and stretch #6 (gentle mode) built
-2026-10-17. Not built: stretch #5 (multi-language) — listed in the README.
+Built and verified locally (see docs/AI_LOG.md, docs/ISSUE_LOG.md). Real-model evals done
+(Haiku 5.5 is the demo model; Opus 5.5 report kept). Open items that need the user: Railway
+deploy (project not linked; hosted Supabase keys needed — docs/DEPLOY.md), the pre-push
+hook (`make hooks`), demo video. CI is ON (project runner `rs-assist-runner` in local
+Docker, tag rs-assist-local; CI_ENABLED=true) — jobs run only while this machine's Docker
+is up. Work goes through feature branches and GitLab merge requests (pipeline must pass,
+merge commits keep each fix's Issue/Root cause/Fix/Test message), not direct pushes to main.
+Dashboard layer 2 (funnel + OCR corrections), stretch #6 (gentle mode) and the header
+banner from the design system cover (Banner.tsx) built 2026-10-17. Not built: stretch #5
+(multi-language) — listed in the README.
 Bug fixes follow the Issue/Root cause/Fix/Test commit format; log them in docs/ISSUE_LOG.md.
 
 ## Timebox and scope (2 days — user, 2026-10-16)
