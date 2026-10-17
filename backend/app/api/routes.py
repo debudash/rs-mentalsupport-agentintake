@@ -11,7 +11,7 @@ from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
 from app import consent as consent_module
-from app import journeys, telemetry
+from app import faults, journeys, telemetry
 from app import onboarding_service as svc
 from app.access import Caller, clinician_bookings, clinician_view, require
 from app.api.deps import caller, conductor, profile
@@ -127,7 +127,11 @@ def health(db: Session = Depends(get_db)) -> dict:
     status["llm"] = "ok" if llm.ping() else "unreachable"
     status["llm_provider"] = llm.provider
     status["llm_model"] = llm.model
-    status["status"] = "ok" if status["database"] == "ok" else "degraded"
+    injected = faults.active(get_settings())
+    if injected:
+        status["faults"] = sorted(injected)
+    healthy = status["database"] == "ok" and not injected
+    status["status"] = "ok" if healthy else "degraded"
     return status
 
 

@@ -108,3 +108,19 @@ and what a human decided. Tools and models used inside the product are in
   line now sits on the page background, so that colour pair joined the contrast test.
   Screenshots refreshed (sign-up screenshot added to show the full banner); stale test
   counts in the README and accessibility doc corrected.
+
+## 2026-10-17 — Judgment and evidence pass (human-supplied "stand out" guide)
+
+- **Human asked** how the build stacks against a guide for standing out (degradation model,
+  honest evals, privacy artifacts, reviewer experience, configurable template). Agent rated
+  each item against the repo; the human chose the documentation items plus fault injection,
+  and held back the self-checking receipt and a second Service profile.
+- Fault injection built test-first (10 tests): `FAULT_INJECT=llm_timeout|llm_down|ocr_fail|db_slow`
+  wraps each dependency at its seam, refused in production, listed in `/health`. Live drill
+  with `llm_down,ocr_fail`: only the targeted smoke check failed; onboarding completed.
+- New docs: RELIABILITY (failure matrix, drills, service levels + error budgets),
+  THREAT_MODEL, PII-boundary diagram, OCR miss categories (incl. the one wrong pre-fill the
+  rule didn't stop), README rubric map, `make demo`, CI eval gates.
+- Agent re-verified a claim before citing it: "public key can't read tables" had been a
+  manual check, not a smoke test; re-checked live (42501 on four tables) and cited as such.
+- CI paused at the human's request (`CI_ENABLED=false`) to speed up iteration.

@@ -40,6 +40,54 @@ flowchart LR
 - **The LLM** sees only masked chat text. Identity details and images never leave the
   container.
 
+## Data flow and the PII boundary
+
+Everything inside the red boundary may hold personal data. Every arrow that crosses it
+carries only what its label says.
+
+```mermaid
+flowchart LR
+  Client([Client's browser<br/>ID photo resized, EXIF and GPS stripped])
+
+  subgraph PII["PII boundary: personal data allowed only in here"]
+    direction TB
+    API[FastAPI<br/>verifies token, checks ownership]
+    Mask[Masking<br/>phones, emails, dates, addresses → placeholders]
+    Reader[Document reader<br/>image in memory only, never stored]
+    DB[(Postgres<br/>identity details and free text<br/>encrypted per field)]
+    Key[[FIELD_ENCRYPTION_KEY<br/>app server only]]
+    API --> Reader
+    API --> Mask
+    API <--> DB
+    Key -.- API
+  end
+
+  LLM[LLM provider]
+  Logs[Logs and timing records]
+  Funnel[Journey events]
+  Dash[Operator dashboard]
+  Clin[Clinician view]
+
+  Client -- "HTTPS: answers, ID photo, identity details" --> API
+  Mask -- "masked chat text only<br/>no identity details, no images" --> LLM
+  API -- "endpoint, timings, outcome<br/>no account id, no content" --> Logs
+  API -- "random journey id, step, time<br/>per-field pre-filled / edited flags" --> Funnel
+  Funnel -- "aggregates, counts under 5 suppressed" --> Dash
+  Logs --> Dash
+  API -- "own bookings only: first name + Assessment<br/>each view written to the Access log" --> Clin
+
+  style PII stroke:#a3262a,stroke-width:3px
+```
+
+| Leaves the boundary | To | Carries | Never carries |
+|---|---|---|---|
+| Masked chat text | LLM provider | What the Client typed in Intake, with contact details and dates replaced | Name, DOB, address, ID image, button answers |
+| Log lines, timing records | Logs, dashboard | Endpoint, stage timings, intent, outcome, error type | Account id, any answer, any free text |
+| Journey events | Dashboard | Random id, step reached, time, friction kind, per-field yes/no flags | Account id (the link is deleted at Withdrawal), any value |
+| Clinician view | A Clinician | First name and Assessment for Bookings in their own Slots | DOB, address, other Clinicians' Clients |
+
+Threats against this boundary and what stops them: [THREAT_MODEL.md](THREAT_MODEL.md).
+
 ## Low-level design: modules
 
 Deep modules — a small interface over a lot of behaviour — each tested through its

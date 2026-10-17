@@ -86,6 +86,34 @@ test:frontend:
   script:
     - npm run test:coverage
 
+# AI quality regression gate: evals/run.py exits non-zero when a scorecard fails, so accuracy
+# can't drop silently. OCR (local Tesseract, no key): golden set >= 90% and 0 fabricated fields.
+eval:ocr:
+  extends: .backend
+  stage: test
+  script:
+    - apt-get update -qq && apt-get install -y -qq tesseract-ocr libglib2.0-0 >/dev/null
+    - uv run python ../evals/run.py ocr
+  artifacts:
+    when: always
+    paths: [evals/reports/]
+
+# Intents need a real model (the keyless Fake can't pass): every intent handled and crisis
+# 100%. Only on the default branch, and only once a masked ANTHROPIC_API_KEY variable exists.
+eval:intent:
+  extends: .backend
+  stage: test
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $ANTHROPIC_API_KEY
+  variables:
+    LLM_PROVIDER: anthropic
+    LLM_MODEL: claude-haiku-5-5
+  script:
+    - uv run python ../evals/run.py intent
+  artifacts:
+    when: always
+    paths: [evals/reports/]
+
 build:image:
   stage: build
   image: docker:27

@@ -16,11 +16,12 @@ at least one named test below.
 | API integration | `backend/tests/test_api_flow.py` (FastAPI TestClient, whole onboarding) | `make test` |
 | Postgres integration | `backend/tests/test_postgres_concurrency.py` (20 simultaneous bookings, one slot: exactly one wins — and verified to fail when the unique index is dropped), `test_postgres_withdrawal.py` (needs Supabase's auth schema) | CI job `test:postgres` (Postgres 17 service, migrations to head); locally `pytest -m postgres` with `TEST_POSTGRES_URL` |
 | Frontend components + accessibility | `frontend/src/test/*.test.tsx` (Testing Library + axe), `contrast.test.ts` (WCAG ratios) | `make test` |
-| AI evals | `evals/run.py` over `evals/datasets` | `make eval` |
+| Fault injection | `backend/tests/test_faults.py` (each fault degrades as documented; refused in production) | `make test`; live drills in [RELIABILITY](RELIABILITY.md) |
+| AI evals | `evals/run.py` over `evals/datasets` | `make eval`; CI gate `eval:ocr` (golden ≥ 90%, 0 made up) and `eval:intent` on `main` with a key |
 | End-to-end on the running stack | `scripts/smoke_test.py` (21 checks, real Supabase Auth, Tesseract) | `make smoke` |
 | Performance | `k6/journey.js`, `k6/timings.py` | `make load`, `make timings` |
 
-Coverage: backend **93%** (gate 80% on core logic, enforced in CI); frontend ~79% lines.
+Coverage: backend **94%** (gate 80% on core logic, enforced in CI); frontend ~79% lines.
 
 ## PRD acceptance criteria → tests
 
