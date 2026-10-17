@@ -14,6 +14,10 @@ class Settings(BaseSettings):
 
     # Database: SQLite for tests, Supabase Postgres (pooler URL) everywhere else.
     database_url: str = "sqlite:///./rs_assist.db"
+    # Connections per server worker (pool + overflow). Sized for the Supabase Free session
+    # pooler's 15 clients: 2 workers x (5 + 1) = 12, leaving room for migrations and the seed.
+    db_pool_size: int = 5
+    db_max_overflow: int = 1
 
     # Supabase Auth
     supabase_url: str = ""
