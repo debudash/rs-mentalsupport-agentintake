@@ -43,13 +43,18 @@ class SupabaseTokenVerifier:
         self._secret = jwt_secret
         self._jwks = (
             jwt.PyJWKClient(f"{supabase_url.rstrip('/')}/auth/v1/.well-known/jwks.json")
-            if supabase_url and not jwt_secret
+            if supabase_url
             else None
         )
 
     def verify(self, token: str) -> str:
         try:
-            if self._secret:
+            # Legacy / local projects sign with a shared HS256 secret; newer projects use
+            # asymmetric keys published as JWKS. The token's header says which.
+            algorithm = jwt.get_unverified_header(token).get("alg")
+            if algorithm == "HS256":
+                if not self._secret:
+                    raise Unauthenticated("HS256 token but no SUPABASE_JWT_SECRET configured")
                 claims = jwt.decode(
                     token, self._secret, algorithms=["HS256"], audience="authenticated"
                 )
@@ -81,7 +86,7 @@ class StaticSecretVerifier(SupabaseTokenVerifier):
 @lru_cache
 def get_verifier() -> TokenVerifier:
     settings: Settings = get_settings()
-    return SupabaseTokenVerifier(settings.supabase_url, settings.supabase_jwt_secret)
+    return SupabaseTokenVerifier(settings.server_supabase_url, settings.supabase_jwt_secret)
 
 
 @dataclass(frozen=True)

@@ -43,7 +43,7 @@ def _supabase_user(email: str, password: str) -> str | None:
     settings = get_settings()
     if not settings.supabase_url or not settings.supabase_service_role_key:
         return None
-    base = settings.supabase_url.rstrip("/")
+    base = settings.server_supabase_url.rstrip("/")
     headers = {
         "apikey": settings.supabase_service_role_key,
         "Authorization": f"Bearer {settings.supabase_service_role_key}",

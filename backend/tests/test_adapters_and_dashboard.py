@@ -218,3 +218,20 @@ def test_dashboard_panels(db):
     assert panels["llm_health"]["providers"] == {"anthropic/m": 20}
     assert panels["ai_quality"]["ocr"]["overall_accuracy"] == 0.93
     assert panels["safety_and_privacy"]["crisis_pauses"] == "<5"
+
+
+def test_docker_host_alias_rewrites_only_server_side_urls():
+    from app.config import Settings
+
+    s = Settings(
+        database_url="postgresql+psycopg://postgres:pw@127.0.0.1:54322/postgres",
+        supabase_url="http://127.0.0.1:54321",
+        docker_host_alias="host.docker.internal",
+    )
+    assert (
+        s.server_database_url
+        == "postgresql+psycopg://postgres:pw@host.docker.internal:54322/postgres"
+    )
+    assert s.server_supabase_url == "http://host.docker.internal:54321"
+    assert s.supabase_url == "http://127.0.0.1:54321"  # the browser keeps the public URL
+    assert Settings(database_url="sqlite://").server_database_url == "sqlite://"

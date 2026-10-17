@@ -219,16 +219,32 @@ def test_tesseract_reads_rendered_text():
 
 
 def test_fields_found_by_shape_when_labels_are_lost():
-    found = extract(lines("Riverside Member Card", "Jerome Griffin", "31 DEC 1989",
-                          "6040 Johnston Dr", "Amandaton, RS 54059", "Member 663803"))
+    found = extract(
+        lines(
+            "Riverside Member Card",
+            "Jerome Griffin",
+            "31 DEC 1989",
+            "6040 Johnston Dr",
+            "Amandaton, RS 54059",
+            "Member 663803",
+        )
+    )
     assert found["name"].value == "Jerome Griffin"
     assert found["date_of_birth"].value == "1989-12-31"
     assert found["address"].value == "6040 Johnston Dr, Amandaton, RS 54059"
 
 
 def test_shape_fallback_never_guesses_when_ambiguous():
-    found = extract(lines("Jerome Griffin", "31 DEC 1989", "Issued 02 JAN 2020",
-                          "6040 Johnston Dr", "12 Oak St", "Amandaton, RS 54059"))
+    found = extract(
+        lines(
+            "Jerome Griffin",
+            "31 DEC 1989",
+            "Issued 02 JAN 2020",
+            "6040 Johnston Dr",
+            "12 Oak St",
+            "Amandaton, RS 54059",
+        )
+    )
     assert found["date_of_birth"] is None and found["name"] is None  # two dates
     assert found["address"] is None  # two street lines
 

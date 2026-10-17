@@ -191,15 +191,29 @@ _STREET = re.compile(
     re.I,
 )
 _CITY_LINE = re.compile(r"^[A-Za-z][A-Za-z.'\- ]+,\s*[A-Z]{2}\s+\d{5}(?:-\d{4})?$")
-_HEADER_WORDS = {"state", "riverside", "card", "member", "identification", "client", "license",
-                 "issued", "expires", "signature", "id", "no"}
+_HEADER_WORDS = {
+    "state",
+    "riverside",
+    "card",
+    "member",
+    "identification",
+    "client",
+    "license",
+    "issued",
+    "expires",
+    "signature",
+    "id",
+    "no",
+}
 
 
 def _by_shape(lines: list[Line], texts: list[str], found: dict, today: date | None) -> None:
     date_rows = [i for i, t in enumerate(texts) if parse_date(t, today)]
     if found["date_of_birth"] is None and len(date_rows) == 1:
         i = date_rows[0]
-        found["date_of_birth"] = Candidate(parse_date(texts[i], today), _words_conf(lines[i], texts[i]))
+        found["date_of_birth"] = Candidate(
+            parse_date(texts[i], today), _words_conf(lines[i], texts[i])
+        )
 
     street_rows = [i for i, t in enumerate(texts) if _STREET.match(t)]
     if found["address"] is None and len(street_rows) == 1:

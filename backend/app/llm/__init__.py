@@ -42,9 +42,17 @@ class DebugLoggingLLM:
             raise
         finally:
             with open(self._path, "a", encoding="utf-8") as fh:
-                fh.write(json.dumps({"system": system,
-                                     "messages": [m.__dict__ for m in messages],
-                                     "result": result, "error": error}) + "\n")
+                fh.write(
+                    json.dumps(
+                        {
+                            "system": system,
+                            "messages": [m.__dict__ for m in messages],
+                            "result": result,
+                            "error": error,
+                        }
+                    )
+                    + "\n"
+                )
 
     def ping(self) -> bool:
         return self._inner.ping()

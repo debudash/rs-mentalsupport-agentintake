@@ -1,0 +1,29 @@
+# Local run of the same image that is deployed. Supabase (auth + Postgres) runs separately
+# via `npx supabase start` (make setup); the app reaches it through host.docker.internal.
+services:
+  app:
+    build: { context: ., target: runtime }
+    env_file: .env
+    environment:
+      DOCKER_HOST_ALIAS: host.docker.internal
+      FRONTEND_DIST: /app/frontend/dist
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["8000:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:8000/api/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Tests, evals, seeding and the golden-set generator, with Tesseract and fonts.
+  dev:
+    build: { context: ., target: dev }
+    profiles: ["tools"]
+    env_file: .env
+    environment:
+      DOCKER_HOST_ALIAS: host.docker.internal
+      PYTHONPATH: /repo/backend
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    volumes: [".:/repo"]
+    working_dir: /repo/backend
+    entrypoint: ["/app/backend/.venv/bin/python"]

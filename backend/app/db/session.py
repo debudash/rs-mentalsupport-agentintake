@@ -23,7 +23,7 @@ def make_engine(url: str) -> Engine:
 
 @lru_cache
 def get_engine() -> Engine:
-    return make_engine(get_settings().database_url)
+    return make_engine(get_settings().server_database_url)
 
 
 @lru_cache

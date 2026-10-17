@@ -40,4 +40,4 @@ class FakeAuthAdmin:
 @lru_cache
 def get_auth_admin() -> AuthAdmin:
     settings = get_settings()
-    return SupabaseAuthAdmin(settings.supabase_url, settings.supabase_service_role_key)
+    return SupabaseAuthAdmin(settings.server_supabase_url, settings.supabase_service_role_key)

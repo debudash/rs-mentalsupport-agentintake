@@ -42,6 +42,25 @@ class Settings(BaseSettings):
 
     # Serving
     frontend_dist: str = "../frontend/dist"
+    # Inside docker compose, 127.0.0.1 is the container itself: server-side calls to the
+    # database and Supabase go to this host alias instead (the browser keeps SUPABASE_URL).
+    docker_host_alias: str = ""
+
+    def _server_side(self, url: str) -> str:
+        if not self.docker_host_alias:
+            return url
+        for local in ("127.0.0.1", "localhost"):
+            url = url.replace(f"@{local}:", f"@{self.docker_host_alias}:")
+            url = url.replace(f"//{local}:", f"//{self.docker_host_alias}:")
+        return url
+
+    @property
+    def server_database_url(self) -> str:
+        return self._server_side(self.database_url)
+
+    @property
+    def server_supabase_url(self) -> str:
+        return self._server_side(self.supabase_url)
 
 
 @lru_cache
