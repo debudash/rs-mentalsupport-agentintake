@@ -85,6 +85,18 @@ def has_event(db: Session, account_id: str, event: str) -> bool:
     )
 
 
+def has_friction(db: Session, account_id: str, step: str, kind: str) -> bool:
+    link = db.get(JourneyLink, account_id)
+    if link is None:
+        return False
+    details = db.scalars(
+        select(JourneyEvent.detail).where(
+            JourneyEvent.journey_id == link.journey_id, JourneyEvent.event == "friction"
+        )
+    )
+    return any(d == {"step": step, "kind": kind} for d in details)
+
+
 def unlink(db: Session, account_id: str) -> None:
     """At Withdrawal: record the outcome, then cut the only link back to the person."""
     record(db, account_id, "withdrawn")

@@ -602,7 +602,16 @@ def support_event(
 ) -> dict:
     client = _client(db, who)
     if client is None:
-        return {"support": None}
+        # Before consent there is no Client record, but a long pause on the Consent Step is
+        # a classic drop-off point: show the card once and count it on the Journey.
+        event = support.Event(kind=body.kind, step=body.step, idle_seconds=body.idle_seconds)
+        shown = journeys.has_friction(db, who.account_id, "consent", "long_pause")
+        if body.step != "consent" or support.decide(event, [], False) is None or shown:
+            return {"support": None}
+        journeys.friction(db, who.account_id, "consent", "long_pause")
+        db.commit()
+        card = prof.supportive_content["long_pause"]
+        return {"support": {"trigger": "long_pause", "title": card.title, "body": card.body}}
     current = onboarding.state(svc.facts(db, client))
     step_complete = body.step in [s.value for s in current.completed]
     # Only events reported by the browser; high stress is decided server-side in Intake.

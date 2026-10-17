@@ -199,3 +199,34 @@ def test_browser_reported_step_must_be_a_real_step(app_client, new_account, db):
     db.expire_all()
     dump = str([e.detail for e in db.scalars(select(JourneyEvent))])
     assert "jane@example.com" not in dump
+
+
+def test_long_pause_at_consent_is_visible_before_any_client_record(app_client, new_account, db):
+    """A pause on the Consent Step happens before the Client record exists; it must still
+    show the reassurance card once and count as friction."""
+    account = new_account()
+    h = auth(account)
+    app_client.get("/api/me", headers=h)  # signed up, nothing consented yet
+    first = app_client.post(
+        "/api/support/events",
+        headers=h,
+        json={"kind": "idle", "step": "consent", "idle_seconds": 60},
+    ).json()
+    again = app_client.post(
+        "/api/support/events",
+        headers=h,
+        json={"kind": "idle", "step": "consent", "idle_seconds": 90},
+    ).json()
+    assert first["support"]["trigger"] == "long_pause"
+    assert again["support"] is None
+    db.expire_all()
+    jid = db.get(JourneyLink, account).journey_id
+    details = [
+        e.detail
+        for e in db.scalars(
+            select(JourneyEvent).where(
+                JourneyEvent.journey_id == jid, JourneyEvent.event == "friction"
+            )
+        )
+    ]
+    assert details == [{"step": "consent", "kind": "long_pause"}]
