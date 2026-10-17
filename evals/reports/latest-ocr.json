@@ -10,8 +10,8 @@
     },
     "fields_correct": 89,
     "fields_total": 90,
-    "missed_left_blank": 0,
-    "missed_wrong_prefill": 1
+    "missed_left_blank": 1,
+    "missed_wrong_prefill": 0
   },
   "held_out": {
     "overall_accuracy": 0.9333,
@@ -34,8 +34,8 @@
     },
     "fields_correct": 26,
     "fields_total": 60,
-    "missed_left_blank": 31,
-    "missed_wrong_prefill": 3
+    "missed_left_blank": 33,
+    "missed_wrong_prefill": 1
   },
   "stress_by_kind": {
     "motion_blur": {
@@ -59,8 +59,8 @@
       },
       "fields_correct": 2,
       "fields_total": 6,
-      "missed_left_blank": 3,
-      "missed_wrong_prefill": 1
+      "missed_left_blank": 4,
+      "missed_wrong_prefill": 0
     },
     "far_away": {
       "overall_accuracy": 1.0,
@@ -95,8 +95,8 @@
       },
       "fields_correct": 2,
       "fields_total": 6,
-      "missed_left_blank": 3,
-      "missed_wrong_prefill": 1
+      "missed_left_blank": 4,
+      "missed_wrong_prefill": 0
     },
     "security_print": {
       "overall_accuracy": 0.0,
@@ -166,8 +166,8 @@
   },
   "fabricated_fields": 0,
   "latency_ms": {
-    "p50": 902.5,
-    "p95": 2487.6,
+    "p50": 985.5,
+    "p95": 2152.8,
     "runs": 60
   },
   "passes": true

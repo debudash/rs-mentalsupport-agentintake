@@ -223,16 +223,16 @@ A miss is either **left blank** (safe: the Client types it) or a **wrong value p
 
 | Set | Field accuracy | Name | DOB | Address | Left blank | Wrong pre-filled | Made up |
 |---|---|---|---|---|---|---|---|
-| Golden (target ≥ 90%) | **98.9%** (89/90) | 100% | 100% | 97% | 0 | 1 | 0 |
+| Golden (target ≥ 90%) | **98.9%** (89/90) | 100% | 100% | 97% | 1 | 0 | 0 |
 | Held-out | **93.3%** (28/30) | 80% | 100% | 100% | 0 | 2 | 0 |
-| Stress (realistic bad captures) | **43.3%** (26/60) | 45% | 50% | 35% | 31 | 3 | 0 |
+| Stress (realistic bad captures) | **43.3%** (26/60) | 45% | 50% | 35% | 33 | 1 | 0 |
 
 Misses on the golden and held-out sets, by cause (from [evals/reports/2026-10-17-ocr.json](evals/reports/2026-10-17-ocr.json)):
 
 | Failure category | Count | Example | Caught by | Next step |
 |---|---|---|---|---|
 | Accented letters dropped | 2 (held-out, name) | "José Álvarez-Ruiz" → "Jos Alvarez-Ruiz" | The review screen: pre-filled and marked "please check" | Tesseract's `eng+spa` models or a Latin-script model; score names accent-insensitively *and* report both |
-| Field cut off by the card edge | 1 (golden, address) | ZIP "68326" → "6832" | The review screen — but the value was **pre-filled, not left blank**: the truncated digits were read with high confidence | Validate ZIP length (5 digits) before pre-filling, so a short ZIP is left blank instead |
+| Field cut off by the card edge | 1 (golden, address) | ZIP "68326" read as "6832" | Was pre-filled; since [ISSUE-011](docs/ISSUE_LOG.md) a short ZIP leaves the address **blank** for the Client to type | Done |
 | Made-up values (no basis in the image) | 0 | — | Confidence threshold + format validation | — |
 
 **Stress set: realistic bad captures** — 2 of each (one per card layout):
@@ -243,18 +243,20 @@ Misses on the golden and held-out sets, by cause (from [evals/reports/2026-10-17
 | Thumb over the address | 100% | Name and DOB read; the covered address correctly **left blank** |
 | Bent card | 100% | — |
 | Laminate glare streak | 67% | One address blanked; **one house number misread** ("949" → "349") |
-| Low light (underexposed, sensor noise) | 33% | Mostly blank; **one name filled with a label** ("DATE OF BIRTH o") |
-| Phone's shadow over the card | 33% | Mostly blank; **one ZIP truncated** ("35053" → "350") |
+| Low light (underexposed, sensor noise) | 33% | Mostly blank; one name was filled with a label ("DATE OF BIRTH o") — fixed, now blank ([ISSUE-010](docs/ISSUE_LOG.md)) |
+| Phone's shadow over the card | 33% | Mostly blank; one ZIP was truncated ("35053" → "350") — fixed, now blank ([ISSUE-011](docs/ISSUE_LOG.md)) |
 | Motion blur (hand shake) | 0% | All blank → "type it instead" |
 | Security print under the text | 0% | All blank — the reader finds no confident field through the printed lines |
 | Photocopy / low-resolution scan | 0% | All blank |
 | Worst case (dim + shaky + shadow + heavy JPEG) | 0% | All blank |
 
-What this shows: on bad captures the reader mostly **fails safe** — 31 of 34 misses were
-left blank, so the Client is sent to typing rather than shown a guess. The 3 unsafe misses
-point at three fixes, in order: (1) never accept a field label as a value; (2) check ZIP
-length (5 digits) before pre-filling — also the golden-set miss; (3) treat isolated low-
-confidence digits in a house number as unreadable. Accuracy on blur, security print and
+What this shows: on bad captures the reader **fails safe** — 33 of 34 misses are left
+blank, so the Client is sent to typing rather than shown a guess. The stress set first
+found 3 unsafe misses; two were fixed as bugs (a label taken as a name,
+[ISSUE-010](docs/ISSUE_LOG.md); a short ZIP, [ISSUE-011](docs/ISSUE_LOG.md)), which also
+removed the golden set's only wrong pre-fill. The one left — a house number misread under
+glare ("949" → "349") — is the next step: treat an isolated low-confidence digit in a
+house number as unreadable. Accuracy on blur, security print and
 photocopies would need better preprocessing (deblurring, removing coloured print by
 channel) or a stronger engine (PaddleOCR) — and a *new* stress set to score it on, since
 this one would then have been tuned against.
