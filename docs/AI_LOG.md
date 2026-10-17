@@ -70,6 +70,15 @@ and what a human decided. Tools and models used inside the product are in
   "subtle, not distracting" brief. Verified on real Claude: 7/7 gentle checks, full and
   keyboard walks unchanged (17/17).
 
+## 2026-10-17 — Self-review fixes
+
+- Agent rated the build against the client rubric (~84/100 before deploy and video) and
+  found the README claimed double-booking was "tested concurrently" when tests were
+  sequential. Added a real race test (20 simultaneous bookings on Postgres, exactly one
+  wins), proved it fails with the unique index dropped, and added a Postgres service job
+  to CI; migrations made to run on plain Postgres (role-conditional revoke).
+- README and `.env.example` now state that the chat benchmark requires Haiku.
+
 ## Not done by the agent (needs the human)
 
 - **Deployment:** Railway is logged in but no project is linked, and the hosted Supabase

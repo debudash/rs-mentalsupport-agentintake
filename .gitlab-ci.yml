@@ -63,6 +63,23 @@ test:backend:
     reports:
       coverage_report: { coverage_format: cobertura, path: backend/coverage.xml }
 
+# Real Postgres: migrations apply cleanly and the double-booking guarantee holds when 20
+# requests race for one slot (tests/test_postgres_concurrency.py).
+test:postgres:
+  extends: .backend
+  stage: test
+  services:
+    - name: postgres:17
+      alias: postgres
+  variables:
+    POSTGRES_PASSWORD: postgres
+    DATABASE_URL: postgresql+psycopg://postgres:postgres@postgres:5432/postgres
+    TEST_POSTGRES_URL: postgresql+psycopg://postgres:postgres@postgres:5432/postgres
+  script:
+    - export FIELD_ENCRYPTION_KEY=$(uv run python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())")
+    - uv run alembic upgrade head
+    - uv run pytest -m postgres -p no:cacheprovider -o addopts="" -rs
+
 test:frontend:
   extends: .frontend
   stage: test

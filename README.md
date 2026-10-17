@@ -11,7 +11,7 @@ Our build spec is [docs/PRD.md](docs/PRD.md).
 |---|---|
 | **Onboarding** | Consent → Intake (chat) → Identity (ID photo or typing) → Scheduling |
 | **AI** | One structured LLM call per message (Claude, or OpenRouter/Ollama, or a keyless Fake); Tesseract OCR, local |
-| **Results** | OCR **98.9%** field accuracy (held-out **93.3%**, **0** fabricated fields); intents **100%** on Claude Haiku 5.5, crisis language pauses **100%**; chat p95 **2.28 s on real Claude at 20 users**, OCR p95 **1.18 s**, booking p95 **85 ms** (local) |
+| **Results** | OCR **98.9%** field accuracy (held-out **93.3%**, **0** fabricated fields); intents **100%** on Claude Haiku 5.5, crisis language pauses **100%**; chat p95 **2.28 s on real Claude Haiku at 20 users** (Opus 5.5 would miss the 3 s target), OCR p95 **1.18 s**, booking p95 **85 ms** (local) |
 | **Tests** | 188 backend tests (**93%** coverage; 2 need Tesseract/Postgres and run in Docker), 50 frontend tests incl. axe + WCAG contrast, browser walks in `e2e/` |
 
 ![Intake conversation](docs/screenshots/03-intake-chat.png)
@@ -54,6 +54,11 @@ You can also create a new account from the sign-in page; email confirmation is o
 the demo (see [Production upgrades](#production-upgrades)).
 
 ### Using a real model
+
+> **Benchmarks need Haiku.** The chat target (p95 < 3 s) is met with
+> `LLM_MODEL=claude-haiku-5-5` — that is what the demo and every published number use.
+> `.env.example` keeps Claude Opus 5.5 as the general default, but Opus alone takes about
+> 3 s at p95, so with it the chat **misses** the 3 s target. Details: [AI evaluation](#ai-evaluation).
 
 `.env.example` defaults to `LLM_PROVIDER=fake`, so the app and every test run without a
 key. The Fake is a keyword heuristic, not a model: the chat works, but the intent scorecard
@@ -103,7 +108,8 @@ Then `make up` again, and `make eval` for the intent scorecard on that model.
   only when read confidently; anything uncertain is left blank, never guessed. Nothing is
   saved until the Client confirms. Typing is always an equal option.
 - **Booking.** Times filtered by the Client's stated format, times of day and clinician
-  preferences; double-booking is impossible (database constraint, tested concurrently);
+  preferences; double-booking is impossible (a database constraint; a test races 20 simultaneous
+  bookings for one slot on real Postgres — exactly one wins — and runs in CI);
   confirmation with a calendar file.
 - **Supportive content at three moments only:** a 45 s pause, an upload problem, high
   stress. Once per moment per step, never otherwise.
@@ -229,7 +235,7 @@ numbers above: Windows 11 laptop, Docker (Rancher Desktop), 2 uvicorn workers.
 
 | Target | Result (local) | How |
 |---|---|---|
-| Chat / API p95 < 3.0 s at 20 VUs × 60 s | **2.28 s** chat, 1.91 s all API, 0% errors, 0 LLM errors in 290 messages | `make load` (k6) against **real Claude Haiku 5.5** |
+| Chat / API p95 < 3.0 s at 20 VUs × 60 s | **2.28 s** chat, 1.91 s all API, 0% errors, 0 LLM errors in 290 messages | `make load` (k6) against **real Claude Haiku 5.5** — requires `LLM_MODEL=claude-haiku-5-5`; Opus 5.5's own p95 (~3 s) misses this target |
 | (same, model latency removed) | 1.15 s chat with a fixed 800 ms fake model | `make load` with `LLM_PROVIDER=fake FAKE_LLM_DELAY_MS=800` |
 | OCR p95 < 8.0 s (20 runs) | **1.18 s** | `make timings`, server `Server-Timing` header |
 | Booking p95 < 1.0 s (20 runs) | **85 ms** | same |

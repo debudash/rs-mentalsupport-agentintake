@@ -47,7 +47,11 @@ def upgrade() -> None:
     if op.get_bind().dialect.name == "postgresql":
         for table in ("journey_links", "journey_events"):
             op.execute(f"alter table public.{table} enable row level security")
-            op.execute(f"revoke all on public.{table} from anon, authenticated")
+            # Supabase's browser roles; absent on plain Postgres (e.g. CI), so revoke only if present.
+            op.execute(
+                f"do $$ begin if exists (select 1 from pg_roles where rolname = 'anon') then "
+                f"execute 'revoke all on public.{table} from anon, authenticated'; end if; end $$"
+            )
 
 
 def downgrade() -> None:

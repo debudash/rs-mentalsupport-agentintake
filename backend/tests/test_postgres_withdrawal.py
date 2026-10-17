@@ -53,11 +53,18 @@ def rows_for(session: Session, user_id: str) -> int:
     ).scalar()
 
 
+def _has_supabase_auth(engine) -> bool:
+    with engine.connect() as conn:
+        return bool(conn.execute(text("select to_regclass('auth.audit_log_entries')")).scalar())
+
+
 def test_withdrawal_removes_audit_rows_that_name_the_user_in_traits():
     """ISSUE-001 regression. Found by: verifying Withdrawal against local Supabase — sign-up
     and deletion events (with email and IP) survived because they carry the user in
     traits.user_id, with the system as actor."""
     engine = create_engine(URL)
+    if not _has_supabase_auth(engine):
+        pytest.skip("needs Supabase's auth schema (plain Postgres in CI has none)")
     gone, kept = str(uuid.uuid4()), str(uuid.uuid4())
     with Session(engine) as session:
         audit_row(session, gone)  # sign-up by the system/admin

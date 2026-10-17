@@ -14,7 +14,7 @@ at least one named test below.
 |---|---|---|
 | Module tests through interfaces | `backend/tests/test_domain_pure.py`, `test_intake.py`, `test_ocr.py`, `test_scheduling.py`, `test_adapters_and_dashboard.py` | `make test` (SQLite, Fake adapters) |
 | API integration | `backend/tests/test_api_flow.py` (FastAPI TestClient, whole onboarding) | `make test` |
-| Postgres integration | `backend/tests/test_postgres_withdrawal.py` | `pytest -m postgres` with `TEST_POSTGRES_URL` |
+| Postgres integration | `backend/tests/test_postgres_concurrency.py` (20 simultaneous bookings, one slot: exactly one wins — and verified to fail when the unique index is dropped), `test_postgres_withdrawal.py` (needs Supabase's auth schema) | CI job `test:postgres` (Postgres 17 service, migrations to head); locally `pytest -m postgres` with `TEST_POSTGRES_URL` |
 | Frontend components + accessibility | `frontend/src/test/*.test.tsx` (Testing Library + axe), `contrast.test.ts` (WCAG ratios) | `make test` |
 | AI evals | `evals/run.py` over `evals/datasets` | `make eval` |
 | End-to-end on the running stack | `scripts/smoke_test.py` (21 checks, real Supabase Auth, Tesseract) | `make smoke` |
@@ -28,7 +28,7 @@ Coverage: backend **93%** (gate 80% on core logic, enforced in CI); frontend ~79
 |---|---|
 | Chatbot handles every intent; structured record from a scripted conversation; graceful fallback | `test_intake.py::test_each_intent_has_its_handling`, `::test_scripted_conversation_produces_a_complete_assessment`, `::test_ask_question_shows_the_approved_answer_verbatim`; intent eval |
 | OCR ≥ 90% on name/DOB/address; every field confirmed before saving | OCR eval (golden 98.9%); `test_api_flow.py::test_full_onboarding_end_to_end`; `steps.test.tsx` IdentityStep tests |
-| View slots, book, confirm, reject double-booking, persists | `test_scheduling.py::test_book_then_double_booking_is_rejected_with_alternatives`, `::test_reschedule_frees_the_old_slot`; `test_api_flow.py::test_double_booking_via_api`, booking persists with a fresh token; smoke test |
+| View slots, book, confirm, reject double-booking, persists | `test_postgres_concurrency.py::test_simultaneous_bookings_for_one_slot_have_exactly_one_winner` (real race), `test_scheduling.py::test_book_then_double_booking_is_rejected_with_alternatives`, `::test_reschedule_frees_the_old_slot`; `test_api_flow.py::test_double_booking_via_api`, booking persists with a fresh token; smoke test |
 | Supportive content at triggers, never otherwise | `test_domain_pure.py::test_each_trigger_maps_to_its_content_and_nothing_else`, `::test_trigger_shows_once_per_step`; `test_api_flow.py::test_idle_event_shows_long_pause_once`, `::test_high_stress_shows_support_card_once` |
 
 ## Edge cases → tests

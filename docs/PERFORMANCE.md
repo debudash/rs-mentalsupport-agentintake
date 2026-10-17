@@ -24,6 +24,8 @@ OCR eval latency (40 synthetic IDs, Tesseract 5.5.0): p50 872 ms, p95 1.42 s.
 
 Opus alone uses nearly all of the 3 s chat budget before any of our own work; Haiku
 leaves about a second of headroom, which the load test confirms (chat p95 2.28 s).
+**The published chat number therefore requires `LLM_MODEL=claude-haiku-5-5`;** with
+`.env.example`'s default (Opus 5.5) the chat target would be missed.
 
 ## The keyless run
 

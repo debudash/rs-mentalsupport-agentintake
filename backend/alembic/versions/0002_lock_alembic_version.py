@@ -15,7 +15,11 @@ depends_on = None
 def upgrade() -> None:
     if op.get_bind().dialect.name == "postgresql":
         op.execute("alter table public.alembic_version enable row level security")
-        op.execute("revoke all on public.alembic_version from anon, authenticated")
+        # Supabase's browser roles; absent on plain Postgres (e.g. CI), so revoke only if present.
+        op.execute(
+            "do $$ begin if exists (select 1 from pg_roles where rolname = 'anon') then "
+            "execute 'revoke all on public.alembic_version from anon, authenticated'; end if; end $$"
+        )
 
 
 def downgrade() -> None:
