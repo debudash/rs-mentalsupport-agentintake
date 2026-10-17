@@ -79,4 +79,6 @@ Coverage: backend **93%** (gate 80% on core logic, enforced in CI); frontend ~79
 
 axe on every screen (`steps.test.tsx`, `screens.test.tsx`), WCAG AA contrast for every
 colour pair (`contrast.test.ts`), labelled controls and linked errors (IdentityStep
-tests), and a manual keyboard checklist in [ACCESSIBILITY.md](ACCESSIBILITY.md).
+tests), the banner (`banner.test.tsx`: crisis link at both sizes and in reading order,
+decorative art hidden, the compact band's layout — ISSUE-009), and a manual keyboard
+checklist in [ACCESSIBILITY.md](ACCESSIBILITY.md).

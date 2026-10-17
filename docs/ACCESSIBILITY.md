@@ -19,6 +19,13 @@ Withdrawal, the Clinician view and the dashboard.
   a timeout); animations only when the user hasn't asked for reduced motion.
 - **Choice of input:** quick replies or typing for every Intake question; photo or typing
   for identity details.
+- **Banner:** the artwork is decoration (`aria-hidden`, not focusable); the name is text,
+  not an image. The 988 crisis link sits right under the artwork on every screen and at
+  every width, in the reading order as well as visually. Signed in, the banner shrinks to
+  one short band so the Step stays above the fold.
+- **Reflow:** no horizontal scrolling at 320 px or 375 px wide (checked in headless
+  Chromium); under 640 px the artwork becomes a strip above the name, and is hidden in the
+  signed-in band.
 
 ## Automated checks
 
@@ -29,12 +36,14 @@ Withdrawal, the Clinician view and the dashboard.
 ## Keyboard-only walkthrough (2026-10-17, headless Chromium, production image)
 
 A scripted pass using only Tab, Space, Enter and typing — no mouse — through the whole
-journey on the real stack. All 16 checks passed, with no page errors:
+journey on the real stack. Re-run after the banner redesign: all 17 checks passed, with no
+page errors:
 
 | Check | Result |
 |---|---|
 | First Tab stop is the skip link | ✓ |
 | Crisis (988) link reachable | ✓ |
+| Privacy footer reachable; "How we protect it" opens with Enter | ✓ |
 | Sign-up submits with Enter | ✓ |
 | Focus lands on the Step heading after each Step change (Consent, Intake) | ✓ |
 | Consent checkboxes toggle with Space; "Agree and continue" becomes enabled | ✓ |

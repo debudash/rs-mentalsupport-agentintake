@@ -32,6 +32,7 @@ const PAIRS: [string, string][] = [
   ['warn', 'surface'],
   ['warn', 'warn-soft'],
   ['danger', 'surface'],
+  ['danger', 'bg'], // the 988 line sits on the banner's page background
   ['danger', 'danger-soft'],
   ['brand-ink', 'danger'],
   ['ink', 'danger-soft'],
