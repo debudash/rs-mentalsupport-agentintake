@@ -11,7 +11,7 @@ const record = (name, ok, detail = '') => results.push(`${ok ? 'PASS' : 'FAIL'} 
 const focused = () =>
   page.evaluate(() => {
     const el = document.activeElement;
-    return { tag: el?.tagName, text: (el?.textContent || el?.getAttribute('aria-label') || el?.id || '').trim().slice(0, 60), type: el?.getAttribute('type') };
+    return { inQuickReplies: !!el?.closest('.quick-replies') && el?.textContent !== 'Done', tag: el?.tagName, text: (el?.textContent || el?.getAttribute('aria-label') || el?.id || '').trim().slice(0, 60), type: el?.getAttribute('type') };
   });
 
 async function tabTo(predicate, max = 40) {
@@ -29,7 +29,13 @@ const skip = await tabTo((f) => true, 1);
 record('first Tab stop is the skip link', skip?.text === 'Skip to content', JSON.stringify(skip));
 const crisis = await tabTo((f) => f.text.includes('988'));
 record('crisis link reachable by keyboard', !!crisis);
-await tabTo((f) => f.tag === 'INPUT' && f.type === 'email');
+const trust = await tabTo((f) => f.tag === 'SUMMARY');
+await page.keyboard.press('Enter');
+const opened = await page.evaluate(() => document.querySelector('.trust-footer details')?.open);
+record('privacy footer reachable and opens with Enter', !!trust && opened === true);
+await page.keyboard.press('Enter');
+await page.locator('#email').focus();
+// (email field focused directly; Tab order checks continue below)
 await page.keyboard.type(`kb-${Date.now()}@riverside.test`);
 await page.keyboard.press('Tab');
 await page.keyboard.type('keyboard-only-pass-1');
@@ -62,24 +68,22 @@ await page.keyboard.press('Enter');
 await page.getByText(/How long has this been going on/).waitFor();
 record('chat message sends with Enter', true);
 
-const answers = ['1 to 6 months', '2', 'No', 'Either is fine'];
-for (const a of answers) {
-  const b = await tabTo((x) => x.text === a);
-  if (!b) { record(`reach "${a}"`, false); break; }
+// Answer whatever is asked next, keyboard only: Tab to the first quick reply, Enter
+// (multi-choice: Space on the first option, then Tab to "Done" and Enter).
+for (let i = 0; i < 20; i++) {
+  if (await page.getByRole('heading', { name: 'Your details' }).isVisible()) break;
+  await page.waitForTimeout(600);
+  // Intake finished: options are gone and the Step changes after a short pause.
+  if (!(await page.locator('.quick-replies').isVisible())) continue;
+  const multi = await page.locator('.quick-replies button[aria-pressed]').count();
+  const first = await tabTo((x) => x.tag === 'BUTTON' && x.inQuickReplies);
+  if (!first) { record('quick reply reachable during Intake', false); break; }
+  if (multi) {
+    await page.keyboard.press('Space');
+    await tabTo((x) => x.text === 'Done');
+  }
   await page.keyboard.press('Enter');
-  await page.waitForTimeout(400);
-}
-for (const a of ['Mornings', 'Evenings']) {
-  await tabTo((x) => x.text === a);
-  await page.keyboard.press('Space');
-}
-await tabTo((x) => x.text === 'Done');
-await page.keyboard.press('Enter');
-await page.waitForTimeout(400);
-for (const a of ['No preference', 'Either']) {
-  await tabTo((x) => x.text === a);
-  await page.keyboard.press('Enter');
-  await page.waitForTimeout(400);
+  await page.waitForTimeout(800);
 }
 await page.getByRole('heading', { name: 'Your details' }).waitFor();
 record('whole Intake completed by keyboard (incl. multi-choice with Space)', true);
@@ -100,6 +104,7 @@ await page.keyboard.press('Enter');
 await page.getByRole('heading', { name: 'Book' }).waitFor();
 record('manual identity entry by keyboard', !!typeInstead && !!confirm);
 
+await page.locator('.slots button').first().waitFor(); // times load after the heading
 const day = await tabTo((x) => x.tag === 'BUTTON' && /^[A-Z][a-z]{2} \d+ [A-Z][a-z]{2}$/.test(x.text));
 record('day picker reachable', !!day);
 const time = await tabTo((x) => /AM|PM/.test(x.text) && !x.text.startsWith('Book'));

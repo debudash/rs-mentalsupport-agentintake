@@ -397,3 +397,39 @@ td {
     transform: none;
   }
 }
+
+/* privacy reassurance: present but quiet */
+.trust-step {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin: -0.4rem 0 1rem;
+}
+.trust-footer {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0.75rem 1rem 2rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+.trust-footer summary {
+  cursor: pointer;
+  list-style: none;
+}
+.trust-footer summary::-webkit-details-marker {
+  display: none;
+}
+.trust-link {
+  color: var(--brand);
+  text-decoration: underline;
+}
+.trust-footer ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.2rem;
+}
+.trust-lock {
+  width: 0.8em;
+  height: 0.8em;
+  margin-right: 0.35em;
+  vertical-align: -0.05em;
+}

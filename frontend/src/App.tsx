@@ -3,6 +3,7 @@ import { createClient, type Session, type SupabaseClient } from '@supabase/supab
 import { ApiError, get, setTokenProvider } from './lib/api';
 import type { Me } from './lib/types';
 import { SignIn } from './SignIn';
+import { TrustFooter } from './Trust';
 import { Onboarding } from './Onboarding';
 import { ClinicianView } from './staff/ClinicianView';
 import { Dashboard } from './staff/Dashboard';
@@ -80,6 +81,8 @@ export default function App() {
         {me?.role === 'operator' && <Dashboard />}
         {session && !me && !error && <p aria-live="polite">Loading your progress…</p>}
       </main>
+      {/* Clients and people signing up; staff screens don't need it. */}
+      {(!me || me.role === 'client') && <TrustFooter />}
     </>
   );
 }

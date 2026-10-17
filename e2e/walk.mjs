@@ -38,29 +38,27 @@ await page.getByLabel('Type your answer').fill('How much does this cost?');
 await page.getByRole('button', { name: 'Send' }).click();
 await page.waitForTimeout(800);
 await shot('03-intake-chat');
-const answers = [
-  ['reason_text', 'Prefer not to say'],
-  ['duration', '1 to 6 months'],
-  ['distress', '4'],
-];
-for (const [, label] of answers) {
-  await page.getByRole('button', { name: label, exact: true }).click();
-  await page.waitForTimeout(500);
+// Answer whatever the assistant asks next (model-independent): first option each time,
+// and for multi-choice the first option then "Done". A distress of 4 shows the support card.
+let shotSupport = false;
+for (let i = 0; i < 20; i++) {
+  if (await page.getByRole('heading', { name: 'Your details' }).isVisible()) break;
+  const group = page.locator('.quick-replies');
+  if (!(await group.isVisible())) { await page.waitForTimeout(500); continue; }
+  const four = group.getByRole('button', { name: '4', exact: true });
+  if (await four.isVisible()) {
+    await four.click();
+    await page.waitForTimeout(800);
+    if (!shotSupport) { await shot('04-intake-support-card'); shotSupport = true; }
+    continue;
+  }
+  const no = group.getByRole('button', { name: 'No', exact: true });
+  const first = (await no.isVisible()) ? no : group.getByRole('button').first();
+  await first.click();
+  const done = group.getByRole('button', { name: 'Done', exact: true });
+  if (await done.isVisible()) await done.click();
+  await page.waitForTimeout(800);
 }
-await shot('04-intake-support-card');
-await page.getByRole('button', { name: 'No', exact: true }).click();
-await page.waitForTimeout(500);
-await page.getByRole('button', { name: 'Either is fine' }).click();
-await page.waitForTimeout(500);
-await page.getByRole('button', { name: 'Mornings' }).click();
-await page.getByRole('button', { name: 'Afternoons' }).click();
-await page.getByRole('button', { name: 'Evenings' }).click();
-await page.getByRole('button', { name: 'Done' }).click();
-await page.waitForTimeout(500);
-await page.getByRole('button', { name: 'No preference' }).click();
-await page.waitForTimeout(500);
-await page.getByRole('button', { name: 'Either', exact: true }).click();
-
 await page.getByRole('heading', { name: 'Your details' }).waitFor({ timeout: 10000 });
 await shot('05-identity-choose');
 const chooser = page.waitForEvent('filechooser');

@@ -9,6 +9,7 @@ import { IdentityStep } from './steps/IdentityStep';
 import { SchedulingStep } from './steps/SchedulingStep';
 import { DoneStep } from './steps/DoneStep';
 import { Withdrawal } from './steps/Withdrawal';
+import { StepTrust } from './Trust';
 
 const STEPS: { id: Exclude<StepName, 'done'>; label: string }[] = [
   { id: 'consent', label: 'Consent' },
@@ -94,6 +95,7 @@ export function Onboarding({ me, refresh, onWithdrawn }: Props) {
         {step === 'done' ? "You're all set" : STEPS[index]?.label}
       </h1>
       {guidance && <p className="muted">{guidance}</p>}
+      <StepTrust step={step} />
 
       <div aria-live="polite">
         {support && <SupportCard card={support} onDismiss={() => setSupport(null)} />}
