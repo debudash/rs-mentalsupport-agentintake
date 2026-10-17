@@ -9,12 +9,13 @@ UV := $(shell command -v uv >/dev/null 2>&1 && echo uv || echo python -m uv)
 DEV := $(COMPOSE) run --rm dev
 
 .PHONY: help setup seed up down test test-backend test-frontend eval eval-record load \
-        timings lint ci hooks deploy golden-set smoke e2e docs-check cohort
+        timings lint ci hooks deploy golden-set smoke e2e docs-check cohort demo
 
 help:
 	@echo "make setup        .env + encryption key + local Supabase (first run downloads images)"
 	@echo "make seed         migrations + clinicians, slots and demo accounts"
-	@echo "make up           run the app on http://localhost:8000"
+	@echo "make demo         setup + seed + up: the whole local stack in one command"
+	@echo "make up           run the app on http://localhost:8000 (FAULT_INJECT=llm_down make up: see docs/RELIABILITY.md)"
 	@echo "make test         backend (pytest, coverage gate) + frontend (vitest + axe)"
 	@echo "make eval         OCR + intent scorecards (LLM_PROVIDER from .env)"
 	@echo "make load         k6, 20 VUs for 60 s against the running app"
@@ -30,6 +31,9 @@ seed:
 
 up:
 	$(COMPOSE) up --build app
+
+# One command from a clean checkout: .env + Supabase, migrations + seed, then the app.
+demo: setup seed up
 
 down:
 	$(COMPOSE) down

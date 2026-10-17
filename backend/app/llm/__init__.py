@@ -2,6 +2,7 @@
 
 from functools import lru_cache
 
+from app import faults
 from app.config import Settings, get_settings
 from app.llm.port import LLMPort
 from app.profile import get_profile
@@ -61,7 +62,7 @@ class DebugLoggingLLM:
 @lru_cache
 def get_llm() -> LLMPort:
     settings = get_settings()
-    llm = build_llm(settings)
+    llm = faults.wrap_llm(build_llm(settings), faults.active(settings))
     if settings.llm_debug_log:
         if settings.app_env != "development":
             raise RuntimeError("LLM_DEBUG_LOG is only allowed when APP_ENV=development")

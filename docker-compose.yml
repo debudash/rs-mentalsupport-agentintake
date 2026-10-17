@@ -7,6 +7,7 @@ services:
     environment:
       DOCKER_HOST_ALIAS: host.docker.internal
       FRONTEND_DIST: /app/frontend/dist
+      FAULT_INJECT: ${FAULT_INJECT:-}  # e.g. FAULT_INJECT=llm_down make up (docs/RELIABILITY.md)
     extra_hosts: ["host.docker.internal:host-gateway"]
     ports: ["8000:8000"]
     healthcheck:

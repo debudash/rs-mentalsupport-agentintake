@@ -23,7 +23,12 @@ def make_engine(url: str) -> Engine:
 
 @lru_cache
 def get_engine() -> Engine:
-    return make_engine(get_settings().server_database_url)
+    from app import faults
+
+    settings = get_settings()
+    engine = make_engine(settings.server_database_url)
+    faults.slow_down(engine, faults.active(settings), settings.fault_db_delay_ms)
+    return engine
 
 
 @lru_cache

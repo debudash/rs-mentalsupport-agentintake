@@ -37,6 +37,10 @@ class Settings(BaseSettings):
     ocr_confidence_threshold: float = 70.0
     upload_max_bytes: int = 8 * 1024 * 1024
 
+    # Fault injection for demos and drills (app/faults.py); refused in production
+    fault_inject: str = ""
+    fault_db_delay_ms: int = 1500
+
     # Privacy
     field_encryption_key: str = Field(default="")
 
