@@ -124,3 +124,14 @@ and what a human decided. Tools and models used inside the product are in
 - Agent re-verified a claim before citing it: "public key can't read tables" had been a
   manual check, not a smoke test; re-checked live (42501 on four tables) and cited as such.
 - CI paused at the human's request (`CI_ENABLED=false`) to speed up iteration.
+
+## 2026-10-17 — OCR stress set: realistic bad captures
+
+- **Human asked** for more realistic scans that are hard to read. Agent added a third set of
+  20 synthetic captures (motion blur, low light, card far away, laminate glare, the phone's
+  shadow, security print, a thumb over the address, a bent card, a photocopy, a worst case),
+  on its own seed so the existing 40 cards stayed byte-identical; reviewed a contact sheet
+  and fixed one mislabelled card (the thumb missed the address it was labelled as covering).
+- Eval now splits misses into "left blank" (safe) and "wrong value pre-filled" (unsafe).
+  Stress: 43.3%; 31 of 34 misses left blank; 3 unsafe (a label read as a name, a misread
+  house number, a truncated ZIP). Not tuned against; reported separately, not gated.

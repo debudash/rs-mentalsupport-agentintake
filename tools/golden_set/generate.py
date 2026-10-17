@@ -6,6 +6,11 @@ Two sets, each with labels generated alongside the images:
                  skew, glare over a field, two-line addresses, unusual names, a cut-off field).
 - held_out (10): layout B (inline labels, serif font, different colours, "14 MAR 1990" dates).
                  Never used for tuning; reported separately.
+- stress   (20): realistic bad captures, 2 of each (layout A and B): motion blur, low light,
+                 card far away, laminate glare, the phone's shadow, security print under the
+                 text, a thumb over the address, a bent card, a photocopy, and a worst case
+                 (dim + shaky + shadow + heavy JPEG). Never used for tuning; reported
+                 separately, with wrong pre-fills counted apart from blanks.
 
 Deterministic: the same seed gives the same cards.
 Run (inside the dev image, which has the fonts):  python tools/golden_set/generate.py
@@ -220,6 +225,152 @@ def phone_photo(card: Image.Image, rng: random.Random) -> Image.Image:
     return jpeg(image, rng.randint(55, 75))
 
 
+# ---- stress captures: what real phone photos and scans of an ID look like ---------------
+
+
+def motion_blur(image: Image.Image, rng: random.Random) -> Image.Image:
+    """Hand shake: a straight streak of 9-17 px at a random angle."""
+    import cv2
+
+    length, angle = rng.randint(9, 17), rng.uniform(0, 180)
+    kernel = np.zeros((length, length), np.float32)
+    kernel[length // 2, :] = 1
+    rot = cv2.getRotationMatrix2D((length / 2 - 0.5, length / 2 - 0.5), angle, 1)
+    kernel = cv2.warpAffine(kernel, rot, (length, length))
+    kernel /= kernel.sum()
+    return Image.fromarray(cv2.filter2D(np.asarray(image), -1, kernel))
+
+
+def low_light(image: Image.Image, rng: random.Random) -> Image.Image:
+    """Dim room: underexposed, then the camera's gain adds grainy colour noise."""
+    arr = np.asarray(image).astype(np.float32) * rng.uniform(0.28, 0.4)
+    noise = np.random.default_rng(rng.randint(0, 10**6))
+    arr += noise.normal(0, rng.uniform(7, 11), arr.shape)  # sensor noise, per channel
+    arr = (arr - arr.min()) / (arr.max() - arr.min()) * rng.uniform(150, 190)  # auto-gain
+    return Image.fromarray(np.clip(arr, 0, 255).astype("uint8"))
+
+
+def far_away(image: Image.Image, rng: random.Random) -> Image.Image:
+    """Card small in the frame, then the browser's 2000 px resize shrinks it further."""
+    image = on_background(image, rng, margin=rng.randint(420, 520))
+    scale = rng.uniform(0.42, 0.5)
+    return image.resize((int(image.width * scale), int(image.height * scale)),
+                        Image.Resampling.BILINEAR)
+
+
+def laminate_glare(image: Image.Image, rng: random.Random) -> Image.Image:
+    """A specular streak off the laminate, saturating a band across the text."""
+    arr = np.asarray(image).astype(np.float32)
+    h, w = arr.shape[:2]
+    yy, xx = np.mgrid[0:h, 0:w]
+    slope, offset = rng.uniform(-0.35, 0.35), rng.uniform(0.3, 0.7) * h
+    dist = np.abs(yy - (offset + slope * (xx - w / 2))) / rng.uniform(18, 30)
+    arr += (np.exp(-(dist**2)) * 235)[:, :, None]
+    return Image.fromarray(np.clip(arr, 0, 255).astype("uint8"))
+
+
+def hard_shadow(image: Image.Image, rng: random.Random) -> Image.Image:
+    """The phone's own shadow: a soft-edged dark polygon over part of the card."""
+    w, h = image.size
+    mask = Image.new("L", (w, h), 0)
+    x = rng.uniform(0.35, 0.6) * w
+    ImageDraw.Draw(mask).polygon(
+        [(x, -10), (w + 10, -10), (w + 10, h + 10), (x + rng.uniform(-0.2, 0.2) * w, h + 10)],
+        fill=255,
+    )
+    mask = mask.filter(ImageFilter.GaussianBlur(14))
+    dark = np.asarray(mask).astype(np.float32)[:, :, None] / 255 * rng.uniform(0.5, 0.62)
+    arr = np.asarray(image).astype(np.float32) * (1 - dark)
+    return Image.fromarray(np.clip(arr, 0, 255).astype("uint8"))
+
+
+def security_print(card: Image.Image, rng: random.Random) -> Image.Image:
+    """Guilloche lines and a tinted wash printed under the text, as on real IDs."""
+    w, h = card.size
+    layer = Image.new("RGB", (w, h), "white")
+    d = ImageDraw.Draw(layer)
+    tint = rng.choice([(150, 190, 220), (205, 170, 200), (170, 205, 170)])
+    for k in range(70):
+        phase, amp = rng.uniform(0, 6.28), rng.uniform(10, 28)
+        pts = [(x, k * h / 60 + amp * np.sin(x / rng.uniform(25, 45) + phase))
+               for x in range(0, w, 6)]
+        d.line(pts, fill=tint, width=2)
+    wash = np.asarray(layer).astype(np.float32)
+    arr = np.minimum(np.asarray(card).astype(np.float32), wash)  # under dark text, over paper
+    return Image.fromarray(arr.astype("uint8"))
+
+
+def thumb(image: Image.Image, rng: random.Random, box: tuple[int, int]) -> Image.Image:
+    """A thumb holding the card, covering the end of a field."""
+    out = image.copy()
+    d = ImageDraw.Draw(out)
+    cx, cy = box
+    d.ellipse([cx - 120, cy - 70, cx + 140, cy + 260], fill=rng.choice(
+        [(224, 172, 140), (176, 124, 92), (120, 82, 60)]))
+    return out.filter(ImageFilter.GaussianBlur(1.2))
+
+
+def bent(image: Image.Image, rng: random.Random) -> Image.Image:
+    """A card bowed in the wallet: rows bend along a gentle curve."""
+    arr = np.asarray(image)
+    h, w = arr.shape[:2]
+    amp, period = rng.uniform(10, 16), rng.uniform(1.4, 2.0) * w
+    out = np.empty_like(arr)
+    for x in range(w):
+        out[:, x] = np.roll(arr[:, x], int(amp * np.sin(np.pi * x / period)), axis=0)
+    return Image.fromarray(out)
+
+
+def photocopy(image: Image.Image, rng: random.Random) -> Image.Image:
+    """A photocopy or fax of the card, scanned at low resolution: grey, speckled, soft."""
+    gray = image.convert("L")
+    gray = gray.resize((gray.width // 2, gray.height // 2), Image.Resampling.BILINEAR)
+    arr = np.asarray(gray).astype(np.float32)
+    arr = 70 + arr * 0.62  # washed-out toner
+    speckle = np.random.default_rng(rng.randint(0, 10**6)).random(arr.shape)
+    arr[speckle < 0.012] = 30
+    arr[speckle > 0.988] = 245
+    out = Image.fromarray(np.clip(arr, 0, 255).astype("uint8")).resize(image.size)
+    return jpeg(out.convert("RGB"), 40)
+
+
+STRESS_KINDS = ["motion_blur", "low_light", "far_away", "laminate_glare", "hard_shadow",
+                "security_print", "thumb", "bent", "photocopy", "worst_case"]
+
+
+def stress_capture(
+    kind: str, p: Person, rng: random.Random, layout: str
+) -> tuple[Image.Image, tuple]:
+    """One realistic bad capture. Returns the image and any field the right answer leaves blank."""
+    card = layout_a(p, rng) if layout == "a" else layout_b(p, rng)
+    missing: tuple[str, ...] = ()
+    if kind == "security_print":
+        return phone_photo(security_print(card, rng), rng), missing
+    if kind == "thumb":  # the thumb covers the end of the address, so it can't be read whole
+        at = (640, 400) if layout == "a" else (560, 300)
+        card, missing = thumb(card, rng, at), ("address",)
+    if kind == "bent":
+        card = bent(card, rng)
+    if kind == "photocopy":
+        return photocopy(on_background(card, rng, margin=40), rng), missing
+    if kind == "far_away":
+        return jpeg(lighting(far_away(card, rng), rng), 70), missing
+    image = on_background(card, rng, margin=rng.randint(60, 120))
+    image = perspective(image, rng, 0.03)
+    if kind == "motion_blur":
+        image = motion_blur(image, rng)
+    elif kind == "low_light":
+        image = low_light(image, rng)
+    elif kind == "laminate_glare":
+        image = laminate_glare(image, rng)
+    elif kind == "hard_shadow":
+        image = hard_shadow(image, rng)
+    elif kind == "worst_case":  # dim room, shaky hand, shadow, heavy compression
+        image = motion_blur(hard_shadow(low_light(image, rng), rng), rng)
+        return jpeg(image, 45), missing
+    return jpeg(lighting(image, rng), rng.randint(55, 72)), missing
+
+
 # ---- sets ------------------------------------------------------------------------------
 
 
@@ -273,6 +424,15 @@ def build() -> list[Label]:
         card = layout_b(p, rng)
         img = phone_photo(card, rng) if i % 2 else on_background(card, rng, margin=30)
         save(img, f"layout_b_{i:02d}", "held_out", "layout_b", p)
+
+    # Stress: its own seed, so adding it left the cards above byte-identical.
+    rng = random.Random(SEED + 1)
+    Faker.seed(SEED + 1)
+    for i, kind in enumerate(STRESS_KINDS * 2):
+        layout = "a" if i < len(STRESS_KINDS) else "b"
+        p = person(fake, rng, unusual=i in (4, 13), apartment=i in (7, 16))
+        img, missing = stress_capture(kind, p, rng, layout)
+        save(img, f"{kind}_{layout}_{i:02d}", "stress", kind, p, missing=missing)
     return labels
 
 
@@ -283,5 +443,5 @@ if __name__ == "__main__":
         json.dumps([asdict(label) for label in built], indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
-    counts = {s: sum(1 for b in built if b.set == s) for s in ("golden", "held_out")}
+    counts = {s: sum(1 for b in built if b.set == s) for s in ("golden", "held_out", "stress")}
     print(f"Wrote {len(built)} synthetic IDs to {OUT}: {counts}")

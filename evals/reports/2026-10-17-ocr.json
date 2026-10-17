@@ -10,7 +10,9 @@
         "address": 0.9667
       },
       "fields_correct": 89,
-      "fields_total": 90
+      "fields_total": 90,
+      "missed_left_blank": 0,
+      "missed_wrong_prefill": 1
     },
     "held_out": {
       "overall_accuracy": 0.9333,
@@ -20,7 +22,143 @@
         "address": 1.0
       },
       "fields_correct": 28,
-      "fields_total": 30
+      "fields_total": 30,
+      "missed_left_blank": 0,
+      "missed_wrong_prefill": 2
+    },
+    "stress": {
+      "overall_accuracy": 0.4333,
+      "per_field": {
+        "name": 0.45,
+        "date_of_birth": 0.5,
+        "address": 0.35
+      },
+      "fields_correct": 26,
+      "fields_total": 60,
+      "missed_left_blank": 31,
+      "missed_wrong_prefill": 3
+    },
+    "stress_by_kind": {
+      "motion_blur": {
+        "overall_accuracy": 0.0,
+        "per_field": {
+          "name": 0.0,
+          "date_of_birth": 0.0,
+          "address": 0.0
+        },
+        "fields_correct": 0,
+        "fields_total": 6,
+        "missed_left_blank": 6,
+        "missed_wrong_prefill": 0
+      },
+      "low_light": {
+        "overall_accuracy": 0.3333,
+        "per_field": {
+          "name": 0.0,
+          "date_of_birth": 0.5,
+          "address": 0.5
+        },
+        "fields_correct": 2,
+        "fields_total": 6,
+        "missed_left_blank": 3,
+        "missed_wrong_prefill": 1
+      },
+      "far_away": {
+        "overall_accuracy": 1.0,
+        "per_field": {
+          "name": 1.0,
+          "date_of_birth": 1.0,
+          "address": 1.0
+        },
+        "fields_correct": 6,
+        "fields_total": 6,
+        "missed_left_blank": 0,
+        "missed_wrong_prefill": 0
+      },
+      "laminate_glare": {
+        "overall_accuracy": 0.6667,
+        "per_field": {
+          "name": 1.0,
+          "date_of_birth": 1.0,
+          "address": 0.0
+        },
+        "fields_correct": 4,
+        "fields_total": 6,
+        "missed_left_blank": 1,
+        "missed_wrong_prefill": 1
+      },
+      "hard_shadow": {
+        "overall_accuracy": 0.3333,
+        "per_field": {
+          "name": 0.5,
+          "date_of_birth": 0.5,
+          "address": 0.0
+        },
+        "fields_correct": 2,
+        "fields_total": 6,
+        "missed_left_blank": 3,
+        "missed_wrong_prefill": 1
+      },
+      "security_print": {
+        "overall_accuracy": 0.0,
+        "per_field": {
+          "name": 0.0,
+          "date_of_birth": 0.0,
+          "address": 0.0
+        },
+        "fields_correct": 0,
+        "fields_total": 6,
+        "missed_left_blank": 6,
+        "missed_wrong_prefill": 0
+      },
+      "thumb": {
+        "overall_accuracy": 1.0,
+        "per_field": {
+          "name": 1.0,
+          "date_of_birth": 1.0,
+          "address": 1.0
+        },
+        "fields_correct": 6,
+        "fields_total": 6,
+        "missed_left_blank": 0,
+        "missed_wrong_prefill": 0
+      },
+      "bent": {
+        "overall_accuracy": 1.0,
+        "per_field": {
+          "name": 1.0,
+          "date_of_birth": 1.0,
+          "address": 1.0
+        },
+        "fields_correct": 6,
+        "fields_total": 6,
+        "missed_left_blank": 0,
+        "missed_wrong_prefill": 0
+      },
+      "photocopy": {
+        "overall_accuracy": 0.0,
+        "per_field": {
+          "name": 0.0,
+          "date_of_birth": 0.0,
+          "address": 0.0
+        },
+        "fields_correct": 0,
+        "fields_total": 6,
+        "missed_left_blank": 6,
+        "missed_wrong_prefill": 0
+      },
+      "worst_case": {
+        "overall_accuracy": 0.0,
+        "per_field": {
+          "name": 0.0,
+          "date_of_birth": 0.0,
+          "address": 0.0
+        },
+        "fields_correct": 0,
+        "fields_total": 6,
+        "missed_left_blank": 6,
+        "missed_wrong_prefill": 0
+      }
     },
     "by_variant": {
       "clean": 1.0,
@@ -29,9 +167,9 @@
     },
     "fabricated_fields": 0,
     "latency_ms": {
-      "p50": 775.1,
-      "p95": 1239.7,
-      "runs": 40
+      "p50": 902.5,
+      "p95": 2487.6,
+      "runs": 60
     },
     "passes": true
   },
@@ -46,24 +184,27 @@
           "got": "Dennis Castro",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "2000-04-20",
           "got": "2000-04-20",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "6721 Kelley Dr, North Jasmine, RS 68202",
           "got": "6721 KELLEY DR, NORTH JASMINE, RS 68202",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 1332.5
+      "ms": 1157.3
     },
     {
       "file": "golden/clean_01.jpg",
@@ -75,24 +216,27 @@
           "got": "Stephanie Q Fox",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1970-09-10",
           "got": "1970-09-10",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "870 Brown Rd, Lake Aaronfort, RS 92262",
           "got": "870 BROWN RD, LAKE AARONFORT, RS 92262",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 725.3
+      "ms": 895.6
     },
     {
       "file": "golden/clean_02.jpg",
@@ -104,24 +248,27 @@
           "got": "Michael Ortiz",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "2003-12-24",
           "got": "2003-12-24",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "9231 Cisneros Ct, Brittanymouth, RS 97078",
           "got": "9231 CISNEROS CT, BRITTANYMOUTH, RS 97078",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 876.7
+      "ms": 1136.8
     },
     {
       "file": "golden/clean_03.jpg",
@@ -133,24 +280,27 @@
           "got": "David Fields",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1960-10-23",
           "got": "1960-10-23",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "6892 Brown Way, Lake Janice, RS 17913",
           "got": "6892 BROWN WAY, LAKE JANICE, RS 17913",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 714.7
+      "ms": 890.5
     },
     {
       "file": "golden/clean_04.jpg",
@@ -162,24 +312,27 @@
           "got": "Thomas Hawkins",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1992-08-10",
           "got": "1992-08-10",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "8349 Ellison Way, Port Devin, RS 29328",
           "got": "8349 ELLISON WAY, PORT DEVIN, RS 29328",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 661.8
+      "ms": 913.9
     },
     {
       "file": "golden/clean_05.jpg",
@@ -191,24 +344,27 @@
           "got": "Kelli Meyer",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1958-05-27",
           "got": "1958-05-27",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "6598 Pamela Blvd, Griffinland, RS 72171",
           "got": "6598 PAMELA BLVD, GRIFFINLAND, RS 72171",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 722.0
+      "ms": 782.9
     },
     {
       "file": "golden/clean_06.jpg",
@@ -220,24 +376,27 @@
           "got": "Justin Taylor",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1980-09-03",
           "got": "1980-09-03",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "7617 Kathryn Way, Courtneymouth, RS 88361",
           "got": "7617 KATHRYN WAY, COURTNEYMOUTH, RS 88361",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 636.1
+      "ms": 857.3
     },
     {
       "file": "golden/clean_07.jpg",
@@ -249,24 +408,27 @@
           "got": "Michael Jacobs",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1981-04-29",
           "got": "1981-04-29",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "1073 Ware Ct, Tinastad, RS 18512",
           "got": "1073 WARE CT, TINASTAD, RS 18512",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 722.1
+      "ms": 796.8
     },
     {
       "file": "golden/clean_08.jpg",
@@ -278,24 +440,27 @@
           "got": "Bryan Coffey",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1977-10-17",
           "got": "1977-10-17",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "5196 Espinoza Way, Port Sherrichester, RS 67704",
           "got": "5196 ESPINOZA WAY, PORT SHERRICHESTER, RS 67704",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 758.5
+      "ms": 901.0
     },
     {
       "file": "golden/clean_09.jpg",
@@ -307,24 +472,27 @@
           "got": "Sara F Wilson",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1989-07-22",
           "got": "1989-07-22",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "3407 Jensen Blvd, Scottberg, RS 94984",
           "got": "3407 JENSEN BLVD, SCOTTBERG, RS 94984",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 651.9
+      "ms": 827.5
     },
     {
       "file": "golden/photo_00.jpg",
@@ -336,24 +504,27 @@
           "got": "William Morrow",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1953-08-13",
           "got": "1953-08-13",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "5075 Clark Ct, South Tracyland, RS 21044",
           "got": "5075 CLARK CT, SOUTH TRACYLAND, RS 21044",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 844.2
+      "ms": 1123.7
     },
     {
       "file": "golden/photo_01.jpg",
@@ -365,24 +536,27 @@
           "got": "Phillip V Reynolds",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1970-06-28",
           "got": "1970-06-28",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "7119 Vazquez Dr, Sextonfort, RS 36158",
           "got": "7119 VAZQUEZ DR, SEXTONFORT, RS 36158",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 772.0
+      "ms": 870.6
     },
     {
       "file": "golden/photo_02.jpg",
@@ -394,24 +568,27 @@
           "got": "Judith Blackburn",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1998-11-17",
           "got": "1998-11-17",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "6942 Bonilla Ln, Michelleborough, RS 61901",
           "got": "6942 BONILLA LN, MICHELLEBOROUGH, RS 61901",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 778.3
+      "ms": 1512.6
     },
     {
       "file": "golden/photo_03.jpg",
@@ -423,24 +600,27 @@
           "got": "Melanie L Sanchez",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1997-05-22",
           "got": "1997-05-22",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "2120 Cherry Ct, Aaronchester, RS 29112",
           "got": "2120 CHERRY CT, AARONCHESTER, RS 29112",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 1100.7
+      "ms": 1265.9
     },
     {
       "file": "golden/photo_04.jpg",
@@ -452,24 +632,27 @@
           "got": "Bryan Q Boyer",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1953-03-06",
           "got": "1953-03-06",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "2852 Norris Dr, New Autumnbury, RS 56868",
           "got": "2852 NORRIS DR, NEW AUTUMNBURY, RS 56868",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 706.5
+      "ms": 858.6
     },
     {
       "file": "golden/photo_05.jpg",
@@ -481,24 +664,27 @@
           "got": "Angela Hamilton",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1988-04-14",
           "got": "1988-04-14",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "3281 Timothy St, North Alexis, RS 60441",
           "got": "3281 TIMOTHY ST, NORTH ALEXIS, RS 60441",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 1010.3
+      "ms": 881.3
     },
     {
       "file": "golden/photo_06.jpg",
@@ -510,24 +696,27 @@
           "got": "Jonathan W White",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1980-08-18",
           "got": "1980-08-18",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "8496 Preston Rd, East Juliemouth, RS 78951",
           "got": "8496 PRESTON RD, EAST JULIEMOUTH, RS 78951",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 988.0
+      "ms": 803.5
     },
     {
       "file": "golden/photo_07.jpg",
@@ -539,24 +728,27 @@
           "got": "Jasmine Atkins",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1979-03-05",
           "got": "1979-03-05",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "7056 Gardner Blvd, Arnoldfurt, RS 29705",
           "got": "7056 GARDNER BLVD, ARNOLDFURT, RS 29705",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 931.5
+      "ms": 903.9
     },
     {
       "file": "golden/photo_08.jpg",
@@ -568,24 +760,27 @@
           "got": "Victoria Powers",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1993-01-28",
           "got": "1993-01-28",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "6045 Melissa Blvd, Lake Derrickburgh, RS 41611",
           "got": "6045 MELISSA BLVD, LAKE DERRICKBURGH, RS 41611",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 749.2
+      "ms": 833.7
     },
     {
       "file": "golden/photo_09.jpg",
@@ -597,24 +792,27 @@
           "got": "Kimberly Sullivan",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1975-06-18",
           "got": "1975-06-18",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "2750 Serrano St, Walshshire, RS 59194",
           "got": "2750 SERRANO ST, WALSHSHIRE, RS 59194",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 1090.6
+      "ms": 900.0
     },
     {
       "file": "golden/hard_skew_00.jpg",
@@ -626,24 +824,27 @@
           "got": "Martin Sanchez",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1959-06-10",
           "got": "1959-06-10",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "5419 Jensen Ln, Peterberg, RS 18072",
           "got": "5419 JENSEN LN, PETERBERG, RS 18072",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 972.2
+      "ms": 913.0
     },
     {
       "file": "golden/hard_skew_01.jpg",
@@ -655,24 +856,27 @@
           "got": "Robert A Thomas",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1986-05-04",
           "got": "1986-05-04",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "3214 Hughes Way, Nicoleview, RS 92005",
           "got": "3214 HUGHES WAY, NICOLEVIEW, RS 92005",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 982.4
+      "ms": 888.5
     },
     {
       "file": "golden/hard_skew_02.jpg",
@@ -684,24 +888,27 @@
           "got": "Steve Garcia",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1956-02-03",
           "got": "1956-02-03",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "2770 Coleman Dr, Tracyville, RS 66363",
           "got": "2770 COLEMAN DR, TRACYVILLE, RS 66363",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 903.3
+      "ms": 873.6
     },
     {
       "file": "golden/hard_glare_03.jpg",
@@ -713,24 +920,27 @@
           "got": "Benjamin Walls",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1978-02-21",
           "got": "1978-02-21",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "1999 Rodriguez Way, New Lindaton, RS 96792",
           "got": "1999 RODRIGUEZ WAY, NEW LINDATON, RS 96792",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 1736.8
+      "ms": 1752.2
     },
     {
       "file": "golden/hard_glare_04.jpg",
@@ -742,24 +952,27 @@
           "got": "Charles Moses",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1966-05-03",
           "got": "1966-05-03",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "2066 Kayla Ln, Martinezville, RS 77866",
           "got": "2066 KAYLA LN, MARTINEZVILLE, RS 77866",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 1042.8
+      "ms": 996.7
     },
     {
       "file": "golden/hard_two_line_05.jpg",
@@ -771,24 +984,27 @@
           "got": "Jessica King",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1965-06-07",
           "got": "1965-06-07",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "7948 Figueroa St Apt 21C, Michaelview, RS 35260",
           "got": "7948 FIGUEROA ST APT 21C, MICHAELVIEW, RS 35260",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 750.7
+      "ms": 1015.1
     },
     {
       "file": "golden/hard_two_line_06.jpg",
@@ -800,24 +1016,27 @@
           "got": "Michael S Ferguson",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1965-09-02",
           "got": "1965-09-02",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "1295 Munoz Rd Apt 37C, South Brentfort, RS 80103",
           "got": "1295 MUNOZ RD APT 37C, SOUTH BRENTFORT, RS 80103",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 785.8
+      "ms": 1067.0
     },
     {
       "file": "golden/hard_unusual_07.jpg",
@@ -829,24 +1048,27 @@
           "got": "Jose Alvarez-Ruiz",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1992-01-27",
           "got": "1992-01-27",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "5390 Gonzalez Ct, South Anthonychester, RS 68326",
           "got": "5390 GONZALEZ CT, SOUTH ANTHONYCHESTER, RS 6832",
           "correct": false,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": true
         }
       },
-      "ms": 885.7
+      "ms": 875.1
     },
     {
       "file": "golden/hard_unusual_08.jpg",
@@ -858,24 +1080,27 @@
           "got": "Nguyen Thi Lan",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1973-10-09",
           "got": "1973-10-09",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "6222 Brown Ct, Stanleychester, RS 98634",
           "got": "6222 BROWN CT, STANLEYCHESTER, RS 98634",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 907.6
+      "ms": 824.3
     },
     {
       "file": "golden/hard_cut_off_09.jpg",
@@ -887,24 +1112,27 @@
           "got": "Yvonne E Hill",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1953-03-09",
           "got": "1953-03-09",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": null,
           "got": null,
           "correct": true,
           "fabricated": false,
-          "blank": true
+          "blank": true,
+          "wrong_prefill": false
         }
       },
-      "ms": 1239.7
+      "ms": 1065.0
     },
     {
       "file": "held_out/layout_b_00.jpg",
@@ -916,24 +1144,27 @@
           "got": "Cameron M Joseph",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1985-11-17",
           "got": "1985-11-17",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "3768 Henderson Rd, Katrinaborough, RS 21151",
           "got": "3768 Henderson Rd, Katrinaborough, RS 21151",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 436.3
+      "ms": 507.5
     },
     {
       "file": "held_out/layout_b_01.jpg",
@@ -945,24 +1176,27 @@
           "got": "Zachary Peterson",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1977-11-24",
           "got": "1977-11-24",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "9466 Stone Rd, South Julie, RS 38601",
           "got": "9466 Stone Rd, South Julie, RS 38601",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 744.8
+      "ms": 872.5
     },
     {
       "file": "held_out/layout_b_02.jpg",
@@ -974,24 +1208,27 @@
           "got": "Cameron M Thompson",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1954-08-10",
           "got": "1954-08-10",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "2655 Moore St Apt 13A, Angelafort, RS 87781",
           "got": "2655 Moore St Apt 13A, Angelafort, RS 87781",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 542.6
+      "ms": 687.9
     },
     {
       "file": "held_out/layout_b_03.jpg",
@@ -1003,24 +1240,27 @@
           "got": "Jos Alvarez-Ruiz",
           "correct": false,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": true
         },
         "date_of_birth": {
           "expected": "1987-04-15",
           "got": "1987-04-15",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "1599 Bell Ct, Petersonberg, RS 60716",
           "got": "1599 Bell Ct, Petersonberg, RS 60716",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 717.8
+      "ms": 718.3
     },
     {
       "file": "held_out/layout_b_04.jpg",
@@ -1032,24 +1272,27 @@
           "got": "Lauren X Ward",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1983-03-12",
           "got": "1983-03-12",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "3887 Larry Ct, Lake Ryanmouth, RS 85487",
           "got": "3887 Larry Ct, Lake Ryanmouth, RS 85487",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 645.3
+      "ms": 754.8
     },
     {
       "file": "held_out/layout_b_05.jpg",
@@ -1061,24 +1304,27 @@
           "got": "Edward Rose",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "2002-07-16",
           "got": "2002-07-16",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "451 Samantha Dr, South Derekfurt, RS 91974",
           "got": "451 Samantha Dr, South Derekfurt, RS 91974",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 789.2
+      "ms": 1267.5
     },
     {
       "file": "held_out/layout_b_06.jpg",
@@ -1090,24 +1336,27 @@
           "got": "Timothy Y Johnson",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1994-06-03",
           "got": "1994-06-03",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "7169 Fernandez Ct Apt 30B, Kimberlyburgh, RS 27212",
           "got": "7169 Fernandez Ct Apt 30B, Kimberlyburgh, RS 27212",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 535.4
+      "ms": 679.7
     },
     {
       "file": "held_out/layout_b_07.jpg",
@@ -1119,24 +1368,27 @@
           "got": "Jos Alvarez-Ruiz",
           "correct": false,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": true
         },
         "date_of_birth": {
           "expected": "1957-09-29",
           "got": "1957-09-29",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "7132 Lewis Ln, Johnstad, RS 84639",
           "got": "7132 Lewis Ln, Johnstad, RS 84639",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 557.6
+      "ms": 761.9
     },
     {
       "file": "held_out/layout_b_08.jpg",
@@ -1148,24 +1400,27 @@
           "got": "Steven Smith",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "2003-10-12",
           "got": "2003-10-12",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "4071 Dudley Blvd, Andersonside, RS 87065",
           "got": "4071 Dudley Blvd, Andersonside, RS 87065",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 688.6
+      "ms": 773.9
     },
     {
       "file": "held_out/layout_b_09.jpg",
@@ -1177,28 +1432,671 @@
           "got": "Amanda Gomez",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "date_of_birth": {
           "expected": "1965-05-28",
           "got": "1965-05-28",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         },
         "address": {
           "expected": "9798 Ewing Ct, Evanston, RS 42042",
           "got": "9798 Ewing Ct, Evanston, RS 42042",
           "correct": true,
           "fabricated": false,
-          "blank": false
+          "blank": false,
+          "wrong_prefill": false
         }
       },
-      "ms": 830.7
+      "ms": 886.4
+    },
+    {
+      "file": "stress/motion_blur_a_00.jpg",
+      "set": "stress",
+      "variant": "motion_blur",
+      "fields": {
+        "name": {
+          "expected": "Juan Kim",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "1952-09-20",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": "1992 Martinez Blvd, Brendafort, RS 78618",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        }
+      },
+      "ms": 702.4
+    },
+    {
+      "file": "stress/low_light_a_01.jpg",
+      "set": "stress",
+      "variant": "low_light",
+      "fields": {
+        "name": {
+          "expected": "Sara Palmer",
+          "got": "DATE OF BIRTH o",
+          "correct": false,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": true
+        },
+        "date_of_birth": {
+          "expected": "1999-10-19",
+          "got": "1999-10-19",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": "5907 Elliott Way, Lake Jacob, RS 60016",
+          "got": "5907 ELLIOTT WAY, LAKE JACOB, RS 60016",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        }
+      },
+      "ms": 1836.4
+    },
+    {
+      "file": "stress/far_away_a_02.jpg",
+      "set": "stress",
+      "variant": "far_away",
+      "fields": {
+        "name": {
+          "expected": "Johnny Strong",
+          "got": "Johnny Strong",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "1988-04-24",
+          "got": "1988-04-24",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": "7585 Jenna Ave, Tiffanytown, RS 30083",
+          "got": "7585 JENNA AVE, TIFFANYTOWN, RS 30083",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        }
+      },
+      "ms": 1098.9
+    },
+    {
+      "file": "stress/laminate_glare_a_03.jpg",
+      "set": "stress",
+      "variant": "laminate_glare",
+      "fields": {
+        "name": {
+          "expected": "Angela Casey",
+          "got": "Angela Casey",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "1993-09-26",
+          "got": "1993-09-26",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": "949 Hicks Ln, Saundersbury, RS 91270",
+          "got": "349 HICKS LN, SAUNDERSBURY, RS 91270",
+          "correct": false,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": true
+        }
+      },
+      "ms": 1289.5
+    },
+    {
+      "file": "stress/hard_shadow_a_04.jpg",
+      "set": "stress",
+      "variant": "hard_shadow",
+      "fields": {
+        "name": {
+          "expected": "Nguyen Thi Lan",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "1989-11-21",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": "3794 Parker Way, Richardmouth, RS 75271",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        }
+      },
+      "ms": 2487.6
+    },
+    {
+      "file": "stress/security_print_a_05.jpg",
+      "set": "stress",
+      "variant": "security_print",
+      "fields": {
+        "name": {
+          "expected": "Ruben E Diaz",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "1989-04-12",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": "7411 Schroeder Ct, Port Ashley, RS 13307",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        }
+      },
+      "ms": 2538.6
+    },
+    {
+      "file": "stress/thumb_a_06.jpg",
+      "set": "stress",
+      "variant": "thumb",
+      "fields": {
+        "name": {
+          "expected": "Rebecca M Gomez",
+          "got": "Rebecca M Gomez",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "1979-08-15",
+          "got": "1979-08-15",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": null,
+          "got": null,
+          "correct": true,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        }
+      },
+      "ms": 1205.9
+    },
+    {
+      "file": "stress/bent_a_07.jpg",
+      "set": "stress",
+      "variant": "bent",
+      "fields": {
+        "name": {
+          "expected": "Sarah Simmons",
+          "got": "Sarah Simmons",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "1967-04-07",
+          "got": "1967-04-07",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": "6119 Miller Blvd Apt 14C, Smithfort, RS 79184",
+          "got": "6119 MILLER BLVD APT 14C, SMITHFORT, RS 79184",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        }
+      },
+      "ms": 849.1
+    },
+    {
+      "file": "stress/photocopy_a_08.jpg",
+      "set": "stress",
+      "variant": "photocopy",
+      "fields": {
+        "name": {
+          "expected": "Katrina Solomon",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "1990-06-28",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": "8647 Anderson Ln, South Gregoryland, RS 46563",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        }
+      },
+      "ms": 1864.2
+    },
+    {
+      "file": "stress/worst_case_a_09.jpg",
+      "set": "stress",
+      "variant": "worst_case",
+      "fields": {
+        "name": {
+          "expected": "Debra B Bruce",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "1978-02-15",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": "1157 Christine Ln, South Charlesside, RS 67857",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        }
+      },
+      "ms": 1311.3
+    },
+    {
+      "file": "stress/motion_blur_b_10.jpg",
+      "set": "stress",
+      "variant": "motion_blur",
+      "fields": {
+        "name": {
+          "expected": "Veronica Preston",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "2001-08-29",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": "9531 Barker Dr, North Jeffreyport, RS 55333",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        }
+      },
+      "ms": 647.1
+    },
+    {
+      "file": "stress/low_light_b_11.jpg",
+      "set": "stress",
+      "variant": "low_light",
+      "fields": {
+        "name": {
+          "expected": "Lisa Ferguson",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "1982-10-26",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": "5049 Koch Rd, East Coryshire, RS 55849",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        }
+      },
+      "ms": 3020.2
+    },
+    {
+      "file": "stress/far_away_b_12.jpg",
+      "set": "stress",
+      "variant": "far_away",
+      "fields": {
+        "name": {
+          "expected": "Patricia Romero",
+          "got": "Patricia Romero",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "1997-10-13",
+          "got": "1997-10-13",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": "7744 Stevens Ct, New Michael, RS 58743",
+          "got": "7744 Stevens Ct, New Michael, RS 58743",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        }
+      },
+      "ms": 1152.4
+    },
+    {
+      "file": "stress/laminate_glare_b_13.jpg",
+      "set": "stress",
+      "variant": "laminate_glare",
+      "fields": {
+        "name": {
+          "expected": "Jean-Luc D'Souza",
+          "got": "Jean-Luc D'Souza",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "1986-12-31",
+          "got": "1986-12-31",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": "8823 Diaz Ct, Smithfort, RS 47842",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        }
+      },
+      "ms": 1104.5
+    },
+    {
+      "file": "stress/hard_shadow_b_14.jpg",
+      "set": "stress",
+      "variant": "hard_shadow",
+      "fields": {
+        "name": {
+          "expected": "Mike Hinton",
+          "got": "Mike Hinton",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "1972-08-22",
+          "got": "1972-08-22",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": "2347 Alexis Ln, East Donald, RS 35053",
+          "got": "2347 Alexis Ln, East Donald, RS 350",
+          "correct": false,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": true
+        }
+      },
+      "ms": 1028.8
+    },
+    {
+      "file": "stress/security_print_b_15.jpg",
+      "set": "stress",
+      "variant": "security_print",
+      "fields": {
+        "name": {
+          "expected": "Angela Hayes",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "1976-06-03",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": "2003 Mitchell Way, North Kathrynside, RS 11338",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        }
+      },
+      "ms": 3790.4
+    },
+    {
+      "file": "stress/thumb_b_16.jpg",
+      "set": "stress",
+      "variant": "thumb",
+      "fields": {
+        "name": {
+          "expected": "Jennifer X Johnson",
+          "got": "Jennifer X Johnson",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "1989-01-15",
+          "got": "1989-01-15",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": null,
+          "got": null,
+          "correct": true,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        }
+      },
+      "ms": 1606.0
+    },
+    {
+      "file": "stress/bent_b_17.jpg",
+      "set": "stress",
+      "variant": "bent",
+      "fields": {
+        "name": {
+          "expected": "Courtney H Howard",
+          "got": "Courtney H Howard",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "2003-11-21",
+          "got": "2003-11-21",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": "869 Thomas Blvd, Meganstad, RS 13810",
+          "got": "869 Thomas Blvd, Meganstad, RS 13810",
+          "correct": true,
+          "fabricated": false,
+          "blank": false,
+          "wrong_prefill": false
+        }
+      },
+      "ms": 934.1
+    },
+    {
+      "file": "stress/photocopy_b_18.jpg",
+      "set": "stress",
+      "variant": "photocopy",
+      "fields": {
+        "name": {
+          "expected": "Robert L Ray",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "1958-06-12",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": "6331 Mendoza Ave, Riversberg, RS 47280",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        }
+      },
+      "ms": 2100.0
+    },
+    {
+      "file": "stress/worst_case_b_19.jpg",
+      "set": "stress",
+      "variant": "worst_case",
+      "fields": {
+        "name": {
+          "expected": "William O Fox",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "date_of_birth": {
+          "expected": "1966-08-12",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        },
+        "address": {
+          "expected": "2242 Meyer Dr, Palmerland, RS 51001",
+          "got": null,
+          "correct": false,
+          "fabricated": false,
+          "blank": true,
+          "wrong_prefill": false
+        }
+      },
+      "ms": 720.4
     }
   ],
   "meta": {
-    "generated_at": "2026-10-17T03:37:15.721284+00:00",
+    "generated_at": "2026-10-17T19:06:42.916589+00:00",
     "python": "3.12.15",
     "machine": "Linux x86_64"
   }
