@@ -49,10 +49,10 @@ The stack is open (justify in README) but these are fixed by the brief:
 Built and verified locally (see docs/AI_LOG.md, docs/ISSUE_LOG.md). Real-model evals done
 (Haiku 5.5 is the demo model; Opus 5.5 report kept). Open items that need the user: Railway
 deploy (project not linked; hosted Supabase keys needed — docs/DEPLOY.md), the pre-push
-hook (`make hooks`), demo video. CI is ON (project runner `rs-assist-runner` in local
-Docker, tag rs-assist-local; CI_ENABLED=true) — jobs run only while this machine's Docker
-is up. Work goes through feature branches and GitLab merge requests (pipeline must pass,
-merge commits keep each fix's Issue/Root cause/Fix/Test message), not direct pushes to main.
+hook (`make hooks`), demo video. CI is PAUSED (CI_ENABLED=false, user 2026-10-17, to speed
+up iteration) — set it back to true before submission (rubric: CI on every push); runner
+`rs-assist-runner` in local Docker, tag rs-assist-local. Commits go straight to main for now
+(user's choice); run `make ci` locally before pushing.
 Dashboard layer 2 (funnel + OCR corrections), stretch #6 (gentle mode) and the header
 banner from the design system cover (Banner.tsx) built 2026-10-17. Not built: stretch #5
 (multi-language) — listed in the README.

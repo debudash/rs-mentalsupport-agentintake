@@ -34,6 +34,9 @@ surprising ones have a full ADR.
 | Funnel events keyed by a random Journey id; the Account→Journey link is deleted at Withdrawal | Aggregate analytics survive a deletion request without pointing back to anyone; crisis pauses are never on a Journey (daily count only) |
 | Stretch #6 built as "gentle mode": same high-stress signals as the supportive card; one-sentence replies; "Take a break" link; no extra chat message | Reuses an existing, tested signal; the card already reassures once, so the chat doesn't repeat it |
 | Stretch #5 (multi-language) not built | Timebox; the per-language profile path is documented |
+| Fault injection (`FAULT_INJECT`) wraps real dependencies at their seams; refused in production | Failure handling shown and re-checkable on the running app, not only claimed in tests ([RELIABILITY](RELIABILITY.md)) |
+| Benchmarks restated as service levels with error budgets | A single benchmark run says "it was fast once"; a budget says when to stop shipping features |
+| CI paused (`CI_ENABLED=false`) during the final build push, back on before submission | Pipelines on a laptop runner slowed iteration; `make ci` runs the same checks locally |
 
 ## Technical
 
