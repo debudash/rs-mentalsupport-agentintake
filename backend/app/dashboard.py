@@ -1,6 +1,7 @@
 """Dashboard queries: aggregate, identity-free panels for Operators.
 
 Layer 1 (observability): Performance, LLM health, AI quality.
+Layer 2 (product analytics): Onboarding funnel and OCR corrections, from anonymous Journeys.
 Counts below SUPPRESS_BELOW are shown as "<5" so no individual can be singled out.
 """
 
@@ -10,7 +11,8 @@ from datetime import UTC, datetime, timedelta
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.db.models import DailyCounter, EvalReport, TimingRecord
+from app.db.models import DailyCounter, EvalReport, JourneyEvent, TimingRecord
+from app.journeys import FUNNEL, OCR_FIELDS
 
 SUPPRESS_BELOW = 5
 TARGETS_MS = {"chat": 3000, "ocr": 8000, "booking": 1000}
@@ -33,6 +35,80 @@ def percentile(values: list[float], pct: float) -> float | None:
 
 def suppress(count: int) -> int | str:
     return count if count == 0 or count >= SUPPRESS_BELOW else f"<{SUPPRESS_BELOW}"
+
+
+def _aware(value: datetime) -> datetime:
+    return value if value.tzinfo else value.replace(tzinfo=UTC)
+
+
+def funnel(db: Session, since: datetime) -> list[dict]:
+    """For Journeys that signed up since `since`: how many reached each Step, the drop-off
+    from the previous Step, and the median minutes it took. Small counts are suppressed,
+    and nothing is derived from a suppressed count."""
+    started = select(JourneyEvent.journey_id).where(
+        JourneyEvent.event == "signed_up", JourneyEvent.at >= since
+    )
+    rows = db.execute(
+        select(JourneyEvent.journey_id, JourneyEvent.event, JourneyEvent.at).where(
+            JourneyEvent.journey_id.in_(started), JourneyEvent.event.in_(FUNNEL)
+        )
+    ).all()
+    times: dict[str, dict[str, datetime]] = defaultdict(dict)
+    for journey_id, event, at in rows:
+        times[journey_id][event] = _aware(at)
+
+    stages, previous = [], None
+    for event in FUNNEL:
+        reached = sum(1 for t in times.values() if event in t)
+        stage = {
+            "event": event,
+            "reached": suppress(reached),
+            "drop_off_pct": None,
+            "median_minutes_from_previous": None,
+        }
+        if previous is not None and reached >= SUPPRESS_BELOW:
+            before = previous["count"]
+            if before >= SUPPRESS_BELOW:
+                stage["drop_off_pct"] = round(100 * (before - reached) / before, 1)
+            gaps = [
+                (t[event] - t[previous["event"]]).total_seconds() / 60
+                for t in times.values()
+                if event in t and previous["event"] in t
+            ]
+            stage["median_minutes_from_previous"] = percentile(gaps, 50)
+        stages.append(stage)
+        previous = {"event": event, "count": reached}
+    return stages
+
+
+def ocr_corrections(db: Session, since: datetime) -> list[dict]:
+    """Per field: how often the scan pre-filled it, left it blank, and how often Clients
+    edited a pre-filled value. Percentages are withheld below SUPPRESS_BELOW reviews."""
+    details = db.scalars(
+        select(JourneyEvent.detail).where(
+            JourneyEvent.event == "ocr_field", JourneyEvent.at >= since
+        )
+    ).all()
+    out = []
+    for field in OCR_FIELDS:
+        rows = [d for d in details if d and d.get("field") == field]
+        n = len(rows)
+        prefilled = sum(1 for d in rows if d.get("prefilled"))
+        row = {
+            "field": field,
+            "reviews": suppress(n),
+            "prefilled_pct": None,
+            "blank_pct": None,
+            "edited_pct": None,
+        }
+        if n >= SUPPRESS_BELOW:
+            row["prefilled_pct"] = round(100 * prefilled / n, 1)
+            row["blank_pct"] = round(100 * sum(1 for d in rows if d.get("blank")) / n, 1)
+            if prefilled >= SUPPRESS_BELOW:
+                edited = sum(1 for d in rows if d.get("prefilled") and d.get("edited"))
+                row["edited_pct"] = round(100 * edited / prefilled, 1)
+        out.append(row)
+    return out
 
 
 def dashboard(db: Session, window_hours: int = 24, now: datetime | None = None) -> dict:
@@ -129,6 +205,8 @@ def dashboard(db: Session, window_hours: int = 24, now: datetime | None = None) 
             "intents": {k: suppress(v) for k, v in intents.items()},
         },
         "ai_quality": reports,
+        "funnel": funnel(db, since),
+        "ocr_corrections": ocr_corrections(db, since),
         "safety_and_privacy": {
             "crisis_pauses": suppress(totals.get("crisis_pauses", 0)),
             "withdrawals": suppress(totals.get("withdrawals", 0)),

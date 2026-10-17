@@ -5,6 +5,7 @@ from datetime import UTC, datetime
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
+from app import journeys
 from app.db.models import Assessment, Booking, Client, IdentityDetails, IntakeMessage
 from app.domain.intake import HISTORY_TURNS, IntakeConductor, IntakeState
 from app.domain.onboarding import Facts
@@ -85,6 +86,7 @@ def save_intake(
     completed_now = assessment.completed_at is None and conductor.is_complete(state)
     if completed_now:
         assessment.completed_at = datetime.now(UTC)
+        journeys.record(db, client.account_id, "intake_completed")
         # Minimisation: the conversation was only a means to the Assessment.
         db.execute(delete(IntakeMessage).where(IntakeMessage.client_id == client.account_id))
     elif assessment.completed_at is None:

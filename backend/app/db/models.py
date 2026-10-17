@@ -194,6 +194,26 @@ class DailyCounter(Base):
     count: Mapped[int] = mapped_column(Integer, default=0)
 
 
+class JourneyLink(Base):
+    """Account -> anonymous Journey. Deleted at Withdrawal, which leaves the Journey's
+    events with no way back to the person."""
+
+    __tablename__ = "journey_links"
+    account_id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    journey_id: Mapped[str] = mapped_column(String(36), unique=True, default=new_id)
+
+
+class JourneyEvent(Base):
+    """Funnel analytics: Step, event and time only. No answers, no Identity details."""
+
+    __tablename__ = "journey_events"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    journey_id: Mapped[str] = mapped_column(String(36), index=True)
+    event: Mapped[str] = mapped_column(String(32), index=True)
+    detail: Mapped[dict | None] = mapped_column(JSON, nullable=True)  # booleans/labels only
+    at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, index=True)
+
+
 class Heartbeat(Base):
     __tablename__ = "heartbeat"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)

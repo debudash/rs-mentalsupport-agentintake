@@ -239,6 +239,7 @@ describe('IdentityStep', () => {
     expect(calls.at(-1)?.body).toMatchObject({
       source: 'scan',
       edited: { legal_name: false, date_of_birth: false, address: true },
+      prefilled: { legal_name: true, date_of_birth: true, address: false },
     });
   });
 

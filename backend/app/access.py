@@ -13,6 +13,7 @@ import jwt
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app import journeys
 from app.config import Settings, get_settings
 from app.db.models import (
     AccessLogEntry,
@@ -111,6 +112,7 @@ def identify(db: Session, verifier: TokenVerifier, authorization: str | None) ->
             raise Unauthenticated("account withdrawn")
         account = Account(id=account_id, role="client")
         db.add(account)
+        journeys.start(db, account_id)
         db.commit()
     return Caller(account_id=account.id, role=account.role)
 

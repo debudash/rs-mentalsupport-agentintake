@@ -110,8 +110,9 @@ Then `make up` again, and `make eval` for the intent scorecard on that model.
 - **Withdraw and delete everything**, with a receipt; afterwards every endpoint refuses
   that Account.
 - **Clinicians** see only clients booked with them, without date of birth or address;
-  every view is logged. **Operators** see an aggregate dashboard (performance, AI health,
-  AI quality) with no individual's data.
+  every view is logged. **Operators** see an aggregate dashboard — performance, AI health,
+  AI quality, the onboarding funnel (drop-off and time per step) and how often Clients
+  correct each field the ID reader filled in — with no individual's data.
 
 Screenshots: [docs/screenshots](docs/screenshots).
 
@@ -153,6 +154,7 @@ reliably masked, and neither is the optional free-text "reason".
 | Consent log | Account id, action, consent version, time — no personal details | Permanent (proof) |
 | Access log | Which clinician opened which booking, when | Permanent (audit) |
 | Logs and timing records | Endpoint, timings, outcome — **no personal data, no account id** | — |
+| Funnel analytics | Random journey id, step reached, time; per-field "pre-filled / blank / corrected" flags | Permanent, but the account→journey link is **deleted at Withdrawal** |
 
 **Withdrawal** deletes the Assessment, conversation, identity details, booking (the slot
 is released), the Account in Supabase Auth, and Supabase's own auth audit rows for that
@@ -266,8 +268,6 @@ Deliberately out of scope for the timebox; each has a clear path:
 - Admin console: clinician and slot management
 - Multi-language: per-language service profile, crisis phrase lists and eval examples
 - LangSmith tracing, off by default and masked, for development on synthetic data
-- Onboarding funnel and OCR-correction panels (dashboard layer 2) — designed (anonymous
-  journey ids unlinked at withdrawal) but **not built**
 
 **Re-targeting to another service:** everything service-specific — steps, questions,
 approved answers, supportive copy, crisis resources — lives in one file,

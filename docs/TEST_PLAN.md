@@ -55,6 +55,15 @@ Coverage: backend **93%** (gate 80% on core logic, enforced in CI); frontend ~79
 | Tokens | `test_adapters_and_dashboard.py::test_verifier_accepts_valid_and_rejects_wrong_audience_or_secret`; expired/garbage tokens in `test_api_flow.py` |
 | Browser cannot read tables | Verified against local Supabase REST with the public key (permission denied); RLS enabled by migrations 0001–0002 |
 
+## Funnel analytics
+
+| Concern | Tests |
+|---|---|
+| Events once per Journey, in funnel order, through the real API | `test_journeys.py::test_onboarding_and_withdrawal_produce_an_unlinkable_funnel` |
+| Withdrawal unlinks; analytics tables never mention the Account or its data | same test; `::test_unlink_keeps_events_but_removes_the_way_back` |
+| OCR review records booleans only | `::test_ocr_review_records_booleans_only` |
+| Funnel maths, suppression, nothing derived from suppressed counts | `::test_funnel_counts_drop_off_and_median_minutes`, `::test_funnel_suppresses_small_counts_and_ignores_old_journeys`, `::test_ocr_corrections_per_field` |
+
 ## Accessibility
 
 axe on every screen (`steps.test.tsx`, `screens.test.tsx`), WCAG AA contrast for every

@@ -8,7 +8,7 @@ surprising ones have a full ADR.
 | # | Decision |
 |---|---|
 | [0001](adr/0001-fastapi-react-not-rails.md) | FastAPI + React instead of Rails |
-| [0002](adr/0002-no-langchain-langsmith.md) | No LangChain or LangSmith; own eval harness and dashboard |
+| [0002](adr/0002-no-langchain-langsmith.md) | No LangChain or LangSmith; own eval harness and dashboard (layers 1 and 2) |
 | [0003](adr/0003-server-owned-checklist-one-llm-call.md) | Server-owned checklist; one structured LLM call per message |
 | [0004](adr/0004-id-images-never-stored.md) | ID images never stored; sensitive fields encrypted in the app |
 
@@ -30,7 +30,8 @@ surprising ones have a full ADR.
 | Intake conversation deleted when Intake completes | Only the Assessment is needed |
 | Initial consultation, 30 min, 3–4 fictional clinicians, 14-day window, 2 h notice | The real next step after intake; enough slots for demos |
 | Clinician view: own bookings only, no DOB/address, every view in an Access log | Shows role-scoped, audited staff access |
-| Operator dashboard, layer 1 (performance, AI health, AI quality) | Replaces LangSmith observability; layer 2 (funnel) designed, not built |
+| Operator dashboard: layer 1 (performance, AI health, AI quality) and layer 2 (funnel, OCR corrections) | Layer 1 replaces LangSmith observability; layer 2 shows where people drop off and the real-world OCR error rate |
+| Funnel events keyed by a random Journey id; the Account→Journey link is deleted at Withdrawal | Aggregate analytics survive a deletion request without pointing back to anyone; crisis pauses are never on a Journey (daily count only) |
 | Stretch #6 (sentiment-adaptive tone) and #5 (multi-language) not built | Timebox; core and edge cases first |
 
 ## Technical

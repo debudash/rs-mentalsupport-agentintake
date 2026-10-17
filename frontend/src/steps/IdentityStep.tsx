@@ -109,6 +109,12 @@ export function IdentityStep({ idScanAllowed, onSupport, onDone }: Props) {
           date_of_birth: values.date_of_birth !== original.date_of_birth,
           address: values.address !== original.address,
         },
+        // Which fields the scan filled in (true/false only), for the OCR-correction metric.
+        prefilled: {
+          legal_name: status.name === 'read',
+          date_of_birth: status.date_of_birth === 'read',
+          address: status.address === 'read',
+        },
       });
       if (result.confirmed) onDone();
       else

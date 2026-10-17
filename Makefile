@@ -84,4 +84,4 @@ smoke:
 # Browser walks of the running app (headless Chromium): full journey, keyboard-only, staff.
 e2e:
 	cd e2e && npm install --no-audit --no-fund && npx playwright install chromium && \
-		node walk.mjs && node keyboard.mjs && node staff.mjs
+		node walk.mjs && node keyboard.mjs && node staff.mjs && node panels.mjs

@@ -35,6 +35,14 @@ and what a human decided. Tools and models used inside the product are in
 | `3751993` | Booked demo client for the clinician view; screenshots | Clinician + dashboard walk, no errors |
 | (docs) | README, AI_USAGE, architecture with sequence diagrams, decisions, ADRs 0003–0004, test plan, performance, accessibility (keyboard-only walk: 16/16), deploy, runbook, users, issue log | Every number taken from a real run |
 
+## 2026-10-17 — Dashboard layer 2 (human chose it as the next part)
+
+- Journeys module, migration 0003 (RLS on both tables), funnel and OCR-correction queries,
+  dashboard panels; review screen sends which fields the scan pre-filled.
+- Tests first (11 new backend tests); 197 backend + 50 frontend pass. Verified on the real
+  stack with 25 journeys (20-run timings + 5 browser walks): funnel and per-field panels
+  render; withdrawn journeys remain as unlinked counts.
+
 ## Not done by the agent (needs the human)
 
 - **Real-model intent eval:** no Anthropic key on the build machine; the committed intent

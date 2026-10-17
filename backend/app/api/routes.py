@@ -11,8 +11,8 @@ from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
 from app import consent as consent_module
+from app import journeys, telemetry
 from app import onboarding_service as svc
-from app import telemetry
 from app.access import Caller, clinician_bookings, clinician_view, require
 from app.api.deps import caller, conductor, profile
 from app.auth_admin import AuthAdmin, get_auth_admin
@@ -387,6 +387,8 @@ class IdentityIn(BaseModel):
     address: str = Field(min_length=1, max_length=240)
     source: str = Field(pattern="^(scan|manual)$")
     edited: dict[str, bool] = Field(default_factory=dict)
+    # Which fields the scan pre-filled (true/false only) — for the OCR-correction metric.
+    prefilled: dict[str, bool] = Field(default_factory=dict)
 
 
 def _age(dob: date, today: date) -> int:
@@ -442,6 +444,9 @@ def identity_confirm(
     details.confirmed_at = datetime.now(UTC)
     db.add(details)
     client.first_name = svc.first_name(name)
+    journeys.record(db, client.account_id, "identity_completed")
+    if body.source == "scan" and body.prefilled:
+        journeys.record_ocr_review(db, client.account_id, body.prefilled, details.edited)
     db.commit()
     return {"confirmed": True, "onboarding": _state_payload(db, client)}
 
@@ -535,6 +540,8 @@ def book(
     if isinstance(result, OutsideWindow):
         raise HTTPException(422, result.reason)
     telemetry.note(outcome="booked")
+    journeys.record(db, client.account_id, "booked")
+    db.commit()
     return {
         "booking": _booking_out(db, prof, client.account_id, body.tz),
         "onboarding": _state_payload(db, client),

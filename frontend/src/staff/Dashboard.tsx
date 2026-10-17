@@ -34,9 +34,34 @@ interface DashboardData {
   };
   ai_quality: Record<string, Record<string, unknown>>;
   safety_and_privacy: { crisis_pauses: number | string; withdrawals: number | string };
+  funnel?: {
+    event: string;
+    reached: number | string;
+    drop_off_pct: number | null;
+    median_minutes_from_previous: number | null;
+  }[];
+  ocr_corrections?: {
+    field: string;
+    reviews: number | string;
+    prefilled_pct: number | null;
+    blank_pct: number | null;
+    edited_pct: number | null;
+  }[];
 }
 
 const NAMES: Record<string, string> = { chat: 'Chat reply', ocr: 'ID reading', booking: 'Booking' };
+const STAGE: Record<string, string> = {
+  signed_up: 'Signed up',
+  consent_completed: 'Consent',
+  intake_completed: 'About you (intake)',
+  identity_completed: 'Your details',
+  booked: 'Booked',
+};
+const FIELD: Record<string, string> = {
+  legal_name: 'Name',
+  date_of_birth: 'Date of birth',
+  address: 'Address',
+};
 const ms = (v: number | null) =>
   v === null ? '—' : v >= 1000 ? `${(v / 1000).toFixed(2)} s` : `${Math.round(v)} ms`;
 const pct = (v: unknown) => (typeof v === 'number' ? `${(v * 100).toFixed(1)}%` : '—');
@@ -197,6 +222,69 @@ export function Dashboard() {
                 ))}
               </tbody>
             </table>
+          </section>
+
+          <h2>Onboarding funnel</h2>
+          <section className="card" aria-labelledby="funnel-title">
+            <h3 id="funnel-title">Clients who signed up in this window</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Step reached</th>
+                  <th scope="col">Clients</th>
+                  <th scope="col">Dropped since previous step</th>
+                  <th scope="col">Median time from previous step</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(data.funnel ?? []).map((s) => (
+                  <tr key={s.event}>
+                    <td>{STAGE[s.event] ?? s.event}</td>
+                    <td>{s.reached}</td>
+                    <td>{s.drop_off_pct === null ? '—' : `${s.drop_off_pct}%`}</td>
+                    <td>
+                      {s.median_minutes_from_previous === null
+                        ? '—'
+                        : `${s.median_minutes_from_previous} min`}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p className="muted">
+              Anonymous journeys: when someone withdraws, the link to them is deleted and only these
+              counts remain.
+            </p>
+          </section>
+
+          <section className="card" aria-labelledby="ocr-title">
+            <h3 id="ocr-title">ID reading in practice</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Field</th>
+                  <th scope="col">ID scans reviewed</th>
+                  <th scope="col">Pre-filled</th>
+                  <th scope="col">Left blank</th>
+                  <th scope="col">Corrected by the client</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(data.ocr_corrections ?? []).map((r) => (
+                  <tr key={r.field}>
+                    <td>{FIELD[r.field] ?? r.field}</td>
+                    <td>{r.reviews}</td>
+                    <td>{r.prefilled_pct === null ? '—' : `${r.prefilled_pct}%`}</td>
+                    <td>{r.blank_pct === null ? '—' : `${r.blank_pct}%`}</td>
+                    <td>{r.edited_pct === null ? '—' : `${r.edited_pct}%`}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p className="muted">
+              "Corrected" is the share of pre-filled values the client changed before confirming —
+              the real-world error rate of the ID reader.
+            </p>
           </section>
 
           <h2>AI quality (latest eval)</h2>

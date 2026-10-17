@@ -57,7 +57,8 @@ interface. Swappable dependencies sit behind seams with a Fake adapter for tests
 | Consent & Withdrawal (`consent.py`) | `grant`, `set_id_scan`, `withdraw → receipt` | consent log, cascade delete, auth deletion, audit-row cleanup | auth admin: Supabase · Fake |
 | Access control (`access.py`) | `identify(request) → Caller`, `clinician_view` | token verification (HS256 or JWKS), roles, Access log | token verifier |
 | Telemetry (`telemetry.py`) | `timed(stage)`, `note(...)`, `log(...)` | PII-free JSON logs, timing records, `Server-Timing` | — |
-| Dashboard queries (`dashboard.py`) | `dashboard(db, hours)` | percentiles, suppression of small counts | database |
+| Journeys (`journeys.py`) | `start`, `record`, `record_ocr_review`, `unlink` | anonymous funnel events, once per Journey, unlink at Withdrawal | database |
+| Dashboard queries (`dashboard.py`) | `dashboard(db, hours)`, `funnel`, `ocr_corrections` | percentiles, funnel drop-off and medians, suppression of small counts (and nothing derived from them) | database |
 | Service profile (`profile/`) | `get_profile()` | everything service-specific, validated at startup | file |
 
 Shallow on purpose: HTTP routes (`api/routes.py`), the encrypted column type
@@ -184,7 +185,9 @@ erDiagram
 ```
 
 Also: `consent_log` and `access_log` (permanent, identity-light), `timing_records` and
-`daily_counters` (aggregate, no account ids), `heartbeat`, `eval_reports`.
+`daily_counters` (aggregate, no account ids), `journey_links` (account → random journey,
+deleted at Withdrawal) and `journey_events` (journey, step event, time, per-field OCR
+flags — nothing else), `heartbeat`, `eval_reports`.
 
 ## Deployment view
 

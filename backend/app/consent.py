@@ -15,6 +15,7 @@ from datetime import UTC, datetime
 from sqlalchemy import delete, text
 from sqlalchemy.orm import Session
 
+from app import journeys
 from app.auth_admin import AuthAdmin
 from app.db.models import (
     Account,
@@ -89,6 +90,7 @@ def grant(
             )
         )
     set_id_scan(db, profile, client, id_scan)
+    journeys.record(db, account_id, "consent_completed")
     db.commit()
     return client
 
@@ -139,6 +141,7 @@ def _delete_auth_audit_rows(db: Session, account_id: str) -> bool:
 
 def withdraw(db: Session, auth_admin: AuthAdmin, account_id: str) -> DeletionReceipt:
     reference = secrets.token_hex(5).upper()
+    journeys.unlink(db, account_id)
     for model in (Booking, IntakeMessage, IdentityDetails, Assessment):
         db.execute(delete(model).where(model.client_id == account_id))
     db.execute(delete(Client).where(Client.account_id == account_id))

@@ -204,6 +204,55 @@ describe('Dashboard', () => {
             },
           },
           safety_and_privacy: { crisis_pauses: '<5', withdrawals: 0 },
+          funnel: [
+            {
+              event: 'signed_up',
+              reached: 20,
+              drop_off_pct: null,
+              median_minutes_from_previous: null,
+            },
+            {
+              event: 'consent_completed',
+              reached: 18,
+              drop_off_pct: 10,
+              median_minutes_from_previous: 1.5,
+            },
+            {
+              event: 'intake_completed',
+              reached: 12,
+              drop_off_pct: 33.3,
+              median_minutes_from_previous: 6,
+            },
+            {
+              event: 'identity_completed',
+              reached: 10,
+              drop_off_pct: 16.7,
+              median_minutes_from_previous: 2,
+            },
+            {
+              event: 'booked',
+              reached: '<5',
+              drop_off_pct: null,
+              median_minutes_from_previous: null,
+            },
+          ],
+          ocr_corrections: [
+            { field: 'legal_name', reviews: 8, prefilled_pct: 100, blank_pct: 0, edited_pct: 12.5 },
+            {
+              field: 'date_of_birth',
+              reviews: 8,
+              prefilled_pct: 87.5,
+              blank_pct: 12.5,
+              edited_pct: 0,
+            },
+            {
+              field: 'address',
+              reviews: '<5',
+              prefilled_pct: null,
+              blank_pct: null,
+              edited_pct: null,
+            },
+          ],
         },
       }),
     });
@@ -212,7 +261,12 @@ describe('Dashboard', () => {
     expect(screen.getAllByText('✓ Meets target')).toHaveLength(2); // chat + OCR eval
     expect(screen.getByText('✗ Misses target')).toBeInTheDocument();
     expect(screen.getByText('No data')).toBeInTheDocument();
-    expect(screen.getByText('<5')).toBeInTheDocument();
+    expect(screen.getAllByText('<5').length).toBeGreaterThanOrEqual(3);
+    expect(screen.getByText('About you (intake)')).toBeInTheDocument();
+    expect(screen.getByText('33.3%')).toBeInTheDocument();
+    expect(screen.getByText('6 min')).toBeInTheDocument();
+    expect(screen.getAllByText('12.5%', { selector: 'td' })).toHaveLength(2); // edited name, blank DOB
+    expect(screen.getByText('Corrected by the client')).toBeInTheDocument();
     expect(await axe(container)).toHaveNoViolations();
   });
 });
