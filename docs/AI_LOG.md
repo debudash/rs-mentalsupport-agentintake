@@ -135,3 +135,8 @@ and what a human decided. Tools and models used inside the product are in
 - Eval now splits misses into "left blank" (safe) and "wrong value pre-filled" (unsafe).
   Stress: 43.3%; 31 of 34 misses left blank; 3 unsafe (a label read as a name, a misread
   house number, a truncated ZIP). Not tuned against; reported separately, not gated.
+- **Human approved** fixing the two rule-level unsafe misses as bugs (not tuning): ISSUE-010
+  (a field label taken as the name) and ISSUE-011 (a ZIP cut short), each test-first from
+  the exact OCR lines. Agent's first ISSUE-010 test passed when it shouldn't have (a
+  case-sensitive assertion); caught by checking the test went red, then tightened. Result:
+  golden wrong pre-fills 1 → 0, stress 3 → 1, accuracy unchanged on every set.

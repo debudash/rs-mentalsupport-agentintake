@@ -252,3 +252,41 @@ def test_shape_fallback_never_guesses_when_ambiguous():
 def test_shape_fallback_skips_header_as_name():
     found = extract(lines("Riverside Member Card", "31 DEC 1989"))
     assert found["name"] is None and found["date_of_birth"].value == "1989-12-31"
+
+
+# ISSUE-010 — found by the OCR stress set (low_light_a_01): the "DATE OF BIRTH" label was
+# pre-filled as the Client's name.
+def test_shape_fallback_never_takes_a_field_label_as_the_name():
+    found = extract(
+        lines(
+            ": NAME",
+            "SARA PALMER |",
+            "DATE OF BIRTH o",
+            "10/19/1999 —",
+            "ADDRESS",
+            "5907 ELLIOTT WAY",
+            "LAKE JACOB, RS 60016",
+        )
+    )
+    assert found["date_of_birth"].value == "1999-10-19"
+    assert found["name"] is None  # the only candidate above the date is a label: leave it blank
+
+
+# ISSUE-011 — found by the OCR stress set (hard_shadow_b_14) and the golden set
+# (hard_unusual_07): a ZIP cut short was pre-filled as part of the address.
+@pytest.mark.parametrize(
+    "city_line",
+    ["East Donald, RS 350", "East Donald, RS 3508", "SOUTH ANTHONYCHESTER, RS 6832"],
+)
+def test_address_with_a_short_zip_is_left_blank(city_line):
+    found = extract(lines("Name: Mike Hinton", "Address: 2347 Alexis Ln", city_line))
+    assert found["name"].value == "Mike Hinton"
+    assert found["address"] is None
+
+
+@pytest.mark.parametrize(
+    "city_line", ["East Donald, RS 35053", "East Donald, RS 35053-1234", "East Donald"]
+)
+def test_address_with_a_whole_zip_or_none_is_kept(city_line):
+    found = extract(lines("Address: 2347 Alexis Ln", city_line))
+    assert found["address"].value == f"2347 Alexis Ln, {city_line}"
