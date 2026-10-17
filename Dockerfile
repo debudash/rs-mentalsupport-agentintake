@@ -38,4 +38,8 @@ ENV PATH="/app/backend/.venv/bin:$PATH" FRONTEND_DIST=/app/frontend/dist APP_ENV
 RUN useradd --create-home --uid 10001 app && chown -R app /app
 USER app
 EXPOSE 8000
-CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers ${WEB_CONCURRENCY:-2} --no-access-log"]
+# ISSUE-002: uvicorn closes idle keep-alive connections after 5 s by default; clients that
+# pause 2-5 s between messages (people reading, k6 think time) could reuse a connection the
+# server was closing, and the request failed before reaching the app (0.2% under load).
+# Keep-alive 75 s outlasts any client idle gap and proxy idle timeouts.
+CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers ${WEB_CONCURRENCY:-2} --timeout-keep-alive 75 --no-access-log"]
