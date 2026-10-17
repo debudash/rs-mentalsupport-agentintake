@@ -83,21 +83,127 @@ a {
   border: 0;
 }
 
-/* layout */
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  padding: 0.75rem 1.25rem;
-  background: var(--surface);
+/* banner: the design system's cover, full on sign-in, a short band once signed in.
+   Wide: name left, artwork right. Narrow (< 640px): artwork becomes a strip, or hides when compact. */
+.banner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 560px);
+  grid-template-areas:
+    'actions actions'
+    'words art';
+  background: var(--bg);
   border-bottom: 1px solid var(--line);
+  overflow: hidden;
 }
-.brand {
+.banner-actions {
+  grid-area: actions;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+}
+.banner-words {
+  grid-area: words;
+  align-self: end;
+  padding: 1rem 1.25rem 2rem 2rem;
+}
+.banner-name {
+  margin: 0;
+  font-size: clamp(2.25rem, 4.5vw + 0.75rem, 4.25rem);
+  line-height: 0.95;
   font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.banner-name span {
+  display: block;
+}
+.banner-tag {
+  max-width: 20rem;
+  margin: 0.75rem 0 0;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+.banner-art {
+  grid-area: art;
+  display: block;
+  width: 100%;
+  height: clamp(200px, 28vw, 288px);
+}
+.banner-river,
+.banner-pill.on-tint {
+  fill: var(--brand);
+}
+.banner-tint,
+.banner-pill.on-river,
+.banner-pill.on-deep {
+  fill: var(--brand-soft);
+}
+.banner-deep {
+  fill: var(--ink);
+}
+.banner-ok {
+  fill: var(--ok);
+}
+
+.banner.compact {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: 'words art actions';
+  align-items: center;
+}
+.banner.compact .banner-words {
+  align-self: center;
+  padding: 0.75rem 1.25rem;
+}
+.banner.compact .banner-name {
+  font-size: 1.25rem;
+  line-height: 1.25;
   color: var(--brand);
 }
+.banner.compact .banner-name span {
+  display: inline;
+}
+.banner.compact .banner-art {
+  height: 64px;
+}
+
+@media (max-width: 640px) {
+  .banner {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'actions'
+      'art'
+      'words';
+  }
+  .banner-actions {
+    justify-content: flex-start;
+  }
+  .banner-art {
+    height: 96px;
+  }
+  .banner-words {
+    padding: 1rem 1rem 1.5rem;
+  }
+  .banner.compact {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'words'
+      'actions';
+  }
+  .banner.compact .banner-art {
+    display: none;
+  }
+  .banner.compact .banner-words {
+    padding: 0.75rem 1rem 0;
+  }
+  .banner.compact .banner-actions {
+    padding: 0.5rem 1rem 0.75rem;
+  }
+}
+
+/* layout */
 .crisis-link {
   font-weight: 600;
   color: var(--danger);

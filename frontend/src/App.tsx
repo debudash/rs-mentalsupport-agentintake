@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { createClient, type Session, type SupabaseClient } from '@supabase/supabase-js';
 import { ApiError, get, setTokenProvider } from './lib/api';
 import type { Me } from './lib/types';
+import { Banner } from './Banner';
 import { SignIn } from './SignIn';
 import { TrustFooter } from './Trust';
 import { Onboarding } from './Onboarding';
@@ -56,19 +57,7 @@ export default function App() {
       <a className="skip-link" href="#main">
         Skip to content
       </a>
-      <header className="topbar">
-        <span className="brand">Riverside Counseling</span>
-        <span className="row">
-          <a className="crisis-link" href="tel:988">
-            In crisis? Call or text 988
-          </a>
-          {session && (
-            <button type="button" className="secondary" onClick={signOut}>
-              Sign out
-            </button>
-          )}
-        </span>
-      </header>
+      <Banner compact={!!session} onSignOut={session ? signOut : undefined} />
       <main id="main" className={me && me.role !== 'client' ? 'wide' : undefined}>
         {error && (
           <div className="notice danger" role="alert">
