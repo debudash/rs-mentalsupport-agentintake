@@ -132,7 +132,17 @@ def clean_address_line(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip(" ,.")
 
 
+# ISSUE-011: a ZIP cut short by the card edge or a shadow ("RS 350") still passed the shape
+# check, so a wrong address was pre-filled. When the address ends in a state and a number,
+# that number must be a whole ZIP (5 digits, or ZIP+4); otherwise the address stays blank.
+_ZIP_TAIL = re.compile(r"\b[A-Za-z]{2}\s+(\d[\d-]*)$")
+_WHOLE_ZIP = re.compile(r"\d{5}(?:-\d{4})?")
+
+
 def valid_address(text: str) -> bool:
+    tail = _ZIP_TAIL.search(text.strip())
+    if tail and not _WHOLE_ZIP.fullmatch(tail[1]):
+        return False
     return (
         bool(re.search(r"\d", text))
         and len(re.findall(r"[A-Za-z]{2,}", text)) >= 2
@@ -229,6 +239,10 @@ def _by_shape(lines: list[Line], texts: list[str], found: dict, today: date | No
     if found["name"] is None and len(date_rows) == 1 and date_rows[0] > 0:
         i = date_rows[0] - 1  # the name sits directly above the date of birth
         words = {w.lower().strip(".:") for w in texts[i].split()}
-        name = clean_name(texts[i]) if not words & _HEADER_WORDS else None
+        # ISSUE-010: on a labelled card whose NAME label misread, the line above the date is
+        # the "DATE OF BIRTH" label, and it was pre-filled as the name. Header words alone
+        # didn't exclude it; a field label is never a value, so the name stays blank.
+        is_label = words & _HEADER_WORDS or _is_any_label(texts[i])
+        name = clean_name(texts[i]) if not is_label else None
         if name and not re.search(r"\d", texts[i]):
             found["name"] = Candidate(name, _words_conf(lines[i], texts[i]))

@@ -14,7 +14,7 @@ production image (`runtime` target, 2 uvicorn workers), local Supabase in Docker
 | Uptime ≥ 99% | pending deployment | UptimeRobot on `/health` every 5 min |
 
 OCR eval latency (Tesseract 5.5.0): golden + held-out (40 IDs) p50 872 ms, p95 1.42 s; with the
-20 stress captures added (60 IDs) p50 903 ms, p95 2.49 s — hard images go through more
+20 stress captures added (60 IDs) p50 986 ms, p95 2.15 s — hard images go through more
 preprocessing passes, still well under the 8 s target.
 
 ## Model latency (intent eval, 65 calls per run, 3 runs each)
