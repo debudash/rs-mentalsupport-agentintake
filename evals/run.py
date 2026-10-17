@@ -236,10 +236,13 @@ def write_report(kind: str, report: dict) -> Path:
     stamp = datetime.now(UTC).strftime("%Y-%m-%d")
     report["meta"] = {"generated_at": datetime.now(UTC).isoformat(), "python": platform.python_version(),
                       "machine": f"{platform.system()} {platform.machine()}"}
-    path = REPORTS / f"{stamp}-{kind}.json"
+    # Intent runs are per model, so runs on different models sit side by side.
+    suffix = f"-{report['summary']['model']}" if kind == "intent" else ""
+    path = REPORTS / f"{stamp}-{kind}{suffix}.json"
     path.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    (REPORTS / f"latest-{kind}.json").write_text(json.dumps(report["summary"], indent=2) + "\n",
-                                                 encoding="utf-8")
+    (REPORTS / f"latest-{kind}{suffix}.json").write_text(
+        json.dumps(report["summary"], indent=2) + "\n", encoding="utf-8"
+    )
     return path
 
 

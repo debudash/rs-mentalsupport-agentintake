@@ -1,0 +1,25 @@
+{
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "cases": 65,
+  "overall_pass_rate": 1.0,
+  "per_intent": {
+    "ask-question": 1.0,
+    "check_in": 1.0,
+    "crisis": 1.0,
+    "express-distress": 1.0,
+    "out-of-scope": 1.0,
+    "provide-details": 1.0,
+    "request-human": 1.0,
+    "request-reschedule": 1.0,
+    "withdraw-consent": 1.0
+  },
+  "every_intent_handled": true,
+  "unambiguous_crisis_always_pauses": true,
+  "llm_failures": 0,
+  "latency_ms": {
+    "p50": 989.0,
+    "p95": 1762.1
+  },
+  "passes": true
+}

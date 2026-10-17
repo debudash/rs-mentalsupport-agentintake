@@ -11,7 +11,7 @@ Our build spec is [docs/PRD.md](docs/PRD.md).
 |---|---|
 | **Onboarding** | Consent → Intake (chat) → Identity (ID photo or typing) → Scheduling |
 | **AI** | One structured LLM call per message (Claude, or OpenRouter/Ollama, or a keyless Fake); Tesseract OCR, local |
-| **Results** | OCR **98.9%** field accuracy on the golden set (held-out **93.3%**, **0** fabricated fields); unambiguous crisis language pauses **100%**; chat p95 **1.15 s**, OCR p95 **1.18 s**, booking p95 **85 ms** (local) |
+| **Results** | OCR **98.9%** field accuracy (held-out **93.3%**, **0** fabricated fields); intents **100%** on Claude Haiku 5.5, crisis language pauses **100%**; chat p95 **2.28 s on real Claude at 20 users**, OCR p95 **1.18 s**, booking p95 **85 ms** (local) |
 | **Tests** | 188 backend tests (**93%** coverage; 2 need Tesseract/Postgres and run in Docker), 50 frontend tests incl. axe + WCAG contrast, browser walks in `e2e/` |
 
 ![Intake conversation](docs/screenshots/03-intake-chat.png)
@@ -190,13 +190,24 @@ digit. Both land on the review screen for the Client to correct.
 **Intents** — 65 labelled messages across all 8 intents, plus unambiguous crisis
 language, subtle risk, and ambiguous idioms ([evals/datasets/intents.yaml](evals/datasets/intents.yaml)).
 
-| Provider | Overall | Unambiguous crisis pauses |
-|---|---|---|
-| Fake (keyless heuristic) | 61.5% | **100%** |
-| Claude | *run `make eval` with `LLM_PROVIDER=anthropic`* | 100% (deterministic, before the LLM) |
+| Model | Overall (3 runs) | Every intent | Crisis incl. subtle cases | LLM p50 | LLM p95 |
+|---|---|---|---|---|---|
+| **Claude Haiku 5.5** | **100%, 100%, 100%** | ✓ | 100% | ~1.0 s | 1.76–2.02 s |
+| Claude Opus 5.5 | 98%, 98%, 100% | ✓ | 100% | ~2.2 s | 2.94–3.21 s |
+| Fake (keyless heuristic) | 61.5% | ✗ | unambiguous only | — | — |
 
-The unambiguous-crisis result does not depend on the model: the safety screen runs
-before any LLM call.
+Both models also caught the two *subtle* crisis messages ("giving my things away and
+writing goodbye letters") that no phrase list could. Unambiguous crisis language pauses
+100% regardless of model: the safety screen runs before any LLM call. Opus's only miss
+(in two of three runs) was "Do you have parking?" treated as out of scope instead of
+"I don't have that answer" — both redirect gracefully.
+
+**Model choice.** The task is narrow (classify, extract, pick an approved answer, one
+sentence), so the larger model buys nothing: Haiku scored as well or better at less than
+half the latency and a fraction of the cost. Opus on its own sits at the edge of the 3 s
+chat budget. `.env.example` documents Opus as the general default; the demo and the
+benchmarks run Haiku via `LLM_MODEL=claude-haiku-5-5`. Reports for both:
+[evals/reports](evals/reports).
 
 Engine and model versions: Tesseract 5.5.0 (Debian, in the Docker image), OpenCV 5.0,
 Claude via `LLM_MODEL` (default `claude-opus-5-5`, effort `low`). Hardware for the
@@ -208,7 +219,8 @@ numbers above: Windows 11 laptop, Docker (Rancher Desktop), 2 uvicorn workers.
 
 | Target | Result (local) | How |
 |---|---|---|
-| Chat / API p95 < 3.0 s at 20 VUs × 60 s | **1.15 s** chat, 1.07 s all API, 0% errors | `make load` (k6), Fake LLM with 800 ms simulated model latency |
+| Chat / API p95 < 3.0 s at 20 VUs × 60 s | **2.28 s** chat, 1.91 s all API, 0% errors, 0 LLM errors in 290 messages | `make load` (k6) against **real Claude Haiku 5.5** |
+| (same, model latency removed) | 1.15 s chat with a fixed 800 ms fake model | `make load` with `LLM_PROVIDER=fake FAKE_LLM_DELAY_MS=800` |
 | OCR p95 < 8.0 s (20 runs) | **1.18 s** | `make timings`, server `Server-Timing` header |
 | Booking p95 < 1.0 s (20 runs) | **85 ms** | same |
 | Uptime ≥ 99% | pinger on `/health` once deployed | [docs/DEPLOY.md](docs/DEPLOY.md) |

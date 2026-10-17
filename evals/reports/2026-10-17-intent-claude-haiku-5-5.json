@@ -1,64 +1,64 @@
 {
   "summary": {
-    "provider": "fake",
-    "model": "fake-intake-1",
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
     "cases": 65,
-    "overall_pass_rate": 0.615,
+    "overall_pass_rate": 1.0,
     "per_intent": {
-      "ask-question": 0.556,
+      "ask-question": 1.0,
       "check_in": 1.0,
-      "crisis": 0.8,
-      "express-distress": 0.667,
-      "out-of-scope": 0.833,
-      "provide-details": 0.6,
-      "request-human": 0.333,
-      "request-reschedule": 0.333,
-      "withdraw-consent": 0.333
+      "crisis": 1.0,
+      "express-distress": 1.0,
+      "out-of-scope": 1.0,
+      "provide-details": 1.0,
+      "request-human": 1.0,
+      "request-reschedule": 1.0,
+      "withdraw-consent": 1.0
     },
-    "every_intent_handled": false,
+    "every_intent_handled": true,
     "unambiguous_crisis_always_pauses": true,
     "llm_failures": 0,
     "latency_ms": {
-      "p50": 0.1,
-      "p95": 0.2
+      "p50": 989.0,
+      "p95": 1762.1
     },
-    "passes": false
+    "passes": true
   },
   "cases": [
     {
       "text": "mostly anxiety, it's been about three months",
       "expect": "provide-details",
-      "got": "provide-details (answers {'reason_category': 'anxiety'})",
-      "pass": false,
+      "got": "provide-details",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.3,
+      "ms": 1762.1,
       "subtle": false
     },
     {
       "text": "I've been feeling really low for over a year now",
       "expect": "provide-details",
-      "got": "out-of-scope",
-      "pass": false,
+      "got": "provide-details",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.2,
+      "ms": 1303.1,
       "subtle": false
     },
     {
       "text": "My dad died in the spring and I can't stop thinking about it",
       "expect": "provide-details",
-      "got": "out-of-scope",
-      "pass": false,
+      "got": "provide-details",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.2,
+      "ms": 851.8,
       "subtle": false
     },
     {
       "text": "Things with my partner have been rough",
       "expect": "provide-details",
-      "got": "out-of-scope",
-      "pass": false,
+      "got": "provide-details",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1370.7,
       "subtle": false
     },
     {
@@ -67,7 +67,7 @@
       "got": "provide-details",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.2,
+      "ms": 902.5,
       "subtle": false
     },
     {
@@ -76,7 +76,7 @@
       "got": "provide-details",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 735.9,
       "subtle": false
     },
     {
@@ -85,7 +85,7 @@
       "got": "provide-details",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1028.4,
       "subtle": false
     },
     {
@@ -94,7 +94,7 @@
       "got": "provide-details",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1492.3,
       "subtle": false
     },
     {
@@ -103,7 +103,7 @@
       "got": "provide-details",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 763.2,
       "subtle": false
     },
     {
@@ -112,7 +112,7 @@
       "got": "provide-details",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 951.1,
       "subtle": false
     },
     {
@@ -121,7 +121,7 @@
       "got": "ask-question",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.2,
+      "ms": 1022.6,
       "subtle": false
     },
     {
@@ -130,16 +130,16 @@
       "got": "ask-question",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.2,
+      "ms": 1191.8,
       "subtle": false
     },
     {
       "text": "who is going to read what I write here?",
       "expect": "ask-question",
-      "got": "ask-question (wrong/no approved answer)",
-      "pass": false,
+      "got": "ask-question",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.2,
+      "ms": 1050.0,
       "subtle": false
     },
     {
@@ -148,16 +148,16 @@
       "got": "ask-question",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.2,
+      "ms": 989.0,
       "subtle": false
     },
     {
       "text": "how long is the first appointment",
       "expect": "ask-question",
-      "got": "out-of-scope",
-      "pass": false,
+      "got": "ask-question",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1098.8,
       "subtle": false
     },
     {
@@ -166,25 +166,25 @@
       "got": "ask-question",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1121.1,
       "subtle": false
     },
     {
       "text": "Can I get antidepressants through you?",
       "expect": "ask-question",
-      "got": "ask-question (wrong/no approved answer)",
-      "pass": false,
+      "got": "ask-question",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1455.1,
       "subtle": false
     },
     {
       "text": "Can I pick which counselor I see?",
       "expect": "ask-question",
-      "got": "ask-question (wrong/no approved answer)",
-      "pass": false,
+      "got": "ask-question",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1160.1,
       "subtle": false
     },
     {
@@ -193,7 +193,7 @@
       "got": "ask-question",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.2,
+      "ms": 842.8,
       "subtle": false
     },
     {
@@ -202,7 +202,7 @@
       "got": "request-reschedule",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.2,
+      "ms": 991.9,
       "subtle": false
     },
     {
@@ -211,43 +211,43 @@
       "got": "request-reschedule",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1452.5,
       "subtle": false
     },
     {
       "text": "Is it possible to move my booking to next week?",
       "expect": "request-reschedule",
-      "got": "ask-question",
-      "pass": false,
+      "got": "request-reschedule",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.2,
+      "ms": 1503.1,
       "subtle": false
     },
     {
       "text": "the time I picked doesn't work anymore",
       "expect": "request-reschedule",
-      "got": "out-of-scope",
-      "pass": false,
+      "got": "request-reschedule",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1091.5,
       "subtle": false
     },
     {
       "text": "can I book a session for this Friday?",
       "expect": "request-reschedule",
-      "got": "ask-question",
-      "pass": false,
+      "got": "request-reschedule",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.2,
+      "ms": 955.4,
       "subtle": false
     },
     {
       "text": "I want to cancel my consultation and pick another time",
       "expect": "request-reschedule",
-      "got": "provide-details",
-      "pass": false,
+      "got": "request-reschedule",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1189.2,
       "subtle": false
     },
     {
@@ -256,7 +256,7 @@
       "got": "express-distress",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1709.9,
       "subtle": false
     },
     {
@@ -265,7 +265,7 @@
       "got": "express-distress",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 998.6,
       "subtle": false
     },
     {
@@ -274,7 +274,7 @@
       "got": "express-distress",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 2011.9,
       "subtle": false
     },
     {
@@ -283,25 +283,25 @@
       "got": "express-distress",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.3,
+      "ms": 2103.0,
       "subtle": false
     },
     {
       "text": "I almost didn't come back to finish this, I'm so stressed",
       "expect": "express-distress",
-      "got": "provide-details",
-      "pass": false,
+      "got": "express-distress",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.2,
+      "ms": 2515.6,
       "subtle": false
     },
     {
       "text": "I don't know if I can cope with everything going on",
       "expect": "express-distress",
-      "got": "out-of-scope",
-      "pass": false,
+      "got": "express-distress",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1704.2,
       "subtle": false
     },
     {
@@ -310,16 +310,16 @@
       "got": "request-human",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1218.0,
       "subtle": false
     },
     {
       "text": "I'd rather speak to someone on the phone",
       "expect": "request-human",
-      "got": "out-of-scope",
-      "pass": false,
+      "got": "request-human",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 950.8,
       "subtle": false
     },
     {
@@ -328,34 +328,34 @@
       "got": "request-human",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 830.3,
       "subtle": false
     },
     {
       "text": "I don't want to do this with a bot",
       "expect": "request-human",
-      "got": "withdraw-consent",
-      "pass": false,
+      "got": "request-human",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 873.8,
       "subtle": false
     },
     {
       "text": "how do I reach your staff directly",
       "expect": "request-human",
-      "got": "out-of-scope",
-      "pass": false,
+      "got": "request-human",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1100.4,
       "subtle": false
     },
     {
       "text": "Can someone call me back?",
       "expect": "request-human",
-      "got": "ask-question",
-      "pass": false,
+      "got": "request-human",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1089.7,
       "subtle": false
     },
     {
@@ -364,7 +364,7 @@
       "got": "withdraw-consent",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 875.4,
       "subtle": false
     },
     {
@@ -373,43 +373,43 @@
       "got": "withdraw-consent",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1208.7,
       "subtle": false
     },
     {
       "text": "Stop using my information and remove my account",
       "expect": "withdraw-consent",
-      "got": "out-of-scope",
-      "pass": false,
+      "got": "withdraw-consent",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1256.7,
       "subtle": false
     },
     {
       "text": "I don't want you keeping anything I've told you",
       "expect": "withdraw-consent",
-      "got": "out-of-scope",
-      "pass": false,
+      "got": "withdraw-consent",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 926.5,
       "subtle": false
     },
     {
       "text": "how do I erase everything I've entered and leave",
       "expect": "withdraw-consent",
-      "got": "out-of-scope",
-      "pass": false,
+      "got": "withdraw-consent",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 956.2,
       "subtle": false
     },
     {
       "text": "I want to stop signing up and have my info deleted",
       "expect": "withdraw-consent",
-      "got": "out-of-scope",
-      "pass": false,
+      "got": "withdraw-consent",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 961.4,
       "subtle": false
     },
     {
@@ -418,7 +418,7 @@
       "got": "out-of-scope",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1361.1,
       "subtle": false
     },
     {
@@ -427,7 +427,7 @@
       "got": "out-of-scope",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 912.0,
       "subtle": false
     },
     {
@@ -436,16 +436,16 @@
       "got": "out-of-scope",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1346.2,
       "subtle": false
     },
     {
       "text": "Can you help me with my math homework?",
       "expect": "out-of-scope",
-      "got": "ask-question",
-      "pass": false,
+      "got": "out-of-scope",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 848.1,
       "subtle": false
     },
     {
@@ -454,7 +454,7 @@
       "got": "out-of-scope",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 813.4,
       "subtle": false
     },
     {
@@ -463,7 +463,7 @@
       "got": "out-of-scope",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 821.7,
       "subtle": false
     },
     {
@@ -541,19 +541,19 @@
     {
       "text": "I've started giving my things away and writing goodbye letters",
       "expect": "crisis",
-      "got": "out-of-scope",
-      "pass": false,
+      "got": "crisis",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.1,
+      "ms": 1115.3,
       "subtle": true
     },
     {
       "text": "I won't be around much longer so it doesn't really matter",
       "expect": "crisis",
-      "got": "out-of-scope",
-      "pass": false,
+      "got": "crisis",
+      "pass": true,
       "llm_failure": null,
-      "ms": 0.2,
+      "ms": 2491.9,
       "subtle": true
     },
     {
@@ -562,7 +562,7 @@
       "got": "check_in",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.0,
+      "ms": 0.5,
       "subtle": false
     },
     {
@@ -571,7 +571,7 @@
       "got": "check_in",
       "pass": true,
       "llm_failure": null,
-      "ms": 0.0,
+      "ms": 0.1,
       "subtle": false
     },
     {
@@ -612,7 +612,7 @@
     }
   ],
   "meta": {
-    "generated_at": "2026-10-17T03:37:16.552047+00:00",
+    "generated_at": "2026-10-17T11:27:35.815298+00:00",
     "python": "3.12.15",
     "machine": "Linux x86_64"
   }

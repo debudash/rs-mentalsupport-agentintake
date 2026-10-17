@@ -43,10 +43,15 @@ and what a human decided. Tools and models used inside the product are in
   stack with 25 journeys (20-run timings + 5 browser walks): funnel and per-field panels
   render; withdrawn journeys remain as unlinked counts.
 
+## 2026-10-17 — Real-model evaluation (human added the Anthropic key)
+
+- Intent eval on Opus 5.5 and Haiku 5.5, three runs each; Haiku 100% with p95 ~2 s, Opus
+  98–100% with p95 ~3 s. **Human decided:** Haiku for the demo, Opus kept as the documented
+  default, both reports kept for discussion.
+- k6 against real Haiku at 20 users × 60 s: chat p95 2.28 s, 0% failed, 0 LLM errors.
+
 ## Not done by the agent (needs the human)
 
-- **Real-model intent eval:** no Anthropic key on the build machine; the committed intent
-  scorecard is the keyless Fake heuristic. Run `make eval` with `LLM_PROVIDER=anthropic`.
 - **Deployment:** Railway is logged in but no project is linked, and the hosted Supabase
   keys and pooler URL weren't available. Steps in [DEPLOY.md](DEPLOY.md).
 - **Push to GitLab, enabling CI and the hook, the demo video.**
