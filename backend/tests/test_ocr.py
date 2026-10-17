@@ -252,3 +252,21 @@ def test_shape_fallback_never_guesses_when_ambiguous():
 def test_shape_fallback_skips_header_as_name():
     found = extract(lines("Riverside Member Card", "31 DEC 1989"))
     assert found["name"] is None and found["date_of_birth"].value == "1989-12-31"
+
+
+# ISSUE-010 — found by the OCR stress set (low_light_a_01): the "DATE OF BIRTH" label was
+# pre-filled as the Client's name.
+def test_shape_fallback_never_takes_a_field_label_as_the_name():
+    found = extract(
+        lines(
+            ": NAME",
+            "SARA PALMER |",
+            "DATE OF BIRTH o",
+            "10/19/1999 —",
+            "ADDRESS",
+            "5907 ELLIOTT WAY",
+            "LAKE JACOB, RS 60016",
+        )
+    )
+    assert found["date_of_birth"].value == "1999-10-19"
+    assert found["name"] is None  # the only candidate above the date is a label: leave it blank
