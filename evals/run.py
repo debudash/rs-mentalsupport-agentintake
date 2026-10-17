@@ -70,7 +70,9 @@ def run_ocr() -> dict:
                 correct = norm(got) == norm(expected)
             fields[field] = {"expected": expected, "got": got, "correct": correct,
                              "fabricated": expected is None and got is not None,
-                             "blank": got is None}
+                             "blank": got is None,
+                             # the unsafe miss: a wrong value pre-filled for the Client to confirm
+                             "wrong_prefill": got is not None and not correct}
         cases.append({"file": label["file"], "set": label["set"], "variant": label["variant"],
                       "fields": fields, "ms": round(latencies[-1], 1)})
 
@@ -82,25 +84,35 @@ def run_ocr() -> dict:
                 per_field[field][1] += 1
         total_ok = sum(v[0] for v in per_field.values())
         total = sum(v[1] for v in per_field.values())
+        missed = [f for c in subset for f in c["fields"].values() if not f["correct"]]
         return {
             "overall_accuracy": round(total_ok / total, 4) if total else None,
             "per_field": {k: round(v[0] / v[1], 4) for k, v in per_field.items()},
             "fields_correct": total_ok,
             "fields_total": total,
+            "missed_left_blank": sum(f["blank"] for f in missed),
+            "missed_wrong_prefill": sum(f["wrong_prefill"] for f in missed),
         }
 
     golden = [c for c in cases if c["set"] == "golden"]
     held = [c for c in cases if c["set"] == "held_out"]
+    stress = [c for c in cases if c["set"] == "stress"]
+    stress_by_kind = defaultdict(list)
+    for case in stress:
+        stress_by_kind[case["variant"]].append(case)
     by_variant = defaultdict(list)
     for case in golden:
         by_variant[case["variant"].split("_")[0] if case["variant"].startswith("hard")
                    else case["variant"]].append(case)
-    fabricated = sum(f["fabricated"] for c in cases for f in c["fields"].values())
+    # The gate covers the sets the reader was built for; stress is reported, not gated.
+    fabricated = sum(f["fabricated"] for c in golden + held for f in c["fields"].values())
     summary = {
         "engine": f"tesseract {engine.version()}",
         "confidence_threshold": threshold,
         "golden": score(golden),
         "held_out": score(held),
+        "stress": score(stress),
+        "stress_by_kind": {k: score(v) for k, v in stress_by_kind.items()},
         "by_variant": {k: score(v)["overall_accuracy"] for k, v in by_variant.items()},
         "fabricated_fields": fabricated,
         "latency_ms": {"p50": round(statistics.median(latencies), 1),
@@ -204,11 +216,17 @@ def print_scorecard(kind: str, report: dict) -> None:
     print(f"\n=== {kind.upper()} scorecard ===")
     if kind == "ocr":
         print(f"engine: {s['engine']}  confidence threshold: {s['confidence_threshold']}")
-        for name in ("golden", "held_out"):
-            sc = s[name]
+        for name in ("golden", "held_out", "stress"):
+            sc = s.get(name)
+            if not sc or sc["overall_accuracy"] is None:
+                continue
             fields = "  ".join(f"{k}={v:.0%}" for k, v in sc["per_field"].items())
             print(f"{name:9} {sc['overall_accuracy']:.1%} ({sc['fields_correct']}/"
-                  f"{sc['fields_total']})  {fields}")
+                  f"{sc['fields_total']})  {fields}  misses: {sc['missed_left_blank']} left blank,"
+                  f" {sc['missed_wrong_prefill']} wrong pre-filled")
+        if s.get("stress_by_kind"):
+            print("stress by kind: " + "  ".join(
+                f"{k}={v['overall_accuracy']:.0%}" for k, v in s["stress_by_kind"].items()))
         print("golden by variant: " + "  ".join(f"{k}={v:.0%}" for k, v in s["by_variant"].items()))
         print(f"fabricated fields: {s['fabricated_fields']}   latency p50={s['latency_ms']['p50']}ms"
               f" p95={s['latency_ms']['p95']}ms")

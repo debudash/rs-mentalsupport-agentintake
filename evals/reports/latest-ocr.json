@@ -9,7 +9,9 @@
       "address": 0.9667
     },
     "fields_correct": 89,
-    "fields_total": 90
+    "fields_total": 90,
+    "missed_left_blank": 0,
+    "missed_wrong_prefill": 1
   },
   "held_out": {
     "overall_accuracy": 0.9333,
@@ -19,7 +21,143 @@
       "address": 1.0
     },
     "fields_correct": 28,
-    "fields_total": 30
+    "fields_total": 30,
+    "missed_left_blank": 0,
+    "missed_wrong_prefill": 2
+  },
+  "stress": {
+    "overall_accuracy": 0.4333,
+    "per_field": {
+      "name": 0.45,
+      "date_of_birth": 0.5,
+      "address": 0.35
+    },
+    "fields_correct": 26,
+    "fields_total": 60,
+    "missed_left_blank": 31,
+    "missed_wrong_prefill": 3
+  },
+  "stress_by_kind": {
+    "motion_blur": {
+      "overall_accuracy": 0.0,
+      "per_field": {
+        "name": 0.0,
+        "date_of_birth": 0.0,
+        "address": 0.0
+      },
+      "fields_correct": 0,
+      "fields_total": 6,
+      "missed_left_blank": 6,
+      "missed_wrong_prefill": 0
+    },
+    "low_light": {
+      "overall_accuracy": 0.3333,
+      "per_field": {
+        "name": 0.0,
+        "date_of_birth": 0.5,
+        "address": 0.5
+      },
+      "fields_correct": 2,
+      "fields_total": 6,
+      "missed_left_blank": 3,
+      "missed_wrong_prefill": 1
+    },
+    "far_away": {
+      "overall_accuracy": 1.0,
+      "per_field": {
+        "name": 1.0,
+        "date_of_birth": 1.0,
+        "address": 1.0
+      },
+      "fields_correct": 6,
+      "fields_total": 6,
+      "missed_left_blank": 0,
+      "missed_wrong_prefill": 0
+    },
+    "laminate_glare": {
+      "overall_accuracy": 0.6667,
+      "per_field": {
+        "name": 1.0,
+        "date_of_birth": 1.0,
+        "address": 0.0
+      },
+      "fields_correct": 4,
+      "fields_total": 6,
+      "missed_left_blank": 1,
+      "missed_wrong_prefill": 1
+    },
+    "hard_shadow": {
+      "overall_accuracy": 0.3333,
+      "per_field": {
+        "name": 0.5,
+        "date_of_birth": 0.5,
+        "address": 0.0
+      },
+      "fields_correct": 2,
+      "fields_total": 6,
+      "missed_left_blank": 3,
+      "missed_wrong_prefill": 1
+    },
+    "security_print": {
+      "overall_accuracy": 0.0,
+      "per_field": {
+        "name": 0.0,
+        "date_of_birth": 0.0,
+        "address": 0.0
+      },
+      "fields_correct": 0,
+      "fields_total": 6,
+      "missed_left_blank": 6,
+      "missed_wrong_prefill": 0
+    },
+    "thumb": {
+      "overall_accuracy": 1.0,
+      "per_field": {
+        "name": 1.0,
+        "date_of_birth": 1.0,
+        "address": 1.0
+      },
+      "fields_correct": 6,
+      "fields_total": 6,
+      "missed_left_blank": 0,
+      "missed_wrong_prefill": 0
+    },
+    "bent": {
+      "overall_accuracy": 1.0,
+      "per_field": {
+        "name": 1.0,
+        "date_of_birth": 1.0,
+        "address": 1.0
+      },
+      "fields_correct": 6,
+      "fields_total": 6,
+      "missed_left_blank": 0,
+      "missed_wrong_prefill": 0
+    },
+    "photocopy": {
+      "overall_accuracy": 0.0,
+      "per_field": {
+        "name": 0.0,
+        "date_of_birth": 0.0,
+        "address": 0.0
+      },
+      "fields_correct": 0,
+      "fields_total": 6,
+      "missed_left_blank": 6,
+      "missed_wrong_prefill": 0
+    },
+    "worst_case": {
+      "overall_accuracy": 0.0,
+      "per_field": {
+        "name": 0.0,
+        "date_of_birth": 0.0,
+        "address": 0.0
+      },
+      "fields_correct": 0,
+      "fields_total": 6,
+      "missed_left_blank": 6,
+      "missed_wrong_prefill": 0
+    }
   },
   "by_variant": {
     "clean": 1.0,
@@ -28,9 +166,9 @@
   },
   "fabricated_fields": 0,
   "latency_ms": {
-    "p50": 775.1,
-    "p95": 1239.7,
-    "runs": 40
+    "p50": 902.5,
+    "p95": 2487.6,
+    "runs": 60
   },
   "passes": true
 }
