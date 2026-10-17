@@ -12,9 +12,9 @@ from app import faults, telemetry
 from app.access import Forbidden, Unauthenticated
 from app.api.routes import router
 from app.config import get_settings
+from app.db import session as db_session
 from app.db.crypto import fernet
 from app.db.models import TimingRecord
-from app.db.session import get_sessionmaker
 from app.profile import get_profile
 
 
@@ -25,7 +25,7 @@ def _route_label(request: Request) -> str:
 
 
 def _save_timing(record: TimingRecord) -> None:
-    session = get_sessionmaker()()
+    session = db_session.get_telemetry_sessionmaker()()  # its own pool (ISSUE-013)
     try:
         session.add(record)
         session.commit()

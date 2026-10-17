@@ -47,9 +47,10 @@ The stack is open (justify in README) but these are fixed by the brief:
 ## Build status (2026-10-17)
 
 Built and verified locally (see docs/AI_LOG.md, docs/ISSUE_LOG.md). Real-model evals done
-(Haiku 5.5 is the demo model; Opus 5.5 report kept). Open items that need the user: Railway
-deploy (project not linked; hosted Supabase keys needed — docs/DEPLOY.md), the pre-push
-hook (`make hooks`), demo video. CI is PAUSED (CI_ENABLED=false, user 2026-10-17, to speed
+(Haiku 5.5 is the demo model; Opus 5.5 report kept). DEPLOYED 2026-10-17: https://app-production-2fdf.up.railway.app (Railway rs-assist /
+service app, US East; Supabase us-east-1 via the TRANSACTION pooler :6543 — see ISSUE-012/013;
+hosted keys in git-ignored .env.production). Open items that need the user: UptimeRobot
+monitor, the pre-push hook (`make hooks`), demo video, CI back on before submission. CI is PAUSED (CI_ENABLED=false, user 2026-10-17, to speed
 up iteration) — set it back to true before submission (rubric: CI on every push); runner
 `rs-assist-runner` in local Docker, tag rs-assist-local. Commits go straight to main for now
 (user's choice); run `make ci` locally before pushing.
