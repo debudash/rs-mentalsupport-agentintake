@@ -104,6 +104,9 @@ def test_masking_leaves_ordinary_text_alone():
 # ---- output check ----------------------------------------------------------------------
 
 BENIGN = [
+    "Many people find it helps to talk things through.",
+    "That's a lot to carry, and reaching out is a good step.",
+    "A clinician can talk with you about what might help.",
     "It sounds like the last 3 months have been really hard.",
     "Thank you for sharing that.",
     "Take your time — there's no rush.",
@@ -112,6 +115,13 @@ BENIGN = [
     "I hear you; reaching out takes courage.",
 ]
 BLOCKED = [
+    # ISSUE-006 regression. Found by: walking the UI on real Claude Haiku — "anxiety over
+    # the last few months is something we can definitely help with" passed the output check.
+    "Anxiety over the last few months is something we can definitely help with.",
+    "We will definitely be able to help you.",
+    "Our clinicians can fix this for you.",
+    "You'll feel better after a few sessions.",
+    "This will help you get better.",
     "Your appointment is confirmed for Tuesday.",
     "I've booked you in with Ana.",
     "You'll be seen at 3pm tomorrow.",

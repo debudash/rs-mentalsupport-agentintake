@@ -30,6 +30,15 @@ _BLOCKS = [
     re.compile(r"\byou(?:'ll| will) be seen\b", re.I),
     re.compile(r"\b(?:i|we) (?:guarantee|promise)\b", re.I),
     re.compile(r"\bguaranteed\b", re.I),
+    # ISSUE-006: promises of an outcome ("we can definitely help with that", "you'll feel
+    # better") slipped through. Certainty about helping, fixing or recovery is blocked;
+    # "a clinician can talk with you about what might help" stays fine.
+    re.compile(
+        r"\b(?:definitely|certainly|surely)\s+(?:be\s+able\s+to\s+)?(?:help|fix|cure)", re.I
+    ),
+    re.compile(r"\b(?:can|will|'ll)\s+(?:fix|cure|solve)\b", re.I),
+    re.compile(r"\b(?:will|'ll)\s+(?:feel|get|be)\s+better\b", re.I),
+    re.compile(r"\bhelp\s+you\s+(?:get|feel)\s+better\b", re.I),
     # clinical language
     re.compile(r"\bdiagnos(?:e|es|ed|is|ing)\b", re.I),
     re.compile(
