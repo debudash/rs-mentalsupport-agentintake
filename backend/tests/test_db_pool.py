@@ -19,7 +19,8 @@ def test_postgres_pool_fits_the_supabase_session_pooler():
         pool_size=settings.db_pool_size,
         max_overflow=settings.db_max_overflow,
     )
-    per_worker = engine.pool.size() + engine.pool._max_overflow
+    timing_records = 1  # its own pool (ISSUE-013)
+    per_worker = engine.pool.size() + engine.pool._max_overflow + timing_records
     assert per_worker * WORKERS <= SUPABASE_FREE_SESSION_POOLER_CLIENTS - HEADROOM
 
 
@@ -46,3 +47,41 @@ def test_postgres_connections_never_use_prepared_statements():
     with pytest.raises(Exception, match="stop before the network"):
         engine.connect()
     assert "prepare_threshold" in seen and seen["prepare_threshold"] is None
+
+
+# ISSUE-013 — found by k6 against the deployed app once the pool was small (ISSUE-012):
+# non-chat requests waited the full 20 s pool timeout, then failed.
+def test_timing_record_is_saved_while_requests_hold_every_pooled_connection(tmp_path, monkeypatch):
+    from sqlalchemy import create_engine, text
+    from sqlalchemy.orm import sessionmaker
+    from sqlalchemy.pool import QueuePool
+
+    from app import main
+    from app.db import session as db_session
+    from app.db.models import Base, TimingRecord
+
+    url = f"sqlite:///{tmp_path / 'pool.db'}"
+    request_pool = create_engine(
+        url, poolclass=QueuePool, pool_size=1, max_overflow=0, pool_timeout=0.5
+    )
+    Base.metadata.create_all(request_pool)
+    # Before the fix main used the request pool for timing records; it no longer imports it.
+    monkeypatch.setattr(
+        main, "get_sessionmaker", lambda: sessionmaker(bind=request_pool), raising=False
+    )
+    monkeypatch.setattr(db_session, "get_sessionmaker", lambda: sessionmaker(bind=request_pool))
+    telemetry_pool = create_engine(url, poolclass=QueuePool, pool_size=1, max_overflow=0)
+    monkeypatch.setattr(
+        db_session,
+        "get_telemetry_sessionmaker",
+        lambda: sessionmaker(bind=telemetry_pool),
+    )
+
+    held = request_pool.connect()  # a read-only request still holding its connection
+    held.execute(text("select 1"))
+    try:
+        main._save_timing(TimingRecord(endpoint="GET /api/me", status_code=200, total_ms=5.0))
+    finally:
+        held.close()
+    with telemetry_pool.connect() as conn:
+        assert conn.execute(text("select count(*) from timing_records")).scalar() == 1
