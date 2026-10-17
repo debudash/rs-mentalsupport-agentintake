@@ -1,6 +1,6 @@
-// The app header: the design system's cover as a responsive banner.
-// Full size on the sign-in screen; a short band once signed in, so the step stays above the fold.
-// The 988 crisis line is on every screen in both sizes.
+// The app header: the design system's cover as a responsive banner, in the same column as the
+// page (the form width for Clients, wide for staff). Name left, blocks right, and the 988 crisis
+// line right under the blocks. Full size on the sign-in screen; a short band once signed in.
 
 // Pills drifting right like a current, cut from the cover (x, y, width; 12px tall).
 const PILLS: Record<'river' | 'tint' | 'deep', [number, number, number][]> = {
@@ -31,14 +31,14 @@ function Art() {
   return (
     <svg
       className="banner-art"
-      viewBox="0 0 480 288"
-      preserveAspectRatio="xMinYMid slice"
+      viewBox="0 0 480 248"
+      preserveAspectRatio="xMaxYMax slice"
       aria-hidden="true"
       focusable="false"
     >
       <rect className="banner-river" x="16" y="-24" width="136" height="264" rx="12" />
       <rect className="banner-tint" x="168" y="88" width="136" height="152" rx="12" />
-      <rect className="banner-deep" x="320" y="40" width="176" height="200" rx="12" />
+      <rect className="banner-deep" x="320" y="40" width="160" height="200" rx="12" />
       <rect className="banner-ok" x="168" y="60" width="48" height="12" rx="6" />
       {Object.entries(PILLS).map(([on, pills]) =>
         pills.map(([x, y, w]) => (
@@ -59,31 +59,34 @@ function Art() {
 
 export function Banner({
   compact = false,
+  wide = false,
   onSignOut,
 }: {
   compact?: boolean;
+  wide?: boolean;
   onSignOut?: () => void;
 }) {
+  const classes = ['banner', compact && 'compact', wide && 'wide'].filter(Boolean).join(' ');
   return (
-    <header className={compact ? 'banner compact' : 'banner'}>
-      <div className="banner-words">
-        <p className="banner-name">
-          <span>Riverside</span> <span>Counseling</span>
-        </p>
-        {!compact && (
-          <p className="banner-tag">Calm, plain and safe. Help is always one tap away.</p>
-        )}
-      </div>
-      <Art />
-      <div className="banner-actions">
-        <a className="crisis-link" href="tel:988">
-          In crisis? Call or text 988
-        </a>
+    <header className={classes}>
+      <div className="banner-inner">
+        <div className="banner-words">
+          <p className="banner-name">
+            <span>Riverside</span> <span>Counseling</span>
+          </p>
+          {!compact && (
+            <p className="banner-tag">Calm, plain and safe. Help is always one tap away.</p>
+          )}
+        </div>
         {onSignOut && (
-          <button type="button" className="secondary" onClick={onSignOut}>
+          <button type="button" className="secondary banner-signout" onClick={onSignOut}>
             Sign out
           </button>
         )}
+        <Art />
+        <a className="crisis-link banner-crisis" href="tel:988">
+          In crisis? Call or text 988
+        </a>
       </div>
     </header>
   );

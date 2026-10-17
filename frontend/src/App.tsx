@@ -57,7 +57,11 @@ export default function App() {
       <a className="skip-link" href="#main">
         Skip to content
       </a>
-      <Banner compact={!!session} onSignOut={session ? signOut : undefined} />
+      <Banner
+        compact={!!session}
+        wide={!!me && me.role !== 'client'}
+        onSignOut={session ? signOut : undefined}
+      />
       <main id="main" className={me && me.role !== 'client' ? 'wide' : undefined}>
         {error && (
           <div className="notice danger" role="alert">

@@ -26,6 +26,20 @@ describe('banner', () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 
+  it('the crisis line sits right under the artwork', () => {
+    const { container } = render(<Banner />);
+    const art = container.querySelector('svg')!;
+    const link = screen.getByRole('link', { name: /988/ });
+    expect(art.compareDocumentPosition(link) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('matches the page column: the form width for Clients, wide for staff', () => {
+    const { container, rerender } = render(<Banner />);
+    expect(container.querySelector('header')).not.toHaveClass('wide');
+    rerender(<Banner compact wide onSignOut={() => {}} />);
+    expect(container.querySelector('header')).toHaveClass('wide');
+  });
+
   it('the artwork is decoration, hidden from assistive technology', () => {
     const { container } = render(<Banner />);
     expect(container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
