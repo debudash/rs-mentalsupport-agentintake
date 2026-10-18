@@ -7,8 +7,9 @@ from sqlalchemy.orm import Session
 
 from app import journeys
 from app.db.models import Assessment, Booking, Client, IdentityDetails, IntakeMessage
+from app.domain import support
 from app.domain.intake import HISTORY_TURNS, IntakeConductor, IntakeState
-from app.domain.onboarding import Facts
+from app.domain.onboarding import Facts, Step
 from app.llm.port import ChatMessage
 from app.profile import ServiceProfile
 
@@ -140,3 +141,27 @@ def profile_summary(profile: ServiceProfile) -> dict:
         "contact": profile.contact.model_dump(),
         "supportive_content": {k: v.model_dump() for k, v in profile.supportive_content.items()},
     }
+
+
+def pre_consent_support(
+    db: Session, account_id: str, event: support.Event
+) -> support.Trigger | None:
+    """Supportive content before consent, when there is no Client record (and so no
+    support_shown list). A long pause on the Consent Step is a classic drop-off point; the
+    Journey remembers whether its card was shown, so the usual once-per-Step rule holds.
+    """
+    # ISSUE-008: the pause endpoint required the Client record, which only exists after
+    # consent, so hesitating at Consent produced no card and no signal.
+    if event.step != Step.CONSENT or event.kind != "idle":
+        return None
+    kind = support.Trigger.LONG_PAUSE.value
+    shown = (
+        [support.shown_key(event.step, support.Trigger.LONG_PAUSE)]
+        if journeys.has_friction(db, account_id, event.step, kind)
+        else []
+    )
+    trigger = support.decide(event, shown, crisis_paused=False)
+    if trigger is not None:
+        journeys.friction(db, account_id, event.step, trigger.value)
+        db.commit()
+    return trigger

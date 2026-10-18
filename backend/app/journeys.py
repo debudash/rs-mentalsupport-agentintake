@@ -10,13 +10,14 @@ from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from app.db.models import JourneyEvent, JourneyLink
+from app.domain import identity
 
 FUNNEL = ["signed_up", "consent_completed", "intake_completed", "identity_completed", "booked"]
 OTHER_EVENTS = {"withdrawn", "ocr_field", "friction", "nps"}
 REPEATABLE = {"ocr_field", "friction"}
 # Friction signals: where people hit trouble. Crisis and safety check-ins are never recorded.
 FRICTION_KINDS = {"long_pause", "upload_problem", "high_stress", "upload_rejected", "llm_fallback"}
-OCR_FIELDS = ("legal_name", "date_of_birth", "address")
+OCR_FIELDS = identity.FIELDS
 
 
 def start(db: Session, account_id: str) -> None:

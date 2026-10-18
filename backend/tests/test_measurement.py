@@ -251,3 +251,14 @@ def test_long_pause_at_consent_is_visible_before_any_client_record(app_client, n
         )
     ]
     assert details == [{"step": "consent", "kind": "long_pause"}]
+
+
+def test_only_a_long_pause_shows_a_card_before_consent(app_client, new_account, db):
+    account = new_account()
+    h = auth(account)
+    app_client.get("/api/me", headers=h)
+    for kind in ("upload_failed", "high_stress"):
+        r = app_client.post(
+            "/api/support/events", headers=h, json={"kind": kind, "step": "consent"}
+        ).json()
+        assert r["support"] is None

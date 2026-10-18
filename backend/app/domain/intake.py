@@ -79,6 +79,22 @@ class Signals:
     fallback: bool = False
     output_check_tripped: bool = False
 
+    def outcome(self) -> str:
+        """One label per turn for the timing record, most significant first."""
+        if self.crisis:
+            return "crisis"
+        if self.check_in:
+            return "check_in"
+        if self.llm_failure:
+            return f"llm_failure:{self.llm_failure}"
+        if self.fallback:
+            return "scripted"
+        if self.output_check_tripped:
+            return "output_check_tripped"
+        if self.llm_used:
+            return "llm_ok"
+        return "structured"
+
 
 @dataclass
 class Reply:

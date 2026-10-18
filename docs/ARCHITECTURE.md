@@ -101,6 +101,7 @@ interface. Swappable dependencies sit behind seams with a Fake adapter for tests
 | LLM port (`llm/`) | `complete(system, messages, schema, timeout) → dict` or `LLMFailure` | provider wire formats, error mapping | Anthropic · OpenAI-compatible · Fake |
 | Document reader (`ocr/`) | `read_identity(bytes) → fields + failure reason` | content sniffing, EXIF, card detection, deskew, Tesseract, parsing, confidence | OCR engine: Tesseract · Fake |
 | Scheduling (`scheduling.py`) | `open_slots`, `book`, `current_booking`, `calendar_file` | window, filters, one active booking, reschedule transaction, unique index | database |
+| Identity rules (`domain/identity.py`) | `validate(name, dob, address) → details / field errors`, `is_adult`, `adults_only` | field checks, adults-only rule and its one wording, edited flags | none (pure) |
 | Support triggers (`domain/support.py`) | `decide(event, shown, paused) → trigger / None` | three triggers, once per Step | none (pure) |
 | Consent & Withdrawal (`consent.py`) | `grant`, `set_id_scan`, `withdraw → receipt` | consent log, cascade delete, auth deletion, audit-row cleanup | auth admin: Supabase · Fake |
 | Access control (`access.py`) | `identify(request) → Caller`, `clinician_view` | token verification (HS256 or JWKS), roles, Access log | token verifier |

@@ -20,12 +20,11 @@ from app.config import get_settings
 from app.dashboard import dashboard
 from app.db.models import Client, Clinician, Heartbeat, IdentityDetails
 from app.db.session import get_db
-from app.domain import onboarding, support
+from app.domain import identity, onboarding, support
 from app.domain.intake import IntakeConductor, Reply, Turn
 from app.domain.onboarding import Action
 from app.llm import get_llm
 from app.ocr import DocumentReader, UploadRejected, get_reader
-from app.ocr.parse import clean_name, parse_date
 from app.profile import ServiceProfile
 from app.scheduling import (
     OpenSlot,
@@ -77,6 +76,10 @@ def _support_card(
     if count_as_friction:
         journeys.friction(db, client.account_id, event.step, trigger.value)
     db.commit()
+    return _card(prof, trigger)
+
+
+def _card(prof: ServiceProfile, trigger: support.Trigger) -> dict:
     card = prof.supportive_content[trigger.value]
     return {"trigger": trigger.value, "title": card.title, "body": card.body}
 
@@ -281,24 +284,9 @@ def intake_message(
         timings = telemetry.current()
         if timings:
             timings.add("llm", s.llm_ms)
-    outcome = (
-        "crisis"
-        if s.crisis
-        else "check_in"
-        if s.check_in
-        else f"llm_failure:{s.llm_failure}"
-        if s.llm_failure
-        else "scripted"
-        if s.fallback
-        else "output_check_tripped"
-        if s.output_check_tripped
-        else "llm_ok"
-        if s.llm_used
-        else "structured"
-    )
     llm = get_llm()
     telemetry.note(
-        outcome=outcome,
+        outcome=s.outcome(),
         intent=s.intent,
         provider=llm.provider if s.llm_used else None,
         model=llm.model if s.llm_used else None,
@@ -414,10 +402,6 @@ class IdentityIn(BaseModel):
     prefilled: dict[str, bool] = Field(default_factory=dict)
 
 
-def _age(dob: date, today: date) -> int:
-    return today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
-
-
 @router.post("/identity/confirm")
 def identity_confirm(
     body: IdentityIn,
@@ -427,46 +411,28 @@ def identity_confirm(
 ) -> dict:
     client = _require_client(db, who)
     _gate(db, client, Action.CONFIRM_IDENTITY)
-    errors = {}
-    name = clean_name(body.legal_name) or (
-        body.legal_name.strip() if len(body.legal_name.strip().split()) >= 2 else None
-    )
-    if not name:
-        errors["legal_name"] = "Please enter your full legal name (first and last)."
-    iso = parse_date(body.date_of_birth)
-    if not iso:
-        errors["date_of_birth"] = "Please enter a valid date of birth, for example 1990-03-14."
-    address = " ".join(body.address.split())
-    if len(address) < 8 or not any(c.isdigit() for c in address):
-        errors["address"] = "Please enter your full address, including the street number."
-    if errors:
-        raise HTTPException(422, {"fields": errors})
-    if _age(date.fromisoformat(iso), date.today()) < prof.service.minimum_age:
+    confirmed = identity.validate(body.legal_name, body.date_of_birth, body.address)
+    if isinstance(confirmed, dict):
+        raise HTTPException(422, {"fields": confirmed})
+    minimum_age = prof.service.minimum_age
+    if not identity.is_adult(confirmed.date_of_birth, minimum_age, date.today()):
         return {
             "confirmed": False,
             "adults_only": True,
-            "message": (
-                f"This service is for adults aged {prof.service.minimum_age} and over, so we "
-                "can't continue your sign-up. A school counselor or family doctor is a good "
-                "place to start, and 988 is free and available to everyone, any time."
-            ),
+            "message": identity.adults_only_stop(minimum_age),
             "crisis_resources": [r.model_dump() for r in prof.crisis.resources],
         }
     details = db.get(IdentityDetails, client.account_id) or IdentityDetails(
         client_id=client.account_id
     )
-    details.legal_name = name
-    details.date_of_birth = iso
-    details.address = address
+    details.legal_name = confirmed.legal_name
+    details.date_of_birth = confirmed.date_of_birth
+    details.address = confirmed.address
     details.source = body.source
-    details.edited = {
-        k: bool(v)
-        for k, v in body.edited.items()
-        if k in ("legal_name", "date_of_birth", "address")
-    }
+    details.edited = identity.edited_flags(body.edited)
     details.confirmed_at = datetime.now(UTC)
     db.add(details)
-    client.first_name = svc.first_name(name)
+    client.first_name = svc.first_name(confirmed.legal_name)
     journeys.record(db, client.account_id, "identity_completed")
     if body.source == "scan" and body.prefilled:
         journeys.record_ocr_review(db, client.account_id, body.prefilled, details.edited)
@@ -620,23 +586,14 @@ def support_event(
 ) -> dict:
     client = _client(db, who)
     if client is None:
-        # ISSUE-008: the pause endpoint required the Client record, which only exists after
-        # consent, so hesitating at Consent produced no card and no signal.
-        # Before consent there is no Client record, but a long pause on the Consent Step is
-        # a classic drop-off point: show the card once and count it on the Journey.
         event = support.Event(kind=body.kind, step=body.step, idle_seconds=body.idle_seconds)
-        shown = journeys.has_friction(db, who.account_id, "consent", "long_pause")
-        if body.step != "consent" or support.decide(event, [], False) is None or shown:
-            return {"support": None}
-        journeys.friction(db, who.account_id, "consent", "long_pause")
-        db.commit()
-        card = prof.supportive_content["long_pause"]
-        return {"support": {"trigger": "long_pause", "title": card.title, "body": card.body}}
+        trigger = svc.pre_consent_support(db, who.account_id, event)
+        return {"support": _card(prof, trigger) if trigger else None}
     current = onboarding.state(svc.facts(db, client))
     step_complete = body.step in [s.value for s in current.completed]
     # Only events reported by the browser; high stress is decided server-side in Intake.
     kind = body.kind if body.kind in ("idle", "upload_failed") else "ignored"
-    if body.step not in ("consent", "intake", "identity", "scheduling"):
+    if body.step not in {s.value for s in onboarding.ORDER}:
         # The step name ends up in analytics: accept only real Step names, never free text.
         return {"support": None}
     event = support.Event(

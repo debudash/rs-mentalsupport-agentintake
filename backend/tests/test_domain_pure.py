@@ -1,12 +1,14 @@
 """Pure modules: Safety screen, masking, output check, Onboarding engine, Support triggers,
-Service profile."""
+Service profile, Identity rules, Intake outcome labels."""
 
+from datetime import date
 from pathlib import Path
 
 import pytest
 import yaml
 
-from app.domain import masking, output_check, support
+from app.domain import identity, masking, output_check, support
+from app.domain.intake import Signals
 from app.domain.onboarding import Action, Facts, Step, check, state
 from app.domain.safety import SafetyScreen, Screen, parse_check_in_answer
 from app.profile import PROFILE_PATH, load_profile
@@ -241,3 +243,52 @@ def test_choice_item_without_options_is_rejected(tmp_path: Path):
     broken.write_text(yaml.safe_dump(data), encoding="utf-8")
     with pytest.raises(ValueError, match="options"):
         load_profile(broken)
+
+
+# ---- Identity rules ------------------------------------------------------------------
+
+
+def test_identity_validate_cleans_valid_details():
+    ok = identity.validate("Jane Q Doe", "03/14/1990", "123  Main St,  Springfield")
+    assert ok == identity.Confirmed("Jane Q Doe", "1990-03-14", "123 Main St, Springfield")
+
+
+def test_identity_validate_names_every_invalid_field():
+    errors = identity.validate("Jane", "not a date", "Main St")
+    assert set(errors) == {"legal_name", "date_of_birth", "address"}
+
+
+@pytest.mark.parametrize(
+    "dob,adult", [("2008-10-17", True), ("2008-10-18", False), ("1990-01-01", True)]
+)
+def test_adult_on_the_eighteenth_birthday(dob, adult):
+    assert identity.is_adult(dob, 18, date(2026, 10, 17)) is adult
+
+
+def test_adults_only_wording_is_shared():
+    assert identity.adults_only(18) == "This service is for adults aged 18 and over."
+    assert identity.adults_only_stop(18).startswith("This service is for adults aged 18 and over,")
+
+
+def test_edited_flags_keep_only_identity_fields():
+    flags = identity.edited_flags({"legal_name": 1, "address": False, "notes": True})
+    assert flags == {"legal_name": True, "address": False}
+
+
+# ---- Intake outcome labels -----------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "signals,label",
+    [
+        (Signals(crisis=True, llm_used=True), "crisis"),
+        (Signals(check_in=True), "check_in"),
+        (Signals(llm_failure="timeout", fallback=True), "llm_failure:timeout"),
+        (Signals(fallback=True), "scripted"),
+        (Signals(llm_used=True, output_check_tripped=True), "output_check_tripped"),
+        (Signals(llm_used=True), "llm_ok"),
+        (Signals(), "structured"),
+    ],
+)
+def test_intake_outcome_label(signals, label):
+    assert signals.outcome() == label

@@ -27,6 +27,7 @@ from app.db.models import (
     IdentityDetails,
     IntakeMessage,
 )
+from app.domain import identity
 from app.profile import ServiceProfile
 from app.telemetry import log
 
@@ -71,9 +72,7 @@ def grant(
     age_confirmed: bool,
 ) -> Client | ConsentRejected:
     if not age_confirmed:
-        return ConsentRejected(
-            f"This service is for adults aged {profile.service.minimum_age} and over."
-        )
+        return ConsentRejected(identity.adults_only(profile.service.minimum_age))
     if not onboarding:
         return ConsentRejected("Onboarding consent is needed to arrange your consultation.")
     client = get_or_create_client(db, account_id)
