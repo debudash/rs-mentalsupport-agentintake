@@ -154,3 +154,27 @@ and what a human decided. Tools and models used inside the product are in
   the smaller pool exposed). Each test-first. Final: k6 0% failed, chat p95 2.03 s; smoke
   21/21; OCR p95 698 ms; booking p95 239 ms.
 - One agent slip: a k6 run's summary was lost to an output filter and had to be re-run.
+
+## 2026-10-17 — Fixing the whole-codebase review's findings
+
+- **Human asked** for every review finding to be fixed. One product call was put to the
+  human: keep the Slot filter by Clinician gender / language and update the PRD
+  (chosen), or remove it.
+- Five bugs fixed test-first, each red before the fix: ISSUE-014 (earlier chat turns
+  reached the LLM unmasked), ISSUE-015 (Clinician never saw the Safety answer; now
+  flagged), ISSUE-016 (withdrawn token got 401, now 404), ISSUE-017 (past consultations
+  listed), ISSUE-018 (a "No" to the Safety check-in counted as friction on the Journey).
+- While fixing ISSUE-014 the agent found what the review missed: button answers, the
+  Safety answer included, reached the LLM as history, contradicting the README
+  (ISSUE-019). While moving rules out of the routes it found a latent wrong card before
+  consent (ISSUE-020).
+- Refactor: Identity rules to a pure `domain/identity.py` (one adults-only wording),
+  `Signals.outcome()`, pre-consent pause through `support.decide`. Missing issue IDs
+  added for ISSUE-008 and ISSUE-002. PRD/DECISIONS updated for review items #4 and #6–#9.
+- Agent slips, both caught: its first ISSUE-015 test posted Safety "no" before "yes" and
+  then re-posted every answer, which would have hidden the bug. A refactor commit
+  message gave a wrong line count and was amended before any push. One eval
+  "before/after" check used `git stash`, which does not undo commits, so it compared the
+  new code with itself and was discarded, not reported.
+- Result: backend coverage 94%, all backend and 65 frontend tests pass, ruff and ESLint
+  clean.
