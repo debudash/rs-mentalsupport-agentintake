@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from app import faults, telemetry
-from app.access import Forbidden, Unauthenticated
+from app.access import Forbidden, Unauthenticated, Withdrawn
 from app.api.routes import router
 from app.config import get_settings
 from app.db import session as db_session
@@ -95,6 +95,10 @@ def create_app() -> FastAPI:
     @app.exception_handler(Unauthenticated)
     async def _unauth(_: Request, exc: Unauthenticated):
         return JSONResponse({"detail": "Please sign in again."}, status_code=401)
+
+    @app.exception_handler(Withdrawn)
+    async def _withdrawn(_: Request, exc: Withdrawn):
+        return JSONResponse({"detail": "Not found."}, status_code=404)
 
     @app.exception_handler(Forbidden)
     async def _forbidden(_: Request, exc: Forbidden):

@@ -35,6 +35,10 @@ class Forbidden(Exception):
     pass
 
 
+class Withdrawn(Exception):
+    """A still-valid token for an Account that withdrew and was deleted."""
+
+
 class TokenVerifier(Protocol):
     def verify(self, token: str) -> str: ...  # returns the Account id (JWT "sub")
 
@@ -109,7 +113,10 @@ def identify(db: Session, verifier: TokenVerifier, authorization: str | None) ->
         ).first()
         if withdrawn:
             # A still-unexpired token for an Account that withdrew: never recreate it.
-            raise Unauthenticated("account withdrawn")
+            # ISSUE-016: this raised Unauthenticated (401), but PRD story 78 asks every data
+            # endpoint to answer "not found" for a withdrawn Client. A separate exception
+            # lets main.py map it to 404 while bad or expired tokens stay 401.
+            raise Withdrawn()
         account = Account(id=account_id, role="client")
         db.add(account)
         journeys.start(db, account_id)

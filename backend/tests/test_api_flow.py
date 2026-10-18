@@ -361,14 +361,17 @@ def test_withdrawal_deletes_everything_and_is_verifiable(app_client, seeded, new
         app_client.post("/api/bookings", json={"slot_id": slot["id"]}, headers=other).status_code
         == 200
     )
-    # Every endpoint now refuses this Account; it is never silently recreated.
+    # Every endpoint now answers "not found" for this Account; it is never silently
+    # recreated. ISSUE-016 — found by the whole-codebase review: these returned 401, but
+    # PRD story 78 asks for "not found".
     for method, url in [
         ("get", "/api/me"),
         ("get", "/api/intake"),
         ("get", "/api/identity"),
         ("get", "/api/bookings/current"),
     ]:
-        assert getattr(app_client, method)(url, headers=h).status_code == 401
+        assert getattr(app_client, method)(url, headers=h).status_code == 404
+    assert db.get(Account, account) is None
     log = db.scalars(select(ConsentLogEntry).where(ConsentLogEntry.action == "deleted")).one()
     assert log.receipt == receipt["reference"] and log.account_id == account
 

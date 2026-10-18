@@ -42,7 +42,8 @@ export default function App() {
     try {
       setMe(await get<Me>('/api/me'));
     } catch (err) {
-      if (err instanceof ApiError && err.status === 401) await signOut();
+      // 401: the token is bad or expired. 404: the Account withdrew (ISSUE-016).
+      if (err instanceof ApiError && (err.status === 401 || err.status === 404)) await signOut();
       else setError('We could not load your progress. Please reload the page.');
     }
   }, [signOut]);

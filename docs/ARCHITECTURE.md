@@ -198,7 +198,7 @@ sequenceDiagram
   A->>U: admin delete user
   A->>D: delete auth.audit_log_entries naming the user (actor_id or traits.user_id)
   A-->>B: receipt (reference, time, what was deleted)
-  Note over A: later calls with the old token → 401, and the Account is never re-created
+  Note over A: later calls with the old token → 404 not found, and the Account is never re-created
 ```
 
 ## Data model
