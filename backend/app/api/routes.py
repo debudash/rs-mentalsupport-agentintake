@@ -738,6 +738,7 @@ def clinician_detail(
         "format": view.format,
         "reference": view.reference,
         "client_first_name": view.client_first_name,
+        "safety_flag": (view.assessment or {}).get("safety") == "yes",
         "assessment": readable,
     }
 

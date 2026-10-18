@@ -14,6 +14,7 @@ interface Detail {
   format: string;
   reference: string;
   client_first_name: string | null;
+  safety_flag?: boolean;
   assessment: Record<string, { question: string; answer: string }>;
 }
 
@@ -87,6 +88,13 @@ export function ClinicianView() {
             <h2 id="detail-title" ref={detailHeading} tabIndex={-1}>
               {detail.client_first_name ?? 'Client'} · {when(detail.starts_at)}
             </h2>
+            {detail.safety_flag && (
+              <p className="notice danger" role="alert">
+                ⚠ <strong>Safety:</strong> this Client answered yes to the safety question (thoughts
+                of harming themselves or someone else). They were shown crisis resources and chose
+                to continue. Follow your risk protocol before the consultation.
+              </p>
+            )}
             <dl>
               {Object.entries(detail.assessment).map(([key, qa]) => (
                 <div key={key} style={{ marginBottom: '0.6rem' }}>

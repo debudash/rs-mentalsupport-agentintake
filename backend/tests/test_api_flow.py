@@ -472,7 +472,9 @@ def test_clinician_sees_only_own_bookings_and_views_are_logged(app_client, seede
     ).json()
     assert detail["client_first_name"] == "Jane"
     assert detail["assessment"]["reason_category"]["answer"] == "Anxiety or worry"
-    assert "safety" not in detail["assessment"]
+    # ISSUE-015 — found by the whole-codebase review: the Safety answer was hidden, so a
+    # Client who said "yes", resumed and booked reached the Clinician with no risk flag.
+    assert detail["assessment"]["safety"]["answer"] == "No"
     flat = str(detail)
     assert "1990" not in flat and "Main St" not in flat  # no DOB or address
 
@@ -488,6 +490,39 @@ def test_clinician_sees_only_own_bookings_and_views_are_logged(app_client, seede
     assert [(e.clinician_account_id, e.client_account_id) for e in entries] == [
         (mine.account_id, client_account)
     ]
+
+
+def test_clinician_is_flagged_when_the_client_answered_yes_to_safety(
+    app_client, seeded, new_account, db
+):
+    # ISSUE-015 — found by the whole-codebase review: "yes", resume and book reached the
+    # Clinician with no sign of the Safety answer.
+    h = auth(new_account())
+    consent(app_client, h)
+    answers = [(i, "yes" if i == "safety" else v) for i, v in ANSWERS]
+    for item, value in answers:
+        if item == "safety":
+            app_client.post("/api/intake/messages", json={"item": item, "value": value}, headers=h)
+            assert app_client.get("/api/me", headers=h).json()["onboarding"]["crisis_paused"]
+            assert app_client.post("/api/intake/resume", headers=h).status_code == 200
+            continue
+        r = app_client.post("/api/intake/messages", json={"item": item, "value": value}, headers=h)
+        assert r.status_code == 200, r.text
+    assert r.json()["complete"]
+    assert confirm_identity(app_client, h).json()["confirmed"]
+    slot = first_slot(app_client, h)
+    booking = app_client.post("/api/bookings", json={"slot_id": slot["id"]}, headers=h).json()
+
+    clinician = next(c for c in db.scalars(select(Clinician)) if c.name == slot["clinician"])
+    clinician.account_id = new_account()
+    db.commit()
+    make_role(db, clinician.account_id, "clinician")
+    detail = app_client.get(
+        f"/api/clinician/bookings/{booking['booking']['id']}",
+        headers=auth(clinician.account_id),
+    ).json()
+    assert detail["safety_flag"] is True
+    assert detail["assessment"]["safety"]["answer"] == "Yes"
 
 
 def test_roles_are_enforced(app_client, new_account, db):

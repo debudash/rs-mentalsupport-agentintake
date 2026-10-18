@@ -178,8 +178,12 @@ def clinician_view(db: Session, caller: Caller, booking_id: str) -> ClinicianBoo
     view = None
     if assessment is not None:
         view = dict(assessment.answers)
-        view.pop("safety", None)
         view["reason_text"] = assessment.reason_text
+        # ISSUE-015: the Safety answer used to be dropped here, so a Client who answered
+        # "yes", resumed after the Crisis pause and booked reached the Clinician with no risk
+        # flag. It is part of the Assessment the spec gives the Clinician; the route also
+        # raises it as a flag above the answers.
+        view["safety"] = assessment.safety
     return ClinicianBooking(
         booking_id=booking.id,
         starts_at=slot.starts_at,

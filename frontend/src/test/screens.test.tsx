@@ -139,6 +139,37 @@ describe('ClinicianView', () => {
     expect(await screen.findByText('Anxiety or worry')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /Jane/ })).toBeInTheDocument();
     expect(await axe(container)).toHaveNoViolations();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('flags a Client who answered yes to the Safety question', async () => {
+    // ISSUE-015 — found by the whole-codebase review: the Safety answer never reached the
+    // Clinician.
+    mockFetch({
+      'GET /api/clinician/bookings': () => ({
+        json: {
+          clinician: 'Ana Rivera',
+          bookings: [
+            { id: 'b1', starts_at: '2026-10-20T14:00:00Z', format: 'video', reference: 'R1' },
+          ],
+        },
+      }),
+      'GET /api/clinician/bookings/b1': () => ({
+        json: {
+          booking_id: 'b1',
+          starts_at: '2026-10-20T14:00:00Z',
+          format: 'video',
+          reference: 'R1',
+          client_first_name: 'Jane',
+          safety_flag: true,
+          assessment: { safety: { question: 'Any thoughts of harming yourself?', answer: 'Yes' } },
+        },
+      }),
+    });
+    const { container } = render(<ClinicianView />);
+    await userEvent.click(await screen.findByRole('button', { name: /R1/ }));
+    expect(await screen.findByRole('alert')).toHaveTextContent(/answered yes to the safety/i);
+    expect(await axe(container)).toHaveNoViolations();
   });
 });
 
