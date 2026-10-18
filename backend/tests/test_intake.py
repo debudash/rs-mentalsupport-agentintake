@@ -11,7 +11,7 @@ from app.domain.intake import (
     validate_value,
 )
 from app.llm.fake import FakeLLM, HeuristicResponder
-from app.llm.port import FailureKind, LLMFailure
+from app.llm.port import ChatMessage, FailureKind, LLMFailure
 
 STRUCTURED_ANSWERS = [
     ("reason_category", "anxiety"),
@@ -85,6 +85,23 @@ def test_text_sent_to_llm_is_masked(conductor, llm):
     sent = llm.calls[0][1][-1].content
     assert "555" not in sent and "me@x.com" not in sent
     assert "[phone]" in sent and "[email]" in sent
+
+
+def test_earlier_turns_sent_to_llm_are_masked_too(conductor, llm):
+    # ISSUE-014 — found by the whole-codebase review: history reloaded from saved (raw)
+    # messages was sent to the provider unmasked on the following turns.
+    llm.script(turn_result())
+    state = IntakeState(
+        history=[
+            ChatMessage("user", "text me at 555-123-4567, I live at 12 Oak Street"),
+            ChatMessage("assistant", "Thanks. Reach us at me@x.com."),
+        ]
+    )
+    conductor.respond(state, Turn(text="it started on 3/14/2025"))
+    sent = " ".join(m.content for m in llm.calls[0][1])
+    for raw in ("555-123-4567", "12 Oak Street", "me@x.com", "3/14/2025"):
+        assert raw not in sent
+    assert "[phone]" in sent and "[address]" in sent
 
 
 def test_ask_question_shows_the_approved_answer_verbatim(conductor, llm, profile):

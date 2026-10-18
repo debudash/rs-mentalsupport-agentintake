@@ -339,8 +339,14 @@ class IntakeConductor:
         self, state: IntakeState, text: str, signals: Signals
     ) -> tuple[IntakeState, Reply]:
         pending = self.next_item(state)
+        # ISSUE-014: only the newest message used to be masked. History is reloaded from the
+        # saved messages, which are kept raw for the Client's own resume, so a phone number
+        # from turn 1 reached the provider again on turns 2-6. Every message is masked here,
+        # at the one place text leaves for the LLM (masking is idempotent on placeholders).
         masked = masking.mask(text)
-        history = state.history[-HISTORY_TURNS:] + [ChatMessage("user", masked)]
+        history = [
+            ChatMessage(m.role, masking.mask(m.content)) for m in state.history[-HISTORY_TURNS:]
+        ] + [ChatMessage("user", masked)]
         signals.llm_used = True
         started = time.perf_counter()
         try:
