@@ -140,7 +140,7 @@ Target outcomes (client PRD, illustrative): completion ~50% → ~70%; time to co
 
 ### Scheduling
 
-60. As a Client, I want to see open Slots that match my preferred format and times of day, so that I only see options I can take.
+60. As a Client, I want to see open Slots that match my preferred format, times of day and any Clinician gender or language preference I gave, so that I only see options I can take.
 61. As a Client, I want to show all times if none of the matched Slots suit me, so that I'm never stuck with no options.
 62. As a Client, I want each Slot shown in my local time with the time zone labelled, so that I don't book the wrong hour.
 63. As a Client, I want to book an Initial consultation in one action and see an instant confirmation, so that I know it's done.
@@ -166,7 +166,7 @@ Target outcomes (client PRD, illustrative): completion ~50% → ~70%; time to co
 ### Clinician view
 
 79. As a Clinician, I want to sign in and see my upcoming Initial consultations, so that I can prepare.
-80. As a Clinician, I want to read each booked Client's Assessment and first name, so that I understand why they're coming.
+80. As a Clinician, I want to read each booked Client's Assessment (including the Safety answer, flagged when it was "yes") and first name, so that I understand why they're coming and any risk.
 81. As a Clinician, I want to be unable to see Clients booked with other Clinicians, so that confidentiality is respected.
 82. As a Clinician, I want Identity details (date of birth, address) withheld from my preparation view, so that I see only what I need.
 83. As the Service, I want every time a Clinician opens a Client's record written to the Access log, so that staff access is accountable.
@@ -260,7 +260,9 @@ Deep modules (small interface, substantial behaviour, tested through the interfa
    LLM failure`. Three adapters: Anthropic; OpenAI-compatible (OpenRouter by default, or
    local Ollama via a base URL); Fake (scripted results, configurable delay and
    failures). Selected by configuration. 5-second timeout, no retry inside a request.
-   Invalid output is a failure.
+   Invalid output (bad schema, intent or Approved-answer id) is a failure. An invalid
+   extracted value is dropped, never saved, and its item is asked again, while the rest
+   of the turn is kept (ISSUE-004: failing the whole turn threw away valid answers).
 5. **Document reader** — `read_identity(image bytes) → for each of name, DOB, address:
    value or blank, with confidence; plus a failure reason`. Hides upload validation
    (type detected by content, ≤ 8 MB, must decode; JPEG/PNG/HEIC), EXIF orientation,
@@ -381,7 +383,10 @@ plus the next scripted question.
   Consent log and Access log are identity-light and permanent.
 - **Analytics (Layer 2):** funnel events keyed by a random Journey id with an
   Account→Journey link deleted at Withdrawal; events hold only Step, event, time and
-  outcome. Crisis pauses are recorded only as a daily count with no Journey link.
+  outcome. Three event kinds carry a small detail: friction (Step + which Trigger or
+  LLM fallback), per-field OCR booleans, and the NPS score (0–10). Never answers,
+  Identity details or free text. Crisis pauses are recorded only as a daily count with no
+  Journey link, and Safety check-ins are never recorded.
 - **Logs:** structured JSON, identity-free; a development-only switch (refused outside
   development) writes full prompts to a git-ignored local file for synthetic-data
   debugging.
@@ -464,7 +469,8 @@ run against the Fake provider (~800 ms simulated latency); OCR and booking timed
 
 - Multiple Services or tenants (one Service, with a swappable Service profile).
 - Clinical assessment: diagnosis, scored screeners (PHQ-9, GAD-7), medication.
-- Therapist matching beyond filtering Slots by format and availability.
+- Therapist matching beyond filtering Slots by format, availability and the Client's
+  stated Clinician gender and language preferences.
 - Live human handoff or live chat with staff (contact options only).
 - Email or SMS (booking confirmations, magic links, email verification).
 - Payments, insurance verification, PCI scope.
@@ -485,6 +491,15 @@ run against the Fake provider (~800 ms simulated latency); OCR and booking timed
   are done: a high-stress signal switches replies to a "gentle" mode (shorter, more
   acknowledgement, one question at a time), shows quick replies on every question and
   offers to pause; tested deterministically.
+- **Added during the build at the user's direction** (not in the original plan):
+  - an NPS question after booking (one 0–10 question, skippable, once per Client, on the
+    Journey), so the "NPS 70+" goal can be measured;
+  - fault injection (`FAULT_INJECT`, refused in production) to drill the failure
+    handling on the running app;
+  - a synthetic cohort simulator (`make cohort`) that walks 30 scripted Clients through
+    the real API to populate and check the funnel and friction panels;
+  - friction events on Journeys (long pause, upload problem/rejected, high stress, LLM
+    fallback per Step) behind the dashboard's "why people drop off" panel.
 - **Dashboard Layer 2** (funnel, OCR corrections) is a tracked item: if not built, the
   README lists it as planned with the Journey design as the path.
 - **Open verification items for the tracer bullet:** what Supabase's auth audit log

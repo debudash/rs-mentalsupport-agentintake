@@ -29,7 +29,11 @@ surprising ones have a full ADR.
 | Withdrawal deletes everything incl. the Account; keeps an identity-free consent-log entry | "Delete everything" is what someone leaving a mental-health service expects; the log proves it |
 | Intake conversation deleted when Intake completes | Only the Assessment is needed |
 | Initial consultation, 30 min, 3–4 fictional clinicians, 14-day window, 2 h notice | The real next step after intake; enough slots for demos |
-| Clinician view: own bookings only, no DOB/address, every view in an Access log | Shows role-scoped, audited staff access |
+| Clinician view: own upcoming bookings only, no DOB/address, every view in an Access log | Shows role-scoped, audited staff access |
+| Clinician sees the Safety answer, flagged when "yes" | A Client can say "yes", resume after the Crisis pause and book; the Clinician must know before the session (ISSUE-015) |
+| Slots also filtered by the Clinician gender / language preference the Client gave | The Assessment asks for these preferences; using them is a small, honest step. "Show all times" still lifts every filter |
+| NPS question after booking (0–10, skippable, once) | Makes the "NPS 70+" goal measurable; added at the user's direction |
+| Synthetic cohort simulator and per-Step friction events on Journeys | Show *why* people drop off, verified exact against a scripted cohort; safety check-ins and crisis signals never recorded |
 | Operator dashboard: layer 1 (performance, AI health, AI quality) and layer 2 (funnel, OCR corrections) | Layer 1 replaces LangSmith observability; layer 2 shows where people drop off and the real-world OCR error rate |
 | Funnel events keyed by a random Journey id; the Account→Journey link is deleted at Withdrawal | Aggregate analytics survive a deletion request without pointing back to anyone; crisis pauses are never on a Journey (daily count only) |
 | Stretch #6 built as "gentle mode": same high-stress signals as the supportive card; one-sentence replies; "Take a break" link; no extra chat message | Reuses an existing, tested signal; the card already reassures once, so the chat doesn't repeat it |
@@ -47,6 +51,8 @@ surprising ones have a full ADR.
 | Railway, one container, US East; deploy with the Railway CLI | User's platform; GitHub integration not available (GitLab only) |
 | Connect via Supabase pooler (IPv4) | Supabase's direct connection is IPv6-only |
 | `/health` writes a heartbeat row | Keeps the Free plan from pausing; uptime evidence |
+| An invalid extracted LLM value is dropped, not a failed turn | Real models invent near-miss values; failing the turn threw away valid answers (ISSUE-004). Bad schema, intent or answer id still fail |
+| A withdrawn Account's old token gets 404, bad or expired tokens 401 | PRD story 78 asks for "not found" after deletion (ISSUE-016) |
 | LLM port with Anthropic, OpenAI-compatible (OpenRouter/Ollama) and Fake adapters | "No paid API required" satisfied; graders can run keyless or fully local |
 | Tesseract 5 + OpenCV, not PaddleOCR | Lighter image, faster; met 98.9% on the golden set |
 | Label-free OCR fallback only when exactly one line has the field's shape | Robust to lost labels without guessing |
