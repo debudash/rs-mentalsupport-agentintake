@@ -6,6 +6,7 @@ Bookings in their own Slots — writing the Access log for every Clinician recor
 """
 
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from functools import lru_cache
 from typing import Protocol
 
@@ -150,11 +151,18 @@ def _clinician_for(db: Session, caller: Caller) -> Clinician:
 
 
 def clinician_bookings(db: Session, caller: Caller) -> list[tuple[Booking, Slot]]:
+    """The Clinician's upcoming Initial consultations, soonest first."""
     clinician = _clinician_for(db, caller)
+    # ISSUE-017: the list used to filter on "active" only, so past consultations stayed
+    # listed. PRD story 79 asks for upcoming ones; a consultation drops off once it starts.
     rows = db.execute(
         select(Booking, Slot)
         .join(Slot, Slot.id == Booking.slot_id)
-        .where(Slot.clinician_id == clinician.id, Booking.status == "active")
+        .where(
+            Slot.clinician_id == clinician.id,
+            Booking.status == "active",
+            Slot.starts_at >= datetime.now(UTC),
+        )
         .order_by(Slot.starts_at)
     ).all()
     return [tuple(r) for r in rows]

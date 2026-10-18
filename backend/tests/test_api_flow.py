@@ -2,6 +2,7 @@
 
 import io
 import logging
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from PIL import Image
@@ -16,6 +17,7 @@ from app.db.models import (
     ConsentLogEntry,
     IdentityDetails,
     IntakeMessage,
+    Slot,
     TimingRecord,
 )
 from app.ocr.engines import Line
@@ -526,6 +528,26 @@ def test_clinician_is_flagged_when_the_client_answered_yes_to_safety(
     ).json()
     assert detail["safety_flag"] is True
     assert detail["assessment"]["safety"]["answer"] == "Yes"
+
+
+def test_clinician_list_shows_only_upcoming_consultations(app_client, seeded, new_account, db):
+    # ISSUE-017 — found by the whole-codebase review: past consultations stayed listed,
+    # but PRD story 79 is "see my upcoming Initial consultations".
+    h = auth(new_account())
+    to_scheduling(app_client, h)
+    slot = first_slot(app_client, h)
+    booking = app_client.post("/api/bookings", json={"slot_id": slot["id"]}, headers=h).json()
+    clinician = next(c for c in db.scalars(select(Clinician)) if c.name == slot["clinician"])
+    clinician.account_id = new_account()
+    db.commit()
+    make_role(db, clinician.account_id, "clinician")
+    listed = app_client.get("/api/clinician/bookings", headers=auth(clinician.account_id))
+    assert [b["id"] for b in listed.json()["bookings"]] == [booking["booking"]["id"]]
+
+    db.get(Slot, slot["id"]).starts_at = datetime.now(UTC) - timedelta(days=1)
+    db.commit()
+    listed = app_client.get("/api/clinician/bookings", headers=auth(clinician.account_id))
+    assert listed.json()["bookings"] == []
 
 
 def test_roles_are_enforced(app_client, new_account, db):
