@@ -180,10 +180,11 @@ This build is **HIPAA-ready, not HIPAA-compliant**: it holds synthetic data only
 Production would need a Business Associate Agreement with Supabase (paid plan + HIPAA
 add-on) and with the LLM provider, plus the usual risk assessment and policies.
 
-**Exactly what reaches the LLM:** only the text a Client types in the Intake chat, with
-phone numbers, emails, dates and street addresses replaced by placeholders before
-sending. Never their name, date of birth or address from the ID, never the ID image,
-never button answers. Known limit: a name typed into free text ("I'm Jane") is not
+**Exactly what reaches the LLM:** only the text a Client types in the Intake chat (the
+new message plus up to six earlier typed messages and assistant replies as context), with
+phone numbers, emails, dates and street addresses replaced by placeholders in every one
+before sending. Never their name, date of birth or address from the ID, never the ID
+image, never button answers (the Safety answer included). Known limit: a name typed into free text ("I'm Jane") is not
 reliably masked, and neither is the optional free-text "reason".
 
 | Data | Where | Retention |

@@ -16,6 +16,10 @@ from app.profile import ServiceProfile
 SENSITIVE = ("reason_text", "safety")
 
 
+# A Client answer given with a quick-reply button: shown on resume, never sent to the LLM.
+BUTTON_ROLE = "client_choice"
+
+
 def facts(db: Session, client: Client | None) -> Facts:
     if client is None:
         return Facts()
@@ -41,9 +45,12 @@ def load_intake(db: Session, client: Client) -> IntakeState:
             answers["reason_text"] = assessment.reason_text
         if assessment.safety is not None:
             answers["safety"] = assessment.safety
+    # ISSUE-019: button answers used to be saved as ordinary Client messages, so they
+    # (the Safety answer included) reached the LLM as history on the next free-text turn.
+    # They are saved with their own role, shown in the transcript, never sent as history.
     messages = db.scalars(
         select(IntakeMessage)
-        .where(IntakeMessage.client_id == client.account_id)
+        .where(IntakeMessage.client_id == client.account_id, IntakeMessage.role != BUTTON_ROLE)
         .order_by(IntakeMessage.created_at.desc())
         .limit(HISTORY_TURNS)
     ).all()
@@ -69,6 +76,7 @@ def save_intake(
     state: IntakeState,
     client_text: str | None,
     assistant_messages: list[str],
+    from_button: bool = False,
 ) -> bool:
     """Persist the turn. Returns True if this turn completed Intake."""
     assessment = db.get(Assessment, client.account_id)
@@ -94,7 +102,8 @@ def save_intake(
         db.execute(delete(IntakeMessage).where(IntakeMessage.client_id == client.account_id))
     elif assessment.completed_at is None:
         if client_text:
-            db.add(IntakeMessage(client_id=client.account_id, role="client", body=client_text))
+            role = BUTTON_ROLE if from_button else "client"
+            db.add(IntakeMessage(client_id=client.account_id, role=role, body=client_text))
         if assistant_messages:
             db.add(
                 IntakeMessage(
@@ -121,7 +130,7 @@ def transcript(db: Session, client: Client) -> list[dict]:
         .where(IntakeMessage.client_id == client.account_id)
         .order_by(IntakeMessage.created_at)
     ).all()
-    return [{"role": m.role, "text": m.body} for m in rows]
+    return [{"role": "client" if m.role == BUTTON_ROLE else m.role, "text": m.body} for m in rows]
 
 
 def assessment_answers(db: Session, client_id: str) -> dict:

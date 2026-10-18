@@ -80,7 +80,7 @@ class IntakeMessage(Base):
     client_id: Mapped[str] = mapped_column(
         String(36), ForeignKey("clients.account_id", ondelete="CASCADE"), index=True
     )
-    role: Mapped[str] = mapped_column(String(16))  # client|assistant
+    role: Mapped[str] = mapped_column(String(16))  # client|client_choice|assistant
     body: Mapped[str] = mapped_column(EncryptedText)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
 

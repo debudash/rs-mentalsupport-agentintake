@@ -371,8 +371,9 @@ plus the next scripted question.
 
 ### Data handling
 
-- **What reaches the LLM:** the Client's typed chat text with phone numbers, emails,
-  dates and street addresses masked. Never Identity details, never images. Known
+- **What reaches the LLM:** the Client's typed chat text (the new message plus up to six
+  earlier typed messages and assistant replies) with phone numbers, emails, dates and
+  street addresses masked in every message; never button answers. Never Identity details, never images. Known
   limit: names in free text and the Assessment's free-text reason are not reliably
   masked.
 - **Retention:** ID images never stored. Intake conversation kept only while Intake is

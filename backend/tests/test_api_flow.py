@@ -393,6 +393,22 @@ def test_sensitive_fields_are_encrypted_at_rest(app_client, new_account, db):
     assert db.scalars(select(IdentityDetails)).one().legal_name == "Jane Q Doe"
 
 
+def test_button_answers_never_reach_the_llm(app_client, seeded, new_account):
+    # ISSUE-019 — found while fixing ISSUE-014: button answers were saved as chat messages
+    # and sent to the provider as history on the next free-text turn, although the README
+    # says button answers never reach the LLM.
+    h = auth(new_account())
+    consent(app_client, h)
+    for item, value in ANSWERS[:5]:  # up to and including the Safety question
+        app_client.post("/api/intake/messages", json={"item": item, "value": value}, headers=h)
+    resumed = app_client.get("/api/intake", headers=h).json()
+    assert {"role": "client", "text": "1_6_months"} in resumed["transcript"]  # still shown
+    app_client.post("/api/intake/messages", json={"text": "video please"}, headers=h)
+    sent = [m.content for m in app_client.llm.calls[-1][1]]
+    for _, value in ANSWERS[:5]:
+        assert value not in sent
+
+
 def test_no_personal_data_in_logs_or_timing_records(app_client, seeded, new_account, db, caplog):
     secret_bits = [
         "Jane",

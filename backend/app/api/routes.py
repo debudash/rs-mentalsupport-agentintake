@@ -302,7 +302,15 @@ def intake_message(
 
     client_text = body.text or (str(body.value) if body.item else None)
     with telemetry.timed("db"):
-        completed = svc.save_intake(db, cond, client, new_state, client_text, reply.messages)
+        completed = svc.save_intake(
+            db,
+            cond,
+            client,
+            new_state,
+            client_text,
+            reply.messages,
+            from_button=not body.text and body.item is not None,
+        )
         if s.crisis and not was_paused:
             consent_module.bump_counter(db, "crisis_pauses")
             db.commit()
