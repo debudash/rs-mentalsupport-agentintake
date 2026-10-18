@@ -35,3 +35,6 @@ Thumbs.db
 
 # e2e screenshots
 e2e/shots/
+
+# Local code review report (not committed)
+docs/CODE_REVIEW.md
