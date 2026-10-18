@@ -161,6 +161,8 @@ def pre_consent_support(
     """
     # ISSUE-008: the pause endpoint required the Client record, which only exists after
     # consent, so hesitating at Consent produced no card and no signal.
+    # ISSUE-020: any event kind that had a Trigger (e.g. upload_failed) used to show the
+    # long-pause card here; only a pause belongs on the Consent Step.
     if event.step != Step.CONSENT or event.kind != "idle":
         return None
     kind = support.Trigger.LONG_PAUSE.value
