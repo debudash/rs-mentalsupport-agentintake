@@ -22,6 +22,8 @@ export const options = {
   thresholds: {
     'http_req_duration{kind:api}': ['p(95)<3000'],
     chat_reply_ms: ['p(95)<3000'],
+    // ISSUE-002 regression check — found by this k6 run: 1 in 500 requests failed before
+    // reaching the app (uvicorn's 5 s keep-alive; fixed in the Dockerfile).
     http_req_failed: ['rate<0.01'],
   },
   setupTimeout: '120s',

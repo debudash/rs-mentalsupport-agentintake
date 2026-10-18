@@ -620,6 +620,8 @@ def support_event(
 ) -> dict:
     client = _client(db, who)
     if client is None:
+        # ISSUE-008: the pause endpoint required the Client record, which only exists after
+        # consent, so hesitating at Consent produced no card and no signal.
         # Before consent there is no Client record, but a long pause on the Consent Step is
         # a classic drop-off point: show the card once and count it on the Journey.
         event = support.Event(kind=body.kind, step=body.step, idle_seconds=body.idle_seconds)

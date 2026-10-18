@@ -224,6 +224,7 @@ def test_browser_reported_step_must_be_a_real_step(app_client, new_account, db):
 def test_long_pause_at_consent_is_visible_before_any_client_record(app_client, new_account, db):
     """A pause on the Consent Step happens before the Client record exists; it must still
     show the reassurance card once and count as friction."""
+    # ISSUE-008 — found by comparing the synthetic cohort's script with the dashboard.
     account = new_account()
     h = auth(account)
     app_client.get("/api/me", headers=h)  # signed up, nothing consented yet
