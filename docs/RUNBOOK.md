@@ -27,7 +27,7 @@ What each failure should look like, and how to rehearse it with `FAULT_INJECT`:
 
 **Database unreachable**
 - Supabase Free projects **pause after 7 days without activity**. Supabase dashboard →
-  Restore project. Prevent with the 5-minute uptime monitor on `/health` (it writes a
+  Restore project. Prevent with the 5-minute uptime monitor on `/api/health` (it writes a
   heartbeat).
 - Check `DATABASE_URL` uses the **session pooler** host (IPv4), with `+psycopg`.
 

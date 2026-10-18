@@ -346,7 +346,7 @@ Docs index: [Impact](docs/IMPACT.md) · [PRD](docs/PRD.md) · [Users](docs/USERS
 - **Deploy limitation:** Railway's push-to-deploy integration supports GitHub only. With
   GitLab, deployment is via the Railway CLI (`make deploy`) or the CI deploy job.
   Steps: [docs/DEPLOY.md](docs/DEPLOY.md).
-- **Supabase Free plan** pauses projects after 7 days without activity; `/health` writes a
+- **Supabase Free plan** pauses projects after 7 days without activity; `/api/health` writes a
   heartbeat row and an uptime pinger calls it, which keeps the project awake and produces
   the uptime evidence.
 
