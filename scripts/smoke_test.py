@@ -128,7 +128,10 @@ def main() -> int:
         receipt = client.post("/api/withdraw", json={"confirm": True}).json()
         check("withdrawal returns a receipt", bool(receipt.get("reference")))
         check("auth account deleted", receipt.get("auth_account_deleted") is True)
-        check("data no longer retrievable", client.get("/api/me").status_code == 401)
+        # "Not found" on every data endpoint (PRD story 78, ISSUE-016).
+        gone = [client.get(u).status_code for u in
+                ("/api/me", "/api/intake", "/api/identity", "/api/bookings/current")]
+        check("data no longer retrievable", gone == [404] * 4)
         admin = httpx.get(f"{supabase}/auth/v1/admin/users/{uid}",
                           headers={"apikey": service, "Authorization": f"Bearer {service}"}, timeout=20)
         check("Supabase user gone", admin.status_code == 404, str(admin.status_code))

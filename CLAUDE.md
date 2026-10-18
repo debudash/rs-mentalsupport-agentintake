@@ -44,16 +44,17 @@ The stack is open (justify in README) but these are fixed by the brief:
 - An eval harness command that prints a scorecard (per-field OCR accuracy,
   per-intent pass/fail)
 
-## Build status (2026-10-17)
+## Build status (2026-10-17, submission-ready)
 
 Built and verified locally (see docs/AI_LOG.md, docs/ISSUE_LOG.md). Real-model evals done
 (Haiku 5.5 is the demo model; Opus 5.5 report kept). DEPLOYED 2026-10-17: https://app-production-2fdf.up.railway.app (Railway rs-assist /
 service app, US East; Supabase us-east-1 via the TRANSACTION pooler :6543 — see ISSUE-012/013;
-hosted keys in git-ignored .env.production). Open items that need the user: UptimeRobot
-monitor, the pre-push hook (`make hooks`), demo video, CI back on before submission. CI is PAUSED (CI_ENABLED=false, user 2026-10-17, to speed
-up iteration) — set it back to true before submission (rubric: CI on every push); runner
-`rs-assist-runner` in local Docker, tag rs-assist-local. Commits go straight to main for now
-(user's choice); run `make ci` locally before pushing.
+hosted keys in git-ignored .env.production). Whole-codebase review fixed 2026-10-17
+(ISSUE-014..020) and redeployed; live smoke 21/21. CI is ON again (CI_ENABLED=true,
+2026-10-17); runner `rs-assist-runner` in local Docker (Docker Desktop must be running),
+tag rs-assist-local; no RAILWAY_TOKEN in GitLab, so deploys are `make deploy`. Open items
+that need the user: UptimeRobot monitor on /api/health, the pre-push hook (`make hooks`),
+demo video. Commits go straight to main (user's choice); run `make ci` before pushing.
 Dashboard layer 2 (funnel + OCR corrections), stretch #6 (gentle mode) and the header
 banner from the design system cover (Banner.tsx) built 2026-10-17. Not built: stretch #5
 (multi-language) — listed in the README.
