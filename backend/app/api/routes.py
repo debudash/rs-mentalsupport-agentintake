@@ -61,14 +61,21 @@ def _gate(db: Session, client: Client | None, action: Action) -> None:
         raise HTTPException(409, rejection.reason)
 
 
-def _support_card(db: Session, prof: ServiceProfile, client: Client, event: support.Event):
+def _support_card(
+    db: Session,
+    prof: ServiceProfile,
+    client: Client,
+    event: support.Event,
+    count_as_friction: bool = True,
+):
     trigger = support.decide(event, list(client.support_shown or []), client.crisis_paused)
     if trigger is None:
         return None
     client.support_shown = list(client.support_shown or []) + [
         support.shown_key(event.step, trigger)
     ]
-    journeys.friction(db, client.account_id, event.step, trigger.value)
+    if count_as_friction:
+        journeys.friction(db, client.account_id, event.step, trigger.value)
     db.commit()
     card = prof.supportive_content[trigger.value]
     return {"trigger": trigger.value, "title": card.title, "body": card.body}
@@ -316,8 +323,15 @@ def intake_message(
     out["scripted_mode"] = new_state.scripted_mode
     out["gentle"] = new_state.gentle
     if s.high_stress:
+        # ISSUE-018: the card after a "No" to the Safety check-in was also counted as
+        # high-stress friction, putting a safety signal on the Journey, which must never
+        # carry crisis or safety signals. The Client still sees the card; it isn't counted.
         out["support"] = _support_card(
-            db, prof, client, support.Event(kind="high_stress", step="intake")
+            db,
+            prof,
+            client,
+            support.Event(kind="high_stress", step="intake"),
+            count_as_friction=not s.after_check_in,
         )
     return out
 

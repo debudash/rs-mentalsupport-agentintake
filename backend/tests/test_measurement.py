@@ -157,6 +157,26 @@ def test_crisis_never_appears_on_a_journey(app_client, new_account, db):
     assert "crisis" not in dump and "check_in" not in dump
 
 
+def test_a_no_to_the_safety_check_in_never_appears_on_a_journey(app_client, new_account, db):
+    # ISSUE-018 — found by the whole-codebase review: the high-stress card after a "No" to
+    # the Safety check-in was recorded as friction, a safety signal on the Journey.
+    account = new_account()
+    h = auth(account)
+    app_client.get("/api/me", headers=h)
+    consent(app_client, h)
+    app_client.post("/api/intake/messages", json={"text": "this form is killing me"}, headers=h)
+    answered = app_client.post(
+        "/api/intake/messages", json={"item": "check_in", "value": "no"}, headers=h
+    ).json()
+    assert answered["support"]["trigger"] == "high_stress"  # the Client still gets the card
+    db.expire_all()
+    jid = db.get(JourneyLink, account).journey_id
+    friction = db.scalars(
+        select(JourneyEvent).where(JourneyEvent.journey_id == jid, JourneyEvent.event == "friction")
+    ).all()
+    assert friction == []
+
+
 def test_friction_by_step_table(db):
     rows = (
         [("intake", "long_pause")] * 6

@@ -70,6 +70,9 @@ class Signals:
     high_stress: bool = False
     crisis: bool = False
     check_in: bool = False
+    # The high stress came from a "No" to the Safety check-in: a safety signal, which is
+    # never recorded on a Journey (ISSUE-018).
+    after_check_in: bool = False
     llm_used: bool = False
     llm_failure: str | None = None
     llm_ms: float | None = None
@@ -293,6 +296,7 @@ class IntakeConductor:
         if answer:
             return self._crisis(state, signals)
         signals.high_stress = True
+        signals.after_check_in = True
         lead = ["Thank you for letting me know. Let's take this one step at a time."]
         return state, self._with(self.prompt_for(state, lead), signals)
 
