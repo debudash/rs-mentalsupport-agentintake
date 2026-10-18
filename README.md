@@ -33,7 +33,7 @@ Where each line of the client's rubric is satisfied, and the command that checks
 | **AI** | One structured LLM call per message (Claude, or OpenRouter/Ollama, or a keyless Fake); Tesseract OCR, local |
 | **Results** | OCR **98.9%** field accuracy (held-out **93.3%**, **0** fabricated fields); intents **100%** on Claude Haiku 5.5, crisis language pauses **100%**; on the **deployed app** at 20 users: chat p95 **2.03 s**, all API **1.76 s**, **0%** failed, OCR p95 **698 ms**, booking p95 **239 ms** (Opus 5.5 would miss the 3 s chat target) |
 | **Impact** | Funnel and "why" signals verified exact against a scripted cohort; simulated time to complete **2.8 min median** (target ≤ 15); what can't be shown without real people is stated — [docs/IMPACT.md](docs/IMPACT.md) |
-| **Tests** | 239 backend tests (**94%** coverage; 3 need Tesseract/Postgres and run in CI), 64 frontend tests incl. axe + WCAG contrast, browser walks in `e2e/` |
+| **Tests** | 270 backend tests (**94%** coverage; 3 need Tesseract/Postgres and run in CI), 65 frontend tests incl. axe + WCAG contrast, browser walks in `e2e/` |
 
 ![Intake conversation](docs/screenshots/03-intake-chat.png)
 
@@ -184,8 +184,9 @@ add-on) and with the LLM provider, plus the usual risk assessment and policies.
 new message plus up to six earlier typed messages and assistant replies as context), with
 phone numbers, emails, dates and street addresses replaced by placeholders in every one
 before sending. Never their name, date of birth or address from the ID, never the ID
-image, never button answers (the Safety answer included). Known limit: a name typed into free text ("I'm Jane") is not
-reliably masked, and neither is the optional free-text "reason".
+image, never button answers (the Safety answer included). Known limit: a name typed into
+free text ("I'm Jane") is not reliably masked, and neither is the optional free-text
+"reason".
 
 | Data | Where | Retention |
 |---|---|---|

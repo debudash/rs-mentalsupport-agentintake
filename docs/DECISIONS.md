@@ -40,7 +40,7 @@ surprising ones have a full ADR.
 | Stretch #5 (multi-language) not built | Timebox; the per-language profile path is documented |
 | Fault injection (`FAULT_INJECT`) wraps real dependencies at their seams; refused in production | Failure handling shown and re-checkable on the running app, not only claimed in tests ([RELIABILITY](RELIABILITY.md)) |
 | Benchmarks restated as service levels with error budgets | A single benchmark run says "it was fast once"; a budget says when to stop shipping features |
-| CI paused (`CI_ENABLED=false`) during the final build push, back on before submission | Pipelines on a laptop runner slowed iteration; `make ci` runs the same checks locally |
+| CI paused (`CI_ENABLED=false`) during the final build push, back on for submission (2026-10-17) | Pipelines on a laptop runner slowed iteration; `make ci` runs the same checks locally |
 
 ## Technical
 

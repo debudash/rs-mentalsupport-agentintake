@@ -50,9 +50,13 @@ Coverage: backend **94%** (gate 80% on core logic, enforced in CI); frontend ~79
 | Crisis language pauses before any LLM call | `test_intake.py::test_unambiguous_crisis_language_pauses_without_calling_the_llm`; intent eval (100%) |
 | Idioms get a check-in, not a crisis screen | `test_domain_pure.py::test_ambiguous_idioms_get_a_check_in`; `test_intake.py::test_ambiguous_idiom_gets_check_in_then_no_continues_with_support` |
 | Output check blocks commitments, passes benign replies | `test_domain_pure.py` BENIGN / BLOCKED tables |
-| Masking before the LLM | `test_intake.py::test_text_sent_to_llm_is_masked` |
+| Masking before the LLM, every message incl. history | `test_intake.py::test_text_sent_to_llm_is_masked`, `::test_earlier_turns_sent_to_llm_are_masked_too` (ISSUE-014) |
+| Button answers (incl. Safety) never reach the LLM | `test_api_flow.py::test_button_answers_never_reach_the_llm` (ISSUE-019) |
 | Encryption at rest | `test_api_flow.py::test_sensitive_fields_are_encrypted_at_rest` |
 | Role scoping and Access log | `test_api_flow.py::test_clinician_sees_only_own_bookings_and_views_are_logged`, `::test_roles_are_enforced` |
+| Clinician sees upcoming consultations only, and a Safety "yes" is flagged | `test_api_flow.py::test_clinician_list_shows_only_upcoming_consultations` (ISSUE-017), `::test_clinician_is_flagged_when_the_client_answered_yes_to_safety` (ISSUE-015); `screens.test.tsx` |
+| Withdrawn Account: every data endpoint answers 404, Account never recreated | `test_api_flow.py` withdrawal test (ISSUE-016) |
+| Safety check-ins never recorded on a Journey | `test_measurement.py::test_crisis_never_appears_on_a_journey`, `::test_a_no_to_the_safety_check_in_never_appears_on_a_journey` (ISSUE-018) |
 | Tokens | `test_adapters_and_dashboard.py::test_verifier_accepts_valid_and_rejects_wrong_audience_or_secret`; expired/garbage tokens in `test_api_flow.py` |
 | Browser cannot read tables | Verified against local Supabase REST with the public key (permission denied); RLS enabled by migrations 0001–0002 |
 
