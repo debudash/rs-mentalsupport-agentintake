@@ -47,7 +47,7 @@ preprocessing passes, still well under the 8 s target.
 
 | Model | LLM p50 | LLM p95 | Quality |
 |---|---|---|---|
-| Claude Haiku 5.5 | ~1.0 s | 1.76–2.02 s | 100% every run |
+| Claude Haiku 5.5 | ~1.0 s | 1.76–2.15 s | 100% every run |
 | Claude Opus 5.5 | ~2.2 s | 2.94–3.21 s | 98–100% |
 
 Opus alone uses nearly all of the 3 s chat budget before any of our own work; Haiku

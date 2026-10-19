@@ -301,7 +301,7 @@ Deep modules (small interface, substantial behaviour, tested through the interfa
     a response timing header for the benchmark scripts. Writes `llm_error` records
     with provider, error type and latency only.
 11. **Dashboard queries** — `dashboard(window) → panels`. Layer 1 (must): Performance,
-    LLM health, AI quality. Layer 2 (if time): Onboarding funnel and OCR corrections,
+    LLM health, AI quality. Layer 2 (if time; built 2026-10-17): Onboarding funnel and OCR corrections,
     built on Journey records. Counts under 5 are suppressed.
 12. **Service profile** — one validated, typed object loaded at startup: Steps and
     required items; each Assessment item's scripted question, answer type and whether
@@ -409,13 +409,13 @@ runs with no key.
   k6, documentation, demo video.
 - **Cut order if behind:** sentiment-adaptive tone (stretch #6) → Playwright test →
   dashboard Layer 2 → field encryption. Anything cut is listed in the README as
-  planned and not delivered.
+  planned and not delivered. (In the end nothing on this list was cut.)
 - **CI:** GitLab CI configuration committed from the start but dormant until the user
   registers their own runner and enables it (the instance has no shared runners): lint
   → test with coverage gate → build → deploy. A pre-push hook running lint and tests is
-  committed but switched on later by the user.
+  committed but switched on later by the user. (CI switched on 2026-10-17.)
 - **Grader quick-start:** Docker + Supabase CLI only; make targets for setup, seed, run,
-  test, eval, load and deploy, mirrored as shell scripts.
+  test, eval, load and deploy; each target is one command in the Makefile.
 
 ---
 
@@ -500,8 +500,8 @@ run against the Fake provider (~800 ms simulated latency); OCR and booking timed
     the real API to populate and check the funnel and friction panels;
   - friction events on Journeys (long pause, upload problem/rejected, high stress, LLM
     fallback per Step) behind the dashboard's "why people drop off" panel.
-- **Dashboard Layer 2** (funnel, OCR corrections) is a tracked item: if not built, the
-  README lists it as planned with the Journey design as the path.
+- **Dashboard Layer 2** (funnel, OCR corrections) — built 2026-10-17; originally a tracked
+  item (if not built, the README would list it as planned with the Journey design as the path).
 - **Open verification items for the tracer bullet:** what Supabase's auth audit log
   keeps after a user is deleted; that the Railway CLI upload excludes the local
   environment file; the Anthropic account's rate tier for the k6 run.

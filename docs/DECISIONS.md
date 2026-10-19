@@ -50,7 +50,7 @@ surprising ones have a full ADR.
 | Supabase Data API off; RLS on with no browser policies; API is the only data path | One guarded path; browser's public key reads nothing (verified) |
 | Railway, one container, US East; deploy with the Railway CLI | User's platform; GitHub integration not available (GitLab only) |
 | Connect via Supabase pooler (IPv4) | Supabase's direct connection is IPv6-only |
-| `/health` writes a heartbeat row | Keeps the Free plan from pausing; uptime evidence |
+| `/api/health` writes a heartbeat row | Keeps the Free plan from pausing; uptime evidence |
 | An invalid extracted LLM value is dropped, not a failed turn | Real models invent near-miss values; failing the turn threw away valid answers (ISSUE-004). Bad schema, intent or answer id still fail |
 | A withdrawn Account's old token gets 404, bad or expired tokens 401 | PRD story 78 asks for "not found" after deletion (ISSUE-016) |
 | LLM port with Anthropic, OpenAI-compatible (OpenRouter/Ollama) and Fake adapters | "No paid API required" satisfied; graders can run keyless or fully local |
@@ -60,6 +60,6 @@ surprising ones have a full ADR.
 | Browser resizes photos to 2000 px and strips metadata | Faster uploads; GPS never leaves the device |
 | Email + password sign-in, confirmation off for the demo | Supabase Free email is rate-limited; magic links are the production path |
 | k6 against the Fake LLM with 800 ms simulated latency, plus real-model runs when a key is present | Repeatable and keyless; isolates our system's overhead |
-| CI on GitLab, dormant until a project runner is registered; pre-push hook inactive until `make hooks` | Instance has no shared runners; user enables when ready |
+| CI on GitLab via a self-registered project runner (on since 2026-10-17); pre-push hook inactive until `make hooks` | Instance has no shared runners |
 | No sub-agents built separate slices (so no AGENTS.md) | One session built everything sequentially |
 | Tracer bullet → vertical slices | Riskiest parts (OCR, LLM latency) learned early |

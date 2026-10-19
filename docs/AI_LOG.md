@@ -116,7 +116,7 @@ and what a human decided. Tools and models used inside the product are in
   each item against the repo; the human chose the documentation items plus fault injection,
   and held back the self-checking receipt and a second Service profile.
 - Fault injection built test-first (10 tests): `FAULT_INJECT=llm_timeout|llm_down|ocr_fail|db_slow`
-  wraps each dependency at its seam, refused in production, listed in `/health`. Live drill
+  wraps each dependency at its seam, refused in production, listed in `/api/health`. Live drill
   with `llm_down,ocr_fail`: only the targeted smoke check failed; onboarding completed.
 - New docs: RELIABILITY (failure matrix, drills, service levels + error budgets),
   THREAT_MODEL, PII-boundary diagram, OCR miss categories (incl. the one wrong pre-fill the

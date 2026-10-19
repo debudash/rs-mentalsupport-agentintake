@@ -20,8 +20,8 @@ Where each line of the client's rubric is satisfied, and the command that checks
 | **AI quality: OCR + chatbot meet thresholds, incl. hard cases** (20) | OCR 98.9% golden, **93.3% on a held-out set never tuned against**, 0 made-up fields, plus a 20-capture stress set (43.3%, mostly failing safe) with every miss categorised; intents 100% on Claude Haiku, crisis 100% incl. subtle cases ([AI evaluation](#ai-evaluation)); OCR eval is a CI gate | `make eval` |
 | **Security, privacy & compliance** (20) | Consent, minimisation, retention, verifiable deletion, scoped access ([Privacy](#privacy-and-compliance)); PII boundary diagram ([ARCHITECTURE](docs/ARCHITECTURE.md#data-flow-and-the-pii-boundary)); [THREAT_MODEL](docs/THREAT_MODEL.md); log-grep test for seeded PII | `make test` (privacy tests) · `make smoke` (deletion verified) |
 | **Code quality & architecture** (15) | Deep modules behind seams with fakes ([ARCHITECTURE](docs/ARCHITECTURE.md)); 94% backend coverage, 80% gate; GitLab CI ([below](#ci-hooks-and-deploy-gitlab)); [decisions](docs/DECISIONS.md) and [ADRs](docs/adr) | `make lint` · `make ci` |
-| **Performance: p95 targets under stated load** (10) | Chat 2.28 s, OCR 1.18 s, booking 85 ms ([Performance](#performance)); service levels and error budgets ([RELIABILITY](docs/RELIABILITY.md#service-levels-and-error-budgets)) | `make load` · `make timings` |
-| **Docs, AI disclosure & demo** (5) | This README, [AI_USAGE.md](AI_USAGE.md), eval harness, demo video *(link to follow)* | — |
+| **Performance: p95 targets under stated load** (10) | Chat 2.03 s, OCR 698 ms, booking 239 ms on the deployed app ([Performance](#performance)); service levels and error budgets ([RELIABILITY](docs/RELIABILITY.md#service-levels-and-error-budgets)) | `make load` · `make timings` |
+| **Docs, AI disclosure & demo** (5) | This README, [AI_USAGE.md](AI_USAGE.md), eval harness, 3-minute narrated demo video of the live app *(link added on upload)* | — |
 | *Stretch #6, #7* | Sentiment-adaptive tone (gentle mode); Operations dashboard with funnel, per-Step time and OCR corrections. #5 multi-language not built ([why](docs/DECISIONS.md)) | `make e2e` (gentle walk) |
 | *Business case* | Where and why people drop off, time to complete, NPS — measured, simulated or stated as not shown ([IMPACT](docs/IMPACT.md)) | `make cohort` |
 
@@ -49,7 +49,8 @@ make seed      # migrations + 4 clinicians, 2 weeks of slots, demo accounts
 make up        # app on http://localhost:8000
 ```
 
-Or all three in one: `make demo`.
+Or all three in one: `make demo`. Every environment variable is documented in
+[.env.example](.env.example); `make setup` fills in the local values.
 
 Then, in another terminal:
 
@@ -93,7 +94,7 @@ reflects the heuristic, not Claude. For the real experience, set one of:
 # Claude (what the benchmarks and the deployed demo use)
 LLM_PROVIDER=anthropic
 ANTHROPIC_API_KEY=sk-ant-...
-LLM_MODEL=claude-opus-5-5        # or claude-haiku-5-5 for the lowest latency
+LLM_MODEL=claude-haiku-5-5       # or claude-opus-5-5 (misses the 3 s chat p95)
 
 # Free, via OpenRouter (rate-limited; may log prompts — synthetic data only)
 LLM_PROVIDER=openai_compatible
@@ -271,7 +272,7 @@ language, subtle risk, and ambiguous idioms ([evals/datasets/intents.yaml](evals
 
 | Model | Overall (3 runs) | Every intent | Crisis incl. subtle cases | LLM p50 | LLM p95 |
 |---|---|---|---|---|---|
-| **Claude Haiku 5.5** | **100%, 100%, 100%** | ✓ | 100% | ~1.0 s | 1.76–2.02 s |
+| **Claude Haiku 5.5** | **100%, 100%, 100%** | ✓ | 100% | ~1.0 s | 1.76–2.15 s |
 | Claude Opus 5.5 | 98%, 98%, 100% | ✓ | 100% | ~2.2 s | 2.94–3.21 s |
 | Fake (keyless heuristic) | 61.5% | ✗ | unambiguous only | — | — |
 
@@ -323,6 +324,10 @@ scripts/            setup, end-to-end smoke test
 supabase/           local Supabase config (auth + Postgres only)
 docs/               PRD, architecture, decisions, test plan, runbook, deploy, logs
 ```
+
+Graded deliverables: [migrations](backend/alembic/versions) · [seed](backend/app/seed.py) ·
+[OCR golden set + labels](evals/datasets/ocr) · [k6 journey](k6/journey.js) ·
+[Dockerfile](Dockerfile) · [.env.example](.env.example) · [CI](.gitlab-ci.yml)
 
 Docs index: [Impact](docs/IMPACT.md) · [PRD](docs/PRD.md) · [Users](docs/USERS.md) · [Architecture](docs/ARCHITECTURE.md) ·
 [Decisions](docs/DECISIONS.md) · [Reliability](docs/RELIABILITY.md) · [Threat model](docs/THREAT_MODEL.md) · [Test plan](docs/TEST_PLAN.md) ·
