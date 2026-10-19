@@ -95,7 +95,7 @@ and what a human decided. Tools and models used inside the product are in
 
 - **Deployment:** Railway is logged in but no project is linked, and the hosted Supabase
   keys and pooler URL weren't available. Steps in [DEPLOY.md](DEPLOY.md).
-- **Enabling the pre-push hook (`make hooks`) and the demo video.** (Pushed and CI on: done.)
+- **Enabling the pre-push hook (`make hooks`).** (Pushed, CI on and the demo video: done — https://youtu.be/Zj-MITJ8Tf4.)
 
 ## 2026-10-17 — Banner from the design system cover
 

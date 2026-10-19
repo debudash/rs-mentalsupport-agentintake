@@ -8,7 +8,7 @@ Built for Riverside Partners' take-home brief ([client PRD](docs/source/client-p
 Our build spec is [docs/PRD.md](docs/PRD.md).
 
 **Live demo: https://app-production-2fdf.up.railway.app** — Railway (US East) + hosted
-Supabase, Claude Haiku 5.5. Demo logins (the same on the live site): [below](#demo-accounts-created-by-make-seed). Synthetic data only.
+Supabase, Claude Haiku 5.5. **Demo video (3 min): https://youtu.be/Zj-MITJ8Tf4**. Demo logins (the same on the live site): [below](#demo-accounts-created-by-make-seed). Synthetic data only.
 
 ## Rubric map
 
@@ -21,7 +21,7 @@ Where each line of the client's rubric is satisfied, and the command that checks
 | **Security, privacy & compliance** (20) | Consent, minimisation, retention, verifiable deletion, scoped access ([Privacy](#privacy-and-compliance)); PII boundary diagram ([ARCHITECTURE](docs/ARCHITECTURE.md#data-flow-and-the-pii-boundary)); [THREAT_MODEL](docs/THREAT_MODEL.md); log-grep test for seeded PII | `make test` (privacy tests) · `make smoke` (deletion verified) |
 | **Code quality & architecture** (15) | Deep modules behind seams with fakes ([ARCHITECTURE](docs/ARCHITECTURE.md)); 94% backend coverage, 80% gate; GitLab CI ([below](#ci-hooks-and-deploy-gitlab)); [decisions](docs/DECISIONS.md) and [ADRs](docs/adr) | `make lint` · `make ci` |
 | **Performance: p95 targets under stated load** (10) | Chat 2.03 s, OCR 698 ms, booking 239 ms on the deployed app ([Performance](#performance)); service levels and error budgets ([RELIABILITY](docs/RELIABILITY.md#service-levels-and-error-budgets)) | `make load` · `make timings` |
-| **Docs, AI disclosure & demo** (5) | This README, [AI_USAGE.md](AI_USAGE.md), eval harness, 3-minute narrated demo video of the live app *(link added on upload)* | — |
+| **Docs, AI disclosure & demo** (5) | This README, [AI_USAGE.md](AI_USAGE.md), eval harness, [3-minute narrated demo video](https://youtu.be/Zj-MITJ8Tf4) of the live app | — |
 | *Stretch #6, #7* | Sentiment-adaptive tone (gentle mode); Operations dashboard with funnel, per-Step time and OCR corrections. #5 multi-language not built ([why](docs/DECISIONS.md)) | `make e2e` (gentle walk) |
 | *Business case* | Where and why people drop off, time to complete, NPS — measured, simulated or stated as not shown ([IMPACT](docs/IMPACT.md)) | `make cohort` |
 

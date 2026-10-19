@@ -54,7 +54,7 @@ hosted keys in git-ignored .env.production). Whole-codebase review fixed 2026-10
 2026-10-17); runner `rs-assist-runner` in local Docker (Docker Desktop must be running),
 tag rs-assist-local; no RAILWAY_TOKEN in GitLab, so deploys are `make deploy`. No uptime
 monitor (user's choice, 2026-10-19; docs say "not measured"). Open items that need the
-user: the pre-push hook (`make hooks`), demo video link in the README rubric row.
+user: the pre-push hook (`make hooks`). Demo video: https://youtu.be/Zj-MITJ8Tf4 (linked in README, 2026-10-19).
 Submission tag: `submission` (move it with `git tag -f` + force-push the tag). Commits go straight to main (user's choice); run `make ci` before pushing.
 Dashboard layer 2 (funnel + OCR corrections), stretch #6 (gentle mode) and the header
 banner from the design system cover (Banner.tsx) built 2026-10-17. Not built: stretch #5
