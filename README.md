@@ -303,7 +303,7 @@ numbers above: Windows 11 laptop, Docker (Rancher Desktop), 2 uvicorn workers.
 | (same, model latency removed) | — | 1.15 s chat with a fixed 800 ms fake model | `make load` with `LLM_PROVIDER=fake FAKE_LLM_DELAY_MS=800` |
 | OCR p95 < 8.0 s (20 runs) | **698 ms** | 1.18 s | `k6/timings.py`, server `Server-Timing` header |
 | Booking p95 < 1.0 s (20 runs) | **239 ms** | 85 ms | same |
-| Uptime ≥ 99% | UptimeRobot on `/api/health` every 5 min | — | [docs/DEPLOY.md](docs/DEPLOY.md) |
+| Uptime ≥ 99% | **Not measured over time** (no monitor running); live check: [/api/health](https://app-production-2fdf.up.railway.app/api/health) | — | Production plan: an uptime monitor on `/api/health` every 5 min ([docs/DEPLOY.md](docs/DEPLOY.md)) |
 
 The first load test on the deployment failed 11% of requests (database connections), which
 never happens against local Postgres; fixed in [ISSUE-012/013](docs/ISSUE_LOG.md).
@@ -352,8 +352,10 @@ Docs index: [Impact](docs/IMPACT.md) · [PRD](docs/PRD.md) · [Users](docs/USERS
   GitLab, deployment is via the Railway CLI (`make deploy`) or the CI deploy job.
   Steps: [docs/DEPLOY.md](docs/DEPLOY.md).
 - **Supabase Free plan** pauses projects after 7 days without activity; `/api/health` writes a
-  heartbeat row and an uptime pinger calls it, which keeps the project awake and produces
-  the uptime evidence.
+  heartbeat row on every call. No uptime monitor runs for this demo, so the project stays
+  awake only while the site is used; after 7 idle days the live demo needs a restore
+  ([RUNBOOK](docs/RUNBOOK.md)). In production an uptime monitor would call it every 5 minutes,
+  keeping the project awake and measuring uptime.
 
 ---
 

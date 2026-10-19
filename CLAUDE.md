@@ -52,9 +52,10 @@ service app, US East; Supabase us-east-1 via the TRANSACTION pooler :6543 — se
 hosted keys in git-ignored .env.production). Whole-codebase review fixed 2026-10-17
 (ISSUE-014..020) and redeployed; live smoke 21/21. CI is ON again (CI_ENABLED=true,
 2026-10-17); runner `rs-assist-runner` in local Docker (Docker Desktop must be running),
-tag rs-assist-local; no RAILWAY_TOKEN in GitLab, so deploys are `make deploy`. Open items
-that need the user: UptimeRobot monitor on /api/health, the pre-push hook (`make hooks`),
-demo video. Commits go straight to main (user's choice); run `make ci` before pushing.
+tag rs-assist-local; no RAILWAY_TOKEN in GitLab, so deploys are `make deploy`. No uptime
+monitor (user's choice, 2026-10-19; docs say "not measured"). Open items that need the
+user: the pre-push hook (`make hooks`), demo video link in the README rubric row.
+Submission tag: `submission` (move it with `git tag -f` + force-push the tag). Commits go straight to main (user's choice); run `make ci` before pushing.
 Dashboard layer 2 (funnel + OCR corrections), stretch #6 (gentle mode) and the header
 banner from the design system cover (Banner.tsx) built 2026-10-17. Not built: stretch #5
 (multi-language) — listed in the README.

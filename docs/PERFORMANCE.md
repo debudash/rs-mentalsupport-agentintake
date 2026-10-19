@@ -13,7 +13,7 @@ client-side numbers include internet round trips.
 | OCR extraction p95 < 8.0 s, 20 runs | **698 ms** (p50 444 ms) | `k6/timings.py <url>` — server `Server-Timing` |
 | Booking action p95 < 1.0 s, 20 runs | **239 ms** (p50 226 ms) | same |
 | End to end | **21/21** smoke checks, incl. Withdrawal deleting the Supabase user | `scripts/smoke_test.py <url>` |
-| Uptime ≥ 99% | Monitor set up after deploy | UptimeRobot on `/api/health` every 5 min |
+| Uptime ≥ 99% | Not measured over time (no monitor running); live check: [/api/health](https://app-production-2fdf.up.railway.app/api/health) | Production plan: UptimeRobot on `/api/health` every 5 min |
 
 Booking is slower than locally (239 ms vs 85 ms) because each query now crosses from
 Railway to Supabase's pooler; still a quarter of the budget.

@@ -27,9 +27,10 @@ What each failure should look like, and how to rehearse it with `FAULT_INJECT`:
 
 **Database unreachable**
 - Supabase Free projects **pause after 7 days without activity**. Supabase dashboard →
-  Restore project. Prevent with the 5-minute uptime monitor on `/api/health` (it writes a
-  heartbeat).
-- Check `DATABASE_URL` uses the **session pooler** host (IPv4), with `+psycopg`.
+  Restore project. Prevent with a 5-minute uptime monitor on `/api/health` (it writes a
+  heartbeat); the submitted demo runs without one, so expect this after a quiet week.
+- Check `DATABASE_URL` uses the **transaction pooler** (IPv4, port 6543), with `+psycopg`
+  ([ISSUE-012](ISSUE_LOG.md)).
 
 **Clients report "Please sign in again" right after signing in**
 - Token verification failing. New projects need `SUPABASE_JWT_SECRET` **empty** (JWKS);

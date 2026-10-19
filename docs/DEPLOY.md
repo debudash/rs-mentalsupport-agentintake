@@ -123,6 +123,10 @@ Create a free UptimeRobot HTTP monitor on `https://<app>/api/health` every 5 min
 call writes a heartbeat row, which keeps the Supabase Free project from pausing after 7 idle
 days, and the monitor's history is the uptime evidence for the review window.
 
+**Submitted demo:** no monitor was set up (owner's choice). Uptime is not measured, and
+the Supabase project pauses after 7 days without traffic; restore it from the Supabase
+dashboard ([RUNBOOK](RUNBOOK.md)).
+
 ## 6. Enable CI (when the build is stable)
 
 1. Install GitLab Runner in Docker Desktop and register a **project runner** for

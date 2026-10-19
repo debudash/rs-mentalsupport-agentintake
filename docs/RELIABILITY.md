@@ -25,7 +25,7 @@ shows up on the Operations dashboard.
 | **Auth** (Supabase) | Expired or invalid token | Signature/audience check on every request | "Please sign in again"; progress is kept | Sign in again | `test_adapters_and_dashboard.py::test_verifier_accepts_valid_and_rejects_wrong_audience_or_secret` |
 | | Auth service down | Sign-in call fails in the browser | Sign-in error message; signed-in Clients keep working for a few minutes (signing keys are cached for 5 min) | Supabase recovers | Not automated (third-party outage) |
 | **Browser / network** | Tab closed, connection drops, phone dies | — | On return: back on the same Step, answers kept | Progress saved on the server after every answer; the app reads it on every load | `test_gentle.py::test_gentle_mode_persists_across_sessions`; e2e `gentle.mjs` "persists after reload" |
-| **App container** | Crash / redeploy | `/api/health` stops answering; uptime monitor | Brief error; nothing lost | Railway restarts the container | Uptime monitor (after deploy) |
+| **App container** | Crash / redeploy | `/api/health` stops answering; uptime monitor | Brief error; nothing lost | Railway restarts the container | Uptime monitor (production plan; not running for the demo) |
 
 What is deliberately **not** handled: retries inside a request (a retry would blow the 3 s
 budget; the Client gets a fast fallback instead), and multi-region failover (out of scope
@@ -70,7 +70,7 @@ reliability work starts.
 | Chat reply latency | 95% of replies < 3.0 s | 5% of replies may exceed 3 s | p95 **2.28 s** at 20 users on Claude Haiku 5.5 (k6, 290 messages) | Dashboard "Chat reply" p95 vs target; timing records |
 | ID reading latency | 95% < 8.0 s | 5% may exceed 8 s | p95 **1.18 s** (20 runs) | Dashboard "ID reading" p95 |
 | Booking latency | 95% < 1.0 s | 5% may exceed 1 s | p95 **85 ms** (20 runs) | Dashboard "Booking" p95 |
-| Availability | ≥ 99% of 5-minute health checks succeed | ~7.2 h of downtime | Deployed 2026-10-17; monitor history from then | Uptime monitor on `/api/health` |
+| Availability | ≥ 99% of 5-minute health checks succeed | ~7.2 h of downtime | Not measured: no monitor runs for the demo (deployed 2026-10-17; live check on `/api/health`) | Uptime monitor on `/api/health` (production plan) |
 | Requests without a server error | ≥ 99.5% of API requests return < 500 | 0.5% | 0 server errors in 4,003 requests (local, mixed load) | Dashboard "server errors" count |
 | Intake completes despite the LLM | 100% of Intakes can finish with the LLM down | **0** — this one has no budget | Drill above; `test_faults.py` | Fallback-rate panel |
 
